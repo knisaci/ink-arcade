@@ -513,12 +513,12 @@
     <p class="subtitle">DeFi Trivia — On Chain</p>
     <div class="network-badge">
       <span class="network-dot"></span>
-      <span>Ink Sepolia Testnet</span>
+      <span>Ink Mainnet</span>
     </div>
   </header>
 
   <div id="wrong-network">
-    ⚠️ Please switch to <strong>Ink Sepolia</strong> (Chain ID: 763373) in your wallet
+    ⚠️ Please switch to <strong>Ink Mainnet</strong> (Chain ID: 763373) in your wallet
   </div>
 
   <div class="card" id="connect-section">
@@ -596,16 +596,16 @@
   <footer>
     Built on <a href="https://inkonchain.com" target="_blank">Ink</a>
     &middot;
-    Contract: <a href="https://explorer-sepolia.inkonchain.com/address/0xC996c0143c4C88F0B0bC32d328D14c071A603CcB" target="_blank">0xC996...3CcB</a>
+    Contract: <a href="https://explorer.inkonchain.com/address/0xC996c0143c4C88F0B0bC32d328D14c071A603CcB" target="_blank">0xC996...3CcB</a>
   </footer>
 
 </div>
 
 <script>
   const CONTRACT_ADDRESS = "0xC996c0143c4C88F0B0bC32d328D14c071A603CcB";
-  const INK_SEPOLIA_CHAIN_ID = "0xBA26D";
-  const EXPLORER_BASE = "https://explorer-sepolia.inkonchain.com";
-  const RPC_URL = "https://rpc-gel-sepolia.inkonchain.com";
+  const INK_SEPOLIA_CHAIN_ID = "0xDEF1";
+  const EXPLORER_BASE = "https://explorer.inkonchain.com";
+  const RPC_URL = "https://rpc-gel.inkonchain.com";
 
   const ABI = [
     "function questionCount() view returns (uint256)",
@@ -667,9 +667,9 @@
       signer = await provider.getSigner();
       walletAddress = await signer.getAddress();
 
-      // Switch to Ink Sepolia if needed
+      // Switch to Ink Mainnet if needed
       const network = await provider.getNetwork();
-      if (network.chainId !== 763373n) {
+      if (network.chainId !== 57073n) {
         document.getElementById("wrong-network").style.display = "block";
         try {
           await wp.request({
@@ -681,7 +681,7 @@
             method: "wallet_addEthereumChain",
             params: [{
               chainId: INK_SEPOLIA_CHAIN_ID,
-              chainName: "Ink Sepolia",
+              chainName: "Ink Mainnet",
               nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
               rpcUrls: [RPC_URL],
               blockExplorerUrls: [EXPLORER_BASE],
