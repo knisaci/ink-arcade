@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ink Arcade — DeFi Trivia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0a0a0f;
+      --ink2: #12121a;
+      --ink3: #1c1c2a;
+      --border: #2a2a3d;
+      --purple: #7c3aed;
+      --purple-glow: #9f6ef5;
+      --cyan: #06b6d4;
+      --green: #10b981;
+      --red: #ef4444;
+      --gold: #f59e0b;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--ink);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--purple);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, var(--white) 0%, var(--purple-glow) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .network-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--ink2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 16px;
+    }
+
+    .network-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .card {
+      background: var(--ink2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 20px;
+      transition: border-color 0.3s;
+    }
+
+    .card:hover { border-color: rgba(124,58,237,0.4); }
+
+    #connect-section { text-align: center; }
+
+    .connect-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    #connect-section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    #connect-section p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: var(--purple);
+      color: white;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-glow);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(124,58,237,0.4);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--purple);
+      color: var(--purple-glow);
+    }
+
+    #wallet-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .wallet-address {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+
+    .wallet-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    #score-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      background: var(--ink3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--white);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .stat-value.green { color: var(--green); }
+    .stat-value.gold { color: var(--gold); }
+
+    #question-section { display: none; }
+
+    .question-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .q-number {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .q-tag {
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(124,58,237,0.3);
+      color: var(--purple-glow);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      letter-spacing: 1px;
+    }
+
+    .question-text {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(17px, 3vw, 21px);
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 28px;
+      color: var(--white);
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--ink3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .option:hover:not(:disabled) {
+      border-color: var(--purple);
+      background: rgba(124,58,237,0.08);
+      color: var(--white);
+    }
+
+    .option:disabled { cursor: not-allowed; }
+
+    .option.selected {
+      border-color: var(--purple);
+      background: rgba(124,58,237,0.12);
+    }
+
+    .option.correct {
+      border-color: var(--green) !important;
+      background: rgba(16,185,129,0.12) !important;
+      color: var(--green) !important;
+    }
+
+    .option.wrong {
+      border-color: var(--red) !important;
+      background: rgba(239,68,68,0.08) !important;
+      color: var(--red) !important;
+    }
+
+    .option-label {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--ink2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .option.selected .option-label { background: var(--purple); border-color: var(--purple); color: white; }
+    .option.correct .option-label  { background: var(--green);  border-color: var(--green);  color: white; }
+    .option.wrong .option-label    { background: var(--red);    border-color: var(--red);    color: white; }
+
+    #result-panel {
+      display: none;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    #result-panel.correct { background: rgba(16,185,129,0.08);  border-color: rgba(16,185,129,0.3); }
+    #result-panel.wrong   { background: rgba(239,68,68,0.08);   border-color: rgba(239,68,68,0.3); }
+    #result-panel.already { background: rgba(100,116,139,0.08); border-color: rgba(100,116,139,0.3); }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .result-emoji { font-size: 22px; }
+
+    .result-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .result-explanation {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .tx-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--cyan);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+
+    .tx-link:hover { text-decoration: underline; }
+
+    #tx-status {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      background: var(--ink3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .already-msg {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-buttons .btn { flex: 1; }
+
+    #wrong-network {
+      display: none;
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--gold);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    #loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    footer a { color: var(--purple-glow); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🎮</div>
+    </div>
+    <h1>Ink Arcade</h1>
+    <p class="subtitle">DeFi Trivia — On Chain</p>
+    <div class="network-badge">
+      <span class="network-dot"></span>
+      <span>Ink Sepolia Testnet</span>
+    </div>
+  </header>
+
+  <div id="wrong-network">
+    ⚠️ Please switch to <strong>Ink Sepolia</strong> (Chain ID: 763373) in your wallet
+  </div>
+
+  <div class="card" id="connect-section">
+    <span class="connect-icon">🔗</span>
+    <h2>Connect your wallet</h2>
+    <p>Answer DeFi and Ink trivia questions on-chain.<br/>Works with Rabby, MetaMask, or any EVM wallet.</p>
+    <button class="btn btn-primary" id="connect-btn" onclick="connectWallet()">
+      Connect Wallet
+    </button>
+  </div>
+
+  <div class="card hidden" id="wallet-section">
+    <div id="wallet-info">
+      <div class="wallet-address">
+        <span class="wallet-dot"></span>
+        <span id="wallet-addr">0x0000...0000</span>
+      </div>
+      <button class="btn btn-outline" style="padding:8px 16px;font-size:12px" onclick="disconnectWallet()">Disconnect</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="score-section">
+    <div id="score-bar">
+      <div class="stat">
+        <span class="stat-value green" id="stat-correct">0</span>
+        <span class="stat-label">Correct</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="stat-answered">0</span>
+        <span class="stat-label">Answered</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value gold" id="stat-pct">-</span>
+        <span class="stat-label">Accuracy</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="question-section">
+    <div id="loading">Loading question from chain...</div>
+    <div id="question-content" class="hidden">
+      <div class="question-meta">
+        <span class="q-number" id="q-number">Question #1</span>
+        <span class="q-tag">DEFI x INK</span>
+      </div>
+      <div class="question-text" id="q-text"></div>
+      <div class="options" id="options-list"></div>
+      <div id="already-answered" class="already-msg hidden">
+        Already answered this question
+      </div>
+    </div>
+  </div>
+
+  <div id="tx-status">
+    <div class="spinner"></div>
+    <span id="tx-msg">Submitting answer on-chain...</span>
+  </div>
+
+  <div id="result-panel">
+    <div class="result-header">
+      <span class="result-emoji" id="result-emoji"></span>
+      <span class="result-title" id="result-title"></span>
+    </div>
+    <div class="result-explanation" id="result-explanation"></div>
+    <a class="tx-link hidden" id="tx-link" href="#" target="_blank">
+      View transaction on Ink Explorer
+    </a>
+  </div>
+
+  <div class="nav-buttons hidden" id="nav-buttons">
+    <button class="btn btn-outline" onclick="prevQuestion()">Prev</button>
+    <button class="btn btn-primary" onclick="nextQuestion()">Next</button>
+  </div>
+
+  <footer>
+    Built on <a href="https://inkonchain.com" target="_blank">Ink</a>
+    &middot;
+    Contract: <a href="https://explorer-sepolia.inkonchain.com/address/0xC996c0143c4C88F0B0bC32d328D14c071A603CcB" target="_blank">0xC996...3CcB</a>
+  </footer>
+
+</div>
+
+<script>
+  const CONTRACT_ADDRESS = "0xC996c0143c4C88F0B0bC32d328D14c071A603CcB";
+  const INK_SEPOLIA_CHAIN_ID = "0xBA26D";
+  const EXPLORER_BASE = "https://explorer-sepolia.inkonchain.com";
+  const RPC_URL = "https://rpc-gel-sepolia.inkonchain.com";
+
+  const ABI = [
+    "function questionCount() view returns (uint256)",
+    "function getQuestion(uint256) view returns (string,string,string,string,string)",
+    "function getAnswer(uint256) view returns (uint8,string)",
+    "function submitAnswer(uint256,uint8)",
+    "function getPlayerStats(address) view returns (uint256,uint256,uint256,bool)",
+    "function playerHasAnswered(address,uint256) view returns (bool)",
+    "event AnswerSubmitted(address indexed,uint256 indexed,uint8,bool,uint256,uint256)"
+  ];
+
+  let ethers, provider, signer, contract;
+  let walletAddress = null;
+  let currentQuestionId = 0;
+  let totalQuestions = 0;
+  let selectedOption = null;
+
+  // Load ethers from CDN
+  async function loadEthers() {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js";
+      s.onload = () => resolve(window.ethers);
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  // Get any injected EVM wallet
+  function getWalletProvider() {
+    // Try all known injection points
+    if (typeof window.ethereum !== 'undefined') return window.ethereum;
+    if (typeof window.rabby !== 'undefined') return window.rabby;
+    if (window.web3 && window.web3.currentProvider) return window.web3.currentProvider;
+    return null;
+  }
+
+  async function connectWallet() {
+    // Give wallet extension time to inject
+    await new Promise(r => setTimeout(r, 200));
+
+    const wp = getWalletProvider();
+
+    if (!wp) {
+      alert("No EVM wallet detected.\n\nPlease install Rabby (rabby.io) or MetaMask, make sure it is enabled for this page, then refresh.");
+      return;
+    }
+
+    const btn = document.getElementById("connect-btn");
+    btn.disabled = true;
+    btn.textContent = "Connecting...";
+
+    try {
+      if (!ethers) ethers = await loadEthers();
+
+      await wp.request({ method: "eth_requestAccounts" });
+
+      provider = new ethers.BrowserProvider(wp);
+      signer = await provider.getSigner();
+      walletAddress = await signer.getAddress();
+
+      // Switch to Ink Sepolia if needed
+      const network = await provider.getNetwork();
+      if (network.chainId !== 763373n) {
+        document.getElementById("wrong-network").style.display = "block";
+        try {
+          await wp.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: INK_SEPOLIA_CHAIN_ID }],
+          });
+        } catch {
+          await wp.request({
+            method: "wallet_addEthereumChain",
+            params: [{
+              chainId: INK_SEPOLIA_CHAIN_ID,
+              chainName: "Ink Sepolia",
+              nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+              rpcUrls: [RPC_URL],
+              blockExplorerUrls: [EXPLORER_BASE],
+            }],
+          });
+        }
+        provider = new ethers.BrowserProvider(wp);
+        signer = await provider.getSigner();
+      }
+
+      document.getElementById("wrong-network").style.display = "none";
+      contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+      document.getElementById("connect-section").classList.add("hidden");
+      document.getElementById("wallet-section").classList.remove("hidden");
+      document.getElementById("score-section").classList.remove("hidden");
+      document.getElementById("question-section").style.display = "block";
+      document.getElementById("nav-buttons").classList.remove("hidden");
+
+      document.getElementById("wallet-addr").textContent =
+        walletAddress.slice(0, 6) + "..." + walletAddress.slice(-4);
+
+      await loadStats();
+      await loadQuestion(0);
+
+      wp.on("accountsChanged", () => location.reload());
+      wp.on("chainChanged", () => location.reload());
+
+    } catch (err) {
+      console.error(err);
+      btn.disabled = false;
+      btn.textContent = "Connect Wallet";
+    }
+  }
+
+  function disconnectWallet() {
+    walletAddress = null;
+    provider = null;
+    signer = null;
+    contract = null;
+    document.getElementById("connect-section").classList.remove("hidden");
+    document.getElementById("wallet-section").classList.add("hidden");
+    document.getElementById("score-section").classList.add("hidden");
+    document.getElementById("question-section").style.display = "none";
+    document.getElementById("nav-buttons").classList.add("hidden");
+    document.getElementById("result-panel").style.display = "none";
+    document.getElementById("tx-status").style.display = "none";
+    const btn = document.getElementById("connect-btn");
+    btn.disabled = false;
+    btn.textContent = "Connect Wallet";
+  }
+
+  async function loadQuestion(id) {
+    document.getElementById("loading").classList.remove("hidden");
+    document.getElementById("question-content").classList.add("hidden");
+    document.getElementById("result-panel").style.display = "none";
+    document.getElementById("tx-status").style.display = "none";
+    selectedOption = null;
+
+    try {
+      totalQuestions = Number(await contract.questionCount());
+      currentQuestionId = ((id % totalQuestions) + totalQuestions) % totalQuestions;
+
+      const [text, optA, optB, optC, optD] = await contract.getQuestion(currentQuestionId);
+      const alreadyAnswered = await contract.playerHasAnswered(walletAddress, currentQuestionId);
+
+      document.getElementById("q-number").textContent =
+        "Question " + (currentQuestionId + 1) + " of " + totalQuestions;
+      document.getElementById("q-text").textContent = text;
+
+      const opts = [optA, optB, optC, optD];
+      const labels = ["A", "B", "C", "D"];
+      const list = document.getElementById("options-list");
+      list.innerHTML = "";
+
+      opts.forEach(function(opt, i) {
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.disabled = alreadyAnswered;
+        btn.innerHTML = '<span class="option-label">' + labels[i] + '</span>' + opt;
+        btn.addEventListener("click", function() { selectOption(i, btn); });
+        list.appendChild(btn);
+      });
+
+      if (alreadyAnswered) {
+        document.getElementById("already-answered").classList.remove("hidden");
+        const result = await contract.getAnswer(currentQuestionId);
+        const correctIdx = Number(result[0]);
+        const explanation = result[1];
+        const optBtns = list.querySelectorAll(".option");
+        optBtns[correctIdx].classList.add("correct");
+        showResult(null, true, explanation, null);
+      } else {
+        document.getElementById("already-answered").classList.add("hidden");
+      }
+
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("question-content").classList.remove("hidden");
+
+    } catch (err) {
+      console.error(err);
+      document.getElementById("loading").textContent = "Error loading question. Check console.";
+    }
+  }
+
+  async function selectOption(index, btn) {
+    if (selectedOption !== null) return;
+    selectedOption = index;
+    document.querySelectorAll(".option").forEach(function(b) {
+      b.classList.remove("selected");
+      b.disabled = true;
+    });
+    btn.classList.add("selected");
+    await submitAnswer(index);
+  }
+
+  async function submitAnswer(chosenIndex) {
+    const txStatus = document.getElementById("tx-status");
+    const txMsg = document.getElementById("tx-msg");
+    txStatus.style.display = "flex";
+    txMsg.textContent = "Submitting answer on-chain...";
+
+    try {
+      const tx = await contract.submitAnswer(currentQuestionId, chosenIndex);
+      txMsg.textContent = "Waiting for confirmation on Ink...";
+      const receipt = await tx.wait();
+
+      let correct = false;
+      const iface = new ethers.Interface(ABI);
+      for (const log of receipt.logs) {
+        try {
+          const parsed = iface.parseLog(log);
+          if (parsed && parsed.name === "AnswerSubmitted") {
+            correct = parsed.args[3];
+          }
+        } catch {}
+      }
+
+      txStatus.style.display = "none";
+
+      const result = await contract.getAnswer(currentQuestionId);
+      const correctIdx = Number(result[0]);
+      const explanation = result[1];
+
+      const optBtns = document.querySelectorAll(".option");
+      optBtns[correctIdx].classList.add("correct");
+      if (!correct) {
+        optBtns[chosenIndex].classList.remove("selected");
+        optBtns[chosenIndex].classList.add("wrong");
+      }
+
+      showResult(correct, false, explanation, receipt.hash);
+      await loadStats();
+
+    } catch (err) {
+      console.error(err);
+      txStatus.style.display = "none";
+      document.querySelectorAll(".option").forEach(function(b) { b.disabled = false; });
+      selectedOption = null;
+      alert("Transaction failed: " + (err.reason || err.message || "Unknown error"));
+    }
+  }
+
+  function showResult(correct, alreadyAnswered, explanation, txHash) {
+    const panel = document.getElementById("result-panel");
+    const txLink = document.getElementById("tx-link");
+    panel.style.display = "block";
+
+    if (alreadyAnswered) {
+      panel.className = "already";
+      document.getElementById("result-emoji").textContent = "✓";
+      document.getElementById("result-title").textContent = "Already answered";
+      document.getElementById("result-explanation").textContent = explanation;
+      txLink.classList.add("hidden");
+      return;
+    }
+
+    panel.className = correct ? "correct" : "wrong";
+    document.getElementById("result-emoji").textContent = correct ? "🎉" : "❌";
+    document.getElementById("result-title").textContent = correct ? "Correct!" : "Not quite";
+    document.getElementById("result-explanation").textContent = explanation;
+    txLink.href = EXPLORER_BASE + "/tx/" + txHash;
+    txLink.classList.remove("hidden");
+  }
+
+  async function loadStats() {
+    try {
+      const stats = await contract.getPlayerStats(walletAddress);
+      const answered = Number(stats[0]);
+      const correct = Number(stats[1]);
+      document.getElementById("stat-answered").textContent = answered;
+      document.getElementById("stat-correct").textContent = correct;
+      document.getElementById("stat-pct").textContent =
+        answered > 0 ? Math.round((correct / answered) * 100) + "%" : "-";
+    } catch(e) { console.error(e); }
+  }
+
+  function nextQuestion() { loadQuestion(currentQuestionId + 1); }
+  function prevQuestion() { loadQuestion(currentQuestionId - 1); }
+</script>
+</body>
+</html>
