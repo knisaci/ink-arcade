@@ -445,6 +445,47 @@
           <span class="nado-badge">PERP DEX</span>
         </div>
 
+        <!-- How to Play -->
+        <div style="margin-bottom:20px;">
+          <button onclick="toggleHowTo()" style="display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--ink3);border:1px solid var(--border);border-radius:10px;padding:14px 18px;cursor:pointer;font-family:'Space Mono',monospace;font-size:13px;color:var(--muted);transition:all 0.2s;" id="howto-btn">
+            <span>How to play</span>
+            <span id="howto-arrow">▼</span>
+          </button>
+          <div id="howto-panel" style="display:none;background:var(--ink3);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:20px 18px;">
+            <div style="display:grid;gap:16px;">
+              <div>
+                <div style="font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What is leverage?</div>
+                <div style="font-size:13px;color:var(--text);line-height:1.6;">Leverage multiplies your position size. With 5x leverage and 1,000 credits, you control a 5,000 credit position. Profits and losses are both amplified — a 10% price move means a 50% gain or loss on your collateral.</div>
+              </div>
+              <div>
+                <div style="font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What is a liquidation price?</div>
+                <div style="font-size:13px;color:var(--text);line-height:1.6;">If the price moves too far against you, the protocol closes your position automatically to prevent losses beyond your collateral. That price is called the liquidation price. For a long: entry × (leverage-1) / leverage. For a short: entry × (leverage+1) / leverage.</div>
+              </div>
+              <div>
+                <div style="font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What are game credits?</div>
+                <div style="font-size:13px;color:var(--text);line-height:1.6;">Game credits are not real money. They are a scoring system so you can see PnL in realistic numbers without any financial risk. The math is real — only the stakes are not.</div>
+              </div>
+              <div style="border-top:1px solid var(--border);padding-top:16px;">
+                <div style="font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">How to play</div>
+                <div style="display:grid;gap:8px;">
+                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
+                    <span style="background:var(--orange);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">1</span>
+                    <span>Pick a market scenario — each has a fixed entry price, exit price, and max leverage.</span>
+                  </div>
+                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
+                    <span style="background:var(--orange);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">2</span>
+                    <span>Choose Long or Short, set your leverage and size, then guess the liquidation price. Use the formula shown — or see if you can figure it out yourself.</span>
+                  </div>
+                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
+                    <span style="background:var(--orange);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">3</span>
+                    <span>Open your position on-chain, then resolve it. The contract calculates your PnL and whether you were liquidated — all verifiable on Ink Explorer.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="nado-loading">Loading scenarios from chain...</div>
 
         <div id="nado-game" class="hidden">
@@ -1164,6 +1205,14 @@
     nadoTxLink.classList.remove("hidden");
 
 
+  }
+
+  function toggleHowTo() {
+    const panel = document.getElementById("howto-panel");
+    const arrow = document.getElementById("howto-arrow");
+    const visible = panel.style.display !== "none";
+    panel.style.display = visible ? "none" : "block";
+    arrow.textContent = visible ? "▼" : "▲";
   }
 
   function resetNado() {
