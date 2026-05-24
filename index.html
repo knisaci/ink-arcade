@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ink Arcade — DeFi Trivia</title>
+  <title>Ink Arcade — DeFi Learning Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -18,6 +18,7 @@
       --green: #10b981;
       --red: #ef4444;
       --gold: #f59e0b;
+      --orange: #f97316;
       --text: #e2e8f0;
       --muted: #64748b;
       --white: #ffffff;
@@ -66,436 +67,245 @@
       padding: 40px 20px 80px;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
+    header { text-align: center; margin-bottom: 32px; }
 
     .logo-icon {
-      width: 36px;
-      height: 36px;
-      background: var(--purple);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
+      width: 36px; height: 36px;
+      background: var(--purple); border-radius: 8px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 8px;
     }
 
     h1 {
       font-family: 'Syne', sans-serif;
       font-size: clamp(28px, 5vw, 42px);
-      font-weight: 800;
-      letter-spacing: -1px;
+      font-weight: 800; letter-spacing: -1px;
       background: linear-gradient(135deg, var(--white) 0%, var(--purple-glow) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
 
-    .subtitle {
-      color: var(--muted);
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-top: 6px;
-    }
+    .subtitle { color: var(--muted); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; margin-top: 6px; }
 
     .network-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--ink2);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 6px 14px;
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 16px;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--ink2); border: 1px solid var(--border);
+      border-radius: 100px; padding: 6px 14px; font-size: 12px; color: var(--muted); margin-top: 16px;
     }
 
     .network-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 8px var(--green);
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 8px var(--green);
       animation: pulse 2s infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex; gap: 8px; margin-bottom: 20px;
+      background: var(--ink2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 6px;
     }
 
+    .tab {
+      flex: 1; padding: 10px 16px; border-radius: 8px; border: none;
+      background: transparent; color: var(--muted);
+      font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; display: flex; align-items: center;
+      justify-content: center; gap: 8px;
+    }
+
+    .tab.active {
+      background: var(--purple); color: white;
+      box-shadow: 0 4px 12px rgba(124,58,237,0.4);
+    }
+
+    .tab:not(.active):hover { color: var(--text); background: var(--ink3); }
+
+    .tab-badge {
+      background: rgba(255,255,255,0.2); color: white;
+      font-size: 10px; padding: 2px 6px; border-radius: 100px;
+    }
+
+    .tab.nado-tab.active { background: var(--orange); box-shadow: 0 4px 12px rgba(249,115,22,0.4); }
+    .tab.nado-tab:not(.active):hover { color: var(--orange); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── SHARED CARD / BTN ── */
     .card {
-      background: var(--ink2);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
-      margin-bottom: 20px;
-      transition: border-color 0.3s;
+      background: var(--ink2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px; margin-bottom: 20px; transition: border-color 0.3s;
     }
-
     .card:hover { border-color: rgba(124,58,237,0.4); }
 
-    #connect-section { text-align: center; }
-
-    .connect-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      display: block;
-    }
-
-    #connect-section h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    #connect-section p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
-      margin-bottom: 24px;
-    }
-
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-family: 'Space Mono', monospace;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s;
-      text-decoration: none;
-      letter-spacing: 0.5px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px 28px; border-radius: 10px;
+      font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700;
+      cursor: pointer; border: none; transition: all 0.2s; text-decoration: none; letter-spacing: 0.5px;
     }
+    .btn-primary { background: var(--purple); color: white; width: 100%; }
+    .btn-primary:hover { background: var(--purple-glow); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,58,237,0.4); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-orange { background: var(--orange); color: white; width: 100%; }
+    .btn-orange:hover { background: #fb923c; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(249,115,22,0.4); }
+    .btn-orange:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--purple); color: var(--purple-glow); }
 
-    .btn-primary {
-      background: var(--purple);
-      color: white;
-      width: 100%;
-    }
+    /* ── CONNECT ── */
+    #connect-section { text-align: center; }
+    .connect-icon { font-size: 48px; margin-bottom: 16px; display: block; }
+    #connect-section h2 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    #connect-section p { color: var(--muted); font-size: 13px; line-height: 1.6; margin-bottom: 24px; }
 
-    .btn-primary:hover {
-      background: var(--purple-glow);
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(124,58,237,0.4);
-    }
+    /* ── WALLET BAR ── */
+    #wallet-info { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .wallet-address { display: flex; align-items: center; gap: 8px; background: var(--ink3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+    .wallet-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
 
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--purple);
-      color: var(--purple-glow);
-    }
-
-    #wallet-info {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .wallet-address {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--ink3);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 14px;
-      font-size: 13px;
-    }
-
-    .wallet-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-    }
-
-    #score-bar {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .stat {
-      background: var(--ink3);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .stat-value {
-      font-family: 'Syne', sans-serif;
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--white);
-      display: block;
-    }
-
-    .stat-label {
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-top: 4px;
-      display: block;
-    }
-
+    /* ── SCORE BAR ── */
+    #score-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .stat { background: var(--ink3); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+    .stat-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--white); display: block; }
+    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; display: block; }
     .stat-value.green { color: var(--green); }
     .stat-value.gold { color: var(--gold); }
 
-    #question-section { display: none; }
+    /* ── TRIVIA ── */
+    .question-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .q-number { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
+    .q-tag { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); color: var(--purple-glow); font-size: 11px; padding: 4px 10px; border-radius: 100px; letter-spacing: 1px; }
+    .question-text { font-family: 'Syne', sans-serif; font-size: clamp(17px,3vw,21px); font-weight: 700; line-height: 1.4; margin-bottom: 28px; color: var(--white); }
 
-    .question-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .q-number {
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    .q-tag {
-      background: rgba(124,58,237,0.15);
-      border: 1px solid rgba(124,58,237,0.3);
-      color: var(--purple-glow);
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 100px;
-      letter-spacing: 1px;
-    }
-
-    .question-text {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(17px, 3vw, 21px);
-      font-weight: 700;
-      line-height: 1.4;
-      margin-bottom: 28px;
-      color: var(--white);
-    }
-
-    .options {
-      display: grid;
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-
-    .option {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 18px;
-      background: var(--ink3);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: left;
-      font-family: 'Space Mono', monospace;
-      font-size: 13px;
-      color: var(--text);
-    }
-
-    .option:hover:not(:disabled) {
-      border-color: var(--purple);
-      background: rgba(124,58,237,0.08);
-      color: var(--white);
-    }
-
+    .options { display: grid; gap: 10px; margin-bottom: 24px; }
+    .option { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--ink3); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s; text-align: left; font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text); }
+    .option:hover:not(:disabled) { border-color: var(--purple); background: rgba(124,58,237,0.08); color: var(--white); }
     .option:disabled { cursor: not-allowed; }
-
-    .option.selected {
-      border-color: var(--purple);
-      background: rgba(124,58,237,0.12);
-    }
-
-    .option.correct {
-      border-color: var(--green) !important;
-      background: rgba(16,185,129,0.12) !important;
-      color: var(--green) !important;
-    }
-
-    .option.wrong {
-      border-color: var(--red) !important;
-      background: rgba(239,68,68,0.08) !important;
-      color: var(--red) !important;
-    }
-
-    .option-label {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: var(--ink2);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
-      flex-shrink: 0;
-      transition: all 0.2s;
-    }
-
+    .option.selected { border-color: var(--purple); background: rgba(124,58,237,0.12); }
+    .option.correct { border-color: var(--green) !important; background: rgba(16,185,129,0.12) !important; color: var(--green) !important; }
+    .option.wrong { border-color: var(--red) !important; background: rgba(239,68,68,0.08) !important; color: var(--red) !important; }
+    .option-label { width: 28px; height: 28px; border-radius: 6px; background: var(--ink2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; transition: all 0.2s; }
     .option.selected .option-label { background: var(--purple); border-color: var(--purple); color: white; }
-    .option.correct .option-label  { background: var(--green);  border-color: var(--green);  color: white; }
-    .option.wrong .option-label    { background: var(--red);    border-color: var(--red);    color: white; }
+    .option.correct .option-label { background: var(--green); border-color: var(--green); color: white; }
+    .option.wrong .option-label { background: var(--red); border-color: var(--red); color: white; }
 
-    #result-panel {
-      display: none;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      border: 1px solid;
+    /* ── RESULT ── */
+    #result-panel, #nado-result-panel {
+      display: none; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid;
       animation: slideIn 0.3s ease;
     }
+    @keyframes slideIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .correct { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3) !important; }
+    .wrong { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3) !important; }
+    .already { background: rgba(100,116,139,0.08); border-color: rgba(100,116,139,0.3) !important; }
 
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    #result-panel.correct { background: rgba(16,185,129,0.08);  border-color: rgba(16,185,129,0.3); }
-    #result-panel.wrong   { background: rgba(239,68,68,0.08);   border-color: rgba(239,68,68,0.3); }
-    #result-panel.already { background: rgba(100,116,139,0.08); border-color: rgba(100,116,139,0.3); }
-
-    .result-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
+    .result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     .result-emoji { font-size: 22px; }
+    .result-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; }
+    .result-explanation { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
 
-    .result-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 17px;
-      font-weight: 700;
+    /* ── CTA BOX ── */
+    .cta-box {
+      display: none; margin-top: 16px; padding: 16px 18px;
+      background: rgba(249,115,22,0.08); border: 1px solid rgba(249,115,22,0.3);
+      border-radius: 10px;
     }
+    .cta-box.visible { display: block; }
+    .cta-label { font-size: 11px; color: var(--orange); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+    .cta-text { font-size: 13px; color: var(--text); margin-bottom: 12px; line-height: 1.5; }
+    .cta-link { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--orange); color: white; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; transition: all 0.2s; }
+    .cta-link:hover { background: #fb923c; transform: translateY(-1px); }
 
-    .result-explanation {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 12px;
-    }
-
-    .tx-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: var(--cyan);
-      text-decoration: none;
-      letter-spacing: 0.5px;
-    }
-
+    .tx-link { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--cyan); text-decoration: none; letter-spacing: 0.5px; }
     .tx-link:hover { text-decoration: underline; }
 
-    #tx-status {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 18px;
-      background: var(--ink3);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      margin-bottom: 16px;
-      font-size: 13px;
-      color: var(--muted);
+    /* ── TX STATUS ── */
+    .tx-status-bar {
+      display: none; align-items: center; gap: 10px; padding: 14px 18px;
+      background: var(--ink3); border: 1px solid var(--border); border-radius: 10px;
+      margin-bottom: 16px; font-size: 13px; color: var(--muted);
     }
-
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border: 2px solid var(--border);
-      border-top-color: var(--purple);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      flex-shrink: 0;
-    }
-
+    .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+    .spinner.orange { border-top-color: var(--orange); }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .already-msg {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    .nav-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
+    .already-msg { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: 8px; }
+    .nav-buttons { display: flex; gap: 10px; }
     .nav-buttons .btn { flex: 1; }
 
-    #wrong-network {
-      display: none;
-      background: rgba(245,158,11,0.1);
-      border: 1px solid rgba(245,158,11,0.3);
-      border-radius: 10px;
-      padding: 14px 18px;
-      font-size: 13px;
-      color: var(--gold);
-      margin-bottom: 16px;
-      text-align: center;
-    }
+    /* ── WRONG NETWORK ── */
+    #wrong-network { display: none; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 10px; padding: 14px 18px; font-size: 13px; color: var(--gold); margin-bottom: 16px; text-align: center; }
 
-    #loading {
-      text-align: center;
-      padding: 40px;
-      color: var(--muted);
-      font-size: 13px;
-    }
+    #loading, #nado-loading { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
 
-    footer {
-      text-align: center;
-      margin-top: 48px;
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 1px;
-    }
+    /* ── NADO SIMULATOR ── */
+    .nado-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .nado-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--white); }
+    .nado-badge { background: rgba(249,115,22,0.15); border: 1px solid rgba(249,115,22,0.3); color: var(--orange); font-size: 11px; padding: 4px 10px; border-radius: 100px; letter-spacing: 1px; }
 
+    .scenario-grid { display: grid; gap: 10px; margin-bottom: 24px; }
+    .scenario-card {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 18px; background: var(--ink3); border: 1px solid var(--border);
+      border-radius: 10px; cursor: pointer; transition: all 0.2s;
+    }
+    .scenario-card:hover { border-color: var(--orange); background: rgba(249,115,22,0.06); }
+    .scenario-card.selected { border-color: var(--orange); background: rgba(249,115,22,0.1); }
+    .scenario-card:disabled, .scenario-card.disabled { cursor: not-allowed; opacity: 0.5; }
+    .scenario-name { font-weight: 700; font-size: 14px; color: var(--white); margin-bottom: 4px; }
+    .scenario-meta { font-size: 12px; color: var(--muted); }
+    .scenario-move { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; }
+    .move-up { color: var(--green); }
+    .move-down { color: var(--red); }
+
+    .position-form { display: none; }
+    .position-form.visible { display: block; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+    .form-input {
+      padding: 12px 14px; background: var(--ink3); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--white); font-family: 'Space Mono', monospace;
+      font-size: 14px; transition: border-color 0.2s; width: 100%;
+    }
+    .form-input:focus { outline: none; border-color: var(--orange); }
+    .form-input::placeholder { color: var(--muted); }
+
+    .direction-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .direction-btn {
+      padding: 12px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--ink3); color: var(--muted);
+      font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; text-align: center;
+    }
+    .direction-btn.long.active { background: rgba(16,185,129,0.15); border-color: var(--green); color: var(--green); }
+    .direction-btn.short.active { background: rgba(239,68,68,0.1); border-color: var(--red); color: var(--red); }
+    .direction-btn:not(.active):hover { border-color: var(--muted); color: var(--text); }
+
+    .liq-preview {
+      padding: 14px 18px; background: var(--ink3); border: 1px solid var(--border);
+      border-radius: 10px; margin-bottom: 16px; font-size: 13px;
+    }
+    .liq-preview-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+    .liq-preview-value { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--gold); }
+
+    .nado-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+    .nado-stat { background: var(--ink3); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+    .nado-stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+    .nado-stat-value { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--white); }
+    .nado-stat-value.green { color: var(--green); }
+    .nado-stat-value.red { color: var(--red); }
+    .nado-stat-value.gold { color: var(--gold); }
+
+    .guess-result { padding: 12px 16px; border-radius: 8px; margin-bottom: 12px; font-size: 13px; }
+    .guess-result.good { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--green); }
+    .guess-result.bad { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+
+    footer { text-align: center; margin-top: 48px; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
     footer a { color: var(--purple-glow); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
 
@@ -505,31 +315,31 @@
 <body>
 <div class="container">
 
+  <!-- Header -->
   <header>
-    <div class="logo">
-      <div class="logo-icon">🎮</div>
-    </div>
+    <div class="logo-icon">🎮</div>
     <h1>Ink Arcade</h1>
-    <p class="subtitle">DeFi Trivia — On Chain</p>
+    <p class="subtitle">DeFi Learning Platform on Ink</p>
     <div class="network-badge">
       <span class="network-dot"></span>
-      <span>Ink Mainnet</span>
+      <span id="network-label">Ink Mainnet</span>
     </div>
   </header>
 
+  <!-- Wrong network -->
   <div id="wrong-network">
-    ⚠️ Please switch to <strong>Ink Mainnet</strong> (Chain ID: 763373) in your wallet
+    Switch to <strong id="network-name-warn">Ink Mainnet</strong> in your wallet to continue
   </div>
 
+  <!-- Connect -->
   <div class="card" id="connect-section">
     <span class="connect-icon">🔗</span>
     <h2>Connect your wallet</h2>
-    <p>Answer DeFi and Ink trivia questions on-chain.<br/>Works with Rabby, MetaMask, or any EVM wallet.</p>
-    <button class="btn btn-primary" id="connect-btn" onclick="connectWallet()">
-      Connect Wallet
-    </button>
+    <p>Learn DeFi by doing DeFi. Every action is a real on-chain transaction on Ink.<br/>Works with Rabby, MetaMask, or any EVM wallet.</p>
+    <button class="btn btn-primary" id="connect-btn" onclick="connectWallet()">Connect Wallet</button>
   </div>
 
+  <!-- Wallet bar -->
   <div class="card hidden" id="wallet-section">
     <div id="wallet-info">
       <div class="wallet-address">
@@ -540,74 +350,273 @@
     </div>
   </div>
 
-  <div class="card hidden" id="score-section">
-    <div id="score-bar">
-      <div class="stat">
-        <span class="stat-value green" id="stat-correct">0</span>
-        <span class="stat-label">Correct</span>
+  <!-- Game tabs (shown after connect) -->
+  <div class="hidden" id="game-area">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" id="tab-trivia" onclick="switchTab('trivia')">
+        🎮 DeFi Trivia <span class="tab-badge">25 Q</span>
+      </button>
+      <button class="tab nado-tab" id="tab-nado" onclick="switchTab('nado')">
+        📊 Nado Simulator <span class="tab-badge">BETA</span>
+      </button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- TRIVIA TAB                                         -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="tab-panel active" id="panel-trivia">
+
+      <!-- Score bar -->
+      <div class="card" id="score-section">
+        <div id="score-bar">
+          <div class="stat">
+            <span class="stat-value green" id="stat-correct">0</span>
+            <span class="stat-label">Correct</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="stat-answered">0</span>
+            <span class="stat-label">Answered</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value gold" id="stat-pct">-</span>
+            <span class="stat-label">Accuracy</span>
+          </div>
+        </div>
       </div>
-      <div class="stat">
-        <span class="stat-value" id="stat-answered">0</span>
-        <span class="stat-label">Answered</span>
+
+      <!-- Question card -->
+      <div class="card" id="question-section">
+        <div id="loading">Loading question from chain...</div>
+        <div id="question-content" class="hidden">
+          <div class="question-meta">
+            <span class="q-number" id="q-number">Question 1 of 25</span>
+            <span class="q-tag">DEFI x INK</span>
+          </div>
+          <div class="question-text" id="q-text"></div>
+          <div class="options" id="options-list"></div>
+          <div id="already-answered" class="already-msg hidden">Already answered this question</div>
+        </div>
       </div>
-      <div class="stat">
-        <span class="stat-value gold" id="stat-pct">-</span>
-        <span class="stat-label">Accuracy</span>
+
+      <!-- Tx status -->
+      <div class="tx-status-bar" id="tx-status">
+        <div class="spinner"></div>
+        <span id="tx-msg">Submitting answer on-chain...</span>
+      </div>
+
+      <!-- Result panel -->
+      <div id="result-panel">
+        <div class="result-header">
+          <span class="result-emoji" id="result-emoji"></span>
+          <span class="result-title" id="result-title"></span>
+        </div>
+        <div class="result-explanation" id="result-explanation"></div>
+        <a class="tx-link hidden" id="tx-link" href="#" target="_blank">View transaction on Ink Explorer</a>
+
+        <!-- CTA box — shown after relevant questions -->
+        <div class="cta-box" id="cta-box">
+          <div class="cta-label">Try it for real</div>
+          <div class="cta-text" id="cta-text"></div>
+          <a class="cta-link" id="cta-link" href="#" target="_blank">Open protocol →</a>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <div class="nav-buttons hidden" id="nav-buttons">
+        <button class="btn btn-outline" onclick="prevQuestion()">Prev</button>
+        <button class="btn btn-primary" onclick="nextQuestion()">Next</button>
       </div>
     </div>
-  </div>
 
-  <div class="card" id="question-section">
-    <div id="loading">Loading question from chain...</div>
-    <div id="question-content" class="hidden">
-      <div class="question-meta">
-        <span class="q-number" id="q-number">Question #1</span>
-        <span class="q-tag">DEFI x INK</span>
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- NADO SIMULATOR TAB                                 -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-nado">
+      <div class="card">
+        <div class="nado-header">
+          <div>
+            <div class="nado-title">Nado Perp Simulator</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+              Open a leveraged position. Guess your liquidation price. See the result on-chain.
+            </div>
+          </div>
+          <span class="nado-badge">PERP DEX</span>
+        </div>
+
+        <div id="nado-loading">Loading scenarios from chain...</div>
+
+        <div id="nado-game" class="hidden">
+
+          <!-- Step 1: Pick scenario -->
+          <div id="nado-step1">
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">
+              Step 1 — Pick a market scenario
+            </div>
+            <div class="scenario-grid" id="scenario-grid"></div>
+          </div>
+
+          <!-- Step 2: Configure position -->
+          <div class="position-form" id="nado-step2">
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">
+              Step 2 — Configure your position
+            </div>
+
+            <!-- Selected scenario summary -->
+            <div class="liq-preview" style="margin-bottom:16px;" id="selected-scenario-summary">
+              <div class="liq-preview-label">Selected scenario</div>
+              <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--white);" id="selected-scenario-name"></div>
+              <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="selected-scenario-detail"></div>
+            </div>
+
+            <!-- Long / Short -->
+            <div class="form-group" style="margin-bottom:16px;">
+              <div class="form-label">Direction</div>
+              <div class="direction-toggle">
+                <button class="direction-btn long active" id="btn-long" onclick="setDirection(true)">Long (Buy)</button>
+                <button class="direction-btn short" id="btn-short" onclick="setDirection(false)">Short (Sell)</button>
+              </div>
+            </div>
+
+            <!-- Leverage + Size -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="inp-leverage">Leverage (2x – max)</label>
+                <input class="form-input" id="inp-leverage" type="number" min="2" max="20" value="5" placeholder="e.g. 5" oninput="updateLiqPreview()" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-size">Size (collateral, 1–100000)</label>
+                <input class="form-input" id="inp-size" type="number" min="1" max="100000" value="1000" placeholder="e.g. 1000" />
+              </div>
+            </div>
+
+            <!-- Liquidation price preview -->
+            <div class="liq-preview" id="liq-preview">
+              <div class="liq-preview-label">Your calculated liquidation price</div>
+              <div class="liq-preview-value" id="liq-calc">$—</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px;">
+                Long: entry × (lev-1)/lev &nbsp;|&nbsp; Short: entry × (lev+1)/lev
+              </div>
+            </div>
+
+            <!-- Player guess -->
+            <div class="form-group" style="margin-bottom:20px;">
+              <label class="form-label" for="inp-guess">Your liquidation price guess (USD)</label>
+              <input class="form-input" id="inp-guess" type="number" min="1" placeholder="Enter your guess..." />
+              <div style="font-size:11px;color:var(--muted);margin-top:6px;">
+                Within 5% = correct guess. Use the formula above to work it out.
+              </div>
+            </div>
+
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-outline" style="flex:0 0 auto;padding:14px 20px;" onclick="backToScenarios()">Back</button>
+              <button class="btn btn-orange" id="open-pos-btn" onclick="openPosition()">Open Position On-Chain</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Resolve -->
+          <div class="position-form" id="nado-step3">
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">
+              Step 3 — Resolve your position
+            </div>
+            <div class="liq-preview" id="open-position-summary">
+              <div class="liq-preview-label">Open position</div>
+              <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--white);" id="open-pos-desc"></div>
+              <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="open-pos-detail"></div>
+            </div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;">
+              The market scenario will now play out. The contract calculates your PnL, funding cost, and whether you got liquidated — all on-chain.
+            </p>
+            <button class="btn btn-orange" id="resolve-btn" onclick="resolvePosition()">Resolve Position On-Chain</button>
+          </div>
+
+        </div>
       </div>
-      <div class="question-text" id="q-text"></div>
-      <div class="options" id="options-list"></div>
-      <div id="already-answered" class="already-msg hidden">
-        Already answered this question
+
+      <!-- Nado tx status -->
+      <div class="tx-status-bar" id="nado-tx-status">
+        <div class="spinner orange"></div>
+        <span id="nado-tx-msg">Submitting position on-chain...</span>
       </div>
+
+      <!-- Nado result -->
+      <div id="nado-result-panel">
+        <div class="result-header">
+          <span class="result-emoji" id="nado-result-emoji"></span>
+          <span class="result-title" id="nado-result-title"></span>
+        </div>
+
+        <div class="nado-result-grid">
+          <div class="nado-stat">
+            <div class="nado-stat-label">Exit Price</div>
+            <div class="nado-stat-value gold" id="nr-exit"></div>
+          </div>
+          <div class="nado-stat">
+            <div class="nado-stat-label">PnL</div>
+            <div class="nado-stat-value" id="nr-pnl"></div>
+          </div>
+          <div class="nado-stat">
+            <div class="nado-stat-label">Funding Cost</div>
+            <div class="nado-stat-value" id="nr-funding"></div>
+          </div>
+          <div class="nado-stat">
+            <div class="nado-stat-label">Liq Price</div>
+            <div class="nado-stat-value" id="nr-liq"></div>
+          </div>
+        </div>
+
+        <div class="guess-result" id="nr-guess-result">
+          <strong id="nr-guess-verdict"></strong> — Your guess: <span id="nr-guess-val"></span> | Actual: <span id="nr-actual-liq"></span> | Deviation: <span id="nr-deviation"></span>
+        </div>
+
+        <a class="tx-link hidden" id="nado-tx-link" href="#" target="_blank" style="margin-bottom:16px;display:inline-flex;">View transaction on Ink Explorer</a>
+
+        <!-- CTA to real Nado -->
+        <div class="cta-box visible" style="margin-top:16px;">
+          <div class="cta-label">Ready for real perps?</div>
+          <div class="cta-text">You just simulated a leveraged position on Ink. Try it for real on Nado — Ink's native perpetual DEX.</div>
+          <a class="cta-link" href="https://app.nado.xyz" target="_blank">Open Nado →</a>
+        </div>
+
+        <button class="btn btn-orange" style="margin-top:16px;" onclick="resetNado()">Try Another Scenario</button>
+      </div>
+
     </div>
-  </div>
+    <!-- end nado tab -->
 
-  <div id="tx-status">
-    <div class="spinner"></div>
-    <span id="tx-msg">Submitting answer on-chain...</span>
   </div>
-
-  <div id="result-panel">
-    <div class="result-header">
-      <span class="result-emoji" id="result-emoji"></span>
-      <span class="result-title" id="result-title"></span>
-    </div>
-    <div class="result-explanation" id="result-explanation"></div>
-    <a class="tx-link hidden" id="tx-link" href="#" target="_blank">
-      View transaction on Ink Explorer
-    </a>
-  </div>
-
-  <div class="nav-buttons hidden" id="nav-buttons">
-    <button class="btn btn-outline" onclick="prevQuestion()">Prev</button>
-    <button class="btn btn-primary" onclick="nextQuestion()">Next</button>
-  </div>
+  <!-- end game-area -->
 
   <footer>
     Built on <a href="https://inkonchain.com" target="_blank">Ink</a>
     &middot;
-    Contract: <a href="https://explorer.inkonchain.com/address/0xC996c0143c4C88F0B0bC32d328D14c071A603CcB" target="_blank">0xC996...3CcB</a>
+    <a href="https://github.com/knisaci/ink-arcade" target="_blank">GitHub</a>
+    &middot;
+    <a href="https://app.nado.xyz" target="_blank">Nado</a>
+    &middot;
+    <a href="https://tydro.com" target="_blank">Tydro</a>
   </footer>
 
 </div>
 
 <script>
-  const CONTRACT_ADDRESS = "0xC996c0143c4C88F0B0bC32d328D14c071A603CcB";
-  const INK_SEPOLIA_CHAIN_ID = "0xDEF1";
-  const EXPLORER_BASE = "https://explorer.inkonchain.com";
-  const RPC_URL = "https://rpc-gel.inkonchain.com";
+  // ── CONFIG ──────────────────────────────────────────────────────────────────
+  // TRIVIA — Mainnet
+  const TRIVIA_ADDRESS    = "0xC996c0143c4C88F0B0bC32d328D14c071A603CcB";
+  const MAINNET_CHAIN_ID  = 57073n;
+  const MAINNET_CHAIN_HEX = "0xDEF1";
+  const MAINNET_RPC       = "https://rpc-gel.inkonchain.com";
+  const MAINNET_EXPLORER  = "https://explorer.inkonchain.com";
 
-  const ABI = [
+  // NADO SIMULATOR — Sepolia (testnet during beta)
+  const NADO_ADDRESS      = "0xDE98616Ce38620c475Dac49594571C118519E577";
+  const SEPOLIA_CHAIN_ID  = 763373n;
+  const SEPOLIA_CHAIN_HEX = "0xBA5ED";
+  const SEPOLIA_RPC       = "https://rpc-gel-sepolia.inkonchain.com";
+  const SEPOLIA_EXPLORER  = "https://explorer-sepolia.inkonchain.com";
+
+  const TRIVIA_ABI = [
     "function questionCount() view returns (uint256)",
     "function getQuestion(uint256) view returns (string,string,string,string,string)",
     "function getAnswer(uint256) view returns (uint8,string)",
@@ -617,15 +626,55 @@
     "event AnswerSubmitted(address indexed,uint256 indexed,uint8,bool,uint256,uint256)"
   ];
 
-  let ethers, provider, signer, contract;
+  const NADO_ABI = [
+    "function getAllScenarios() view returns (string[],string[],uint256[],uint256[],uint256[],uint8[])",
+    "function getScenario(uint8) view returns (string,string,uint256,uint256,uint256,uint8)",
+    "function openPosition(uint8 scenarioId,bool isLong,uint8 leverage,uint256 size,uint256 guessedLiqPrice) returns (uint256)",
+    "function resolvePosition(uint8 scenarioId)",
+    "function calcLiquidationPrice(uint256 entryPrice,uint8 leverage,bool isLong) pure returns (uint256)",
+    "function hasOpenPosition(address,uint8) view returns (bool)",
+    "event PositionOpened(address indexed,uint256 indexed,uint8,bool,uint8,uint256,uint256,uint256)",
+    "event PositionResolved(address indexed,uint256 indexed,uint8,bool,uint256,int256,uint256,uint256,uint256,bool,uint256)"
+  ];
+
+  // ── CTA MAP (questionId -> protocol info) ──────────────────────────────────
+  const CTA_MAP = {
+    // Tydro questions
+    3:  { text: "You just learned about lending markets. Tydro is Ink's native lending protocol — supply assets and earn yield.", url: "https://tydro.com",        label: "Open Tydro" },
+    20: { text: "Tydro hit $124M in deposits in 24 hours. See the live rates and try supplying assets.", url: "https://tydro.com",                                  label: "Open Tydro" },
+    // Nado questions
+    14: { text: "You just learned about perpetual trading. Nado is Ink's native perp DEX — try the Nado Simulator tab, then try it for real.", url: "https://app.nado.xyz", label: "Open Nado" },
+    // Velodrome questions
+    5:  { text: "Velodrome is live on Ink — one of the deepest AMMs on the Superchain. Try swapping or providing liquidity.", url: "https://velodrome.finance",    label: "Open Velodrome" },
+    17: { text: "Velodrome is live on Ink — try providing liquidity to an ETH/USDC pool and earn fees.", url: "https://velodrome.finance",                         label: "Open Velodrome" },
+    // Bridge questions
+    13: { text: "Ready to bridge to Ink? The official bridge takes under a minute from Ethereum mainnet.", url: "https://inkonchain.com/bridge",                   label: "Bridge to Ink" },
+    // Ink ecosystem
+    4:  { text: "Ink is part of the Optimism Superchain. Explore all Ink ecosystem apps at the official portal.", url: "https://inkonchain.com",                  label: "Explore Ink" },
+    6:  { text: "ETH is the gas token on Ink. Bridge ETH to start using Tydro, Nado, and Velodrome.", url: "https://inkonchain.com/bridge",                       label: "Bridge ETH to Ink" },
+    21: { text: "Tydro is Ink's official lending market built on Aave v3. Supply ETH or USDC and earn yield.", url: "https://tydro.com",                          label: "Open Tydro" },
+    22: { text: "Nado is Ink's official perp DEX. Trade $ETH, $SOL, $SPY and more with up to 20x leverage.", url: "https://app.nado.xyz",                        label: "Open Nado" },
+  };
+
+  // ── STATE ───────────────────────────────────────────────────────────────────
+  let ethers, provider, signer;
+  let triviaContract, nadoContract;
   let walletAddress = null;
   let currentQuestionId = 0;
   let totalQuestions = 0;
   let selectedOption = null;
+  let currentTab = 'trivia';
 
-  // Load ethers from CDN
+  // Nado state
+  let scenarios = [];
+  let selectedScenarioId = null;
+  let isLong = true;
+  let openPositionScenarioId = null;
+
+  // ── ETHERS LOADER ───────────────────────────────────────────────────────────
   async function loadEthers() {
     return new Promise((resolve, reject) => {
+      if (window.ethers) { resolve(window.ethers); return; }
       const s = document.createElement('script');
       s.src = "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js";
       s.onload = () => resolve(window.ethers);
@@ -634,23 +683,32 @@
     });
   }
 
-  // Get any injected EVM wallet
   function getWalletProvider() {
-    // Try all known injection points
     if (typeof window.ethereum !== 'undefined') return window.ethereum;
     if (typeof window.rabby !== 'undefined') return window.rabby;
     if (window.web3 && window.web3.currentProvider) return window.web3.currentProvider;
     return null;
   }
 
+  // ── TAB SWITCHING ───────────────────────────────────────────────────────────
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tab-trivia').classList.toggle('active', tab === 'trivia');
+    document.getElementById('tab-nado').classList.toggle('active', tab === 'nado');
+    document.getElementById('panel-trivia').classList.toggle('active', tab === 'trivia');
+    document.getElementById('panel-nado').classList.toggle('active', tab === 'nado');
+
+    if (tab === 'nado' && scenarios.length === 0 && nadoContract) {
+      loadScenarios();
+    }
+  }
+
+  // ── CONNECT ─────────────────────────────────────────────────────────────────
   async function connectWallet() {
-    // Give wallet extension time to inject
     await new Promise(r => setTimeout(r, 200));
-
     const wp = getWalletProvider();
-
     if (!wp) {
-      alert("No EVM wallet detected.\n\nPlease install Rabby (rabby.io) or MetaMask, make sure it is enabled for this page, then refresh.");
+      alert("No EVM wallet detected. Please install Rabby (rabby.io) or MetaMask and refresh.");
       return;
     }
 
@@ -660,49 +718,39 @@
 
     try {
       if (!ethers) ethers = await loadEthers();
-
       await wp.request({ method: "eth_requestAccounts" });
 
       provider = new ethers.BrowserProvider(wp);
       signer = await provider.getSigner();
       walletAddress = await signer.getAddress();
 
-      // Switch to Ink Mainnet if needed
+      // Switch to mainnet for trivia
       const network = await provider.getNetwork();
-      if (network.chainId !== 57073n) {
+      if (network.chainId !== MAINNET_CHAIN_ID) {
         document.getElementById("wrong-network").style.display = "block";
+        document.getElementById("network-name-warn").textContent = "Ink Mainnet";
         try {
-          await wp.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: INK_SEPOLIA_CHAIN_ID }],
-          });
+          await wp.request({ method: "wallet_switchEthereumChain", params: [{ chainId: MAINNET_CHAIN_HEX }] });
         } catch {
-          await wp.request({
-            method: "wallet_addEthereumChain",
-            params: [{
-              chainId: INK_SEPOLIA_CHAIN_ID,
-              chainName: "Ink Mainnet",
-              nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-              rpcUrls: [RPC_URL],
-              blockExplorerUrls: [EXPLORER_BASE],
-            }],
-          });
+          await wp.request({ method: "wallet_addEthereumChain", params: [{ chainId: MAINNET_CHAIN_HEX, chainName: "Ink Mainnet", nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 }, rpcUrls: [MAINNET_RPC], blockExplorerUrls: [MAINNET_EXPLORER] }] });
         }
         provider = new ethers.BrowserProvider(wp);
         signer = await provider.getSigner();
       }
 
       document.getElementById("wrong-network").style.display = "none";
-      contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+      // Trivia contract on mainnet
+      triviaContract = new ethers.Contract(TRIVIA_ADDRESS, TRIVIA_ABI, signer);
+
+      // Nado contract — read-only on sepolia for now; we'll switch chain when needed
+      const sepoliaProvider = new ethers.JsonRpcProvider(SEPOLIA_RPC);
+      nadoContract = new ethers.Contract(NADO_ADDRESS, NADO_ABI, sepoliaProvider);
 
       document.getElementById("connect-section").classList.add("hidden");
       document.getElementById("wallet-section").classList.remove("hidden");
-      document.getElementById("score-section").classList.remove("hidden");
-      document.getElementById("question-section").style.display = "block";
-      document.getElementById("nav-buttons").classList.remove("hidden");
-
-      document.getElementById("wallet-addr").textContent =
-        walletAddress.slice(0, 6) + "..." + walletAddress.slice(-4);
+      document.getElementById("game-area").classList.remove("hidden");
+      document.getElementById("wallet-addr").textContent = walletAddress.slice(0,6) + "..." + walletAddress.slice(-4);
 
       await loadStats();
       await loadQuestion(0);
@@ -718,22 +766,18 @@
   }
 
   function disconnectWallet() {
-    walletAddress = null;
-    provider = null;
-    signer = null;
-    contract = null;
+    walletAddress = null; provider = null; signer = null;
+    triviaContract = null; nadoContract = null;
     document.getElementById("connect-section").classList.remove("hidden");
     document.getElementById("wallet-section").classList.add("hidden");
-    document.getElementById("score-section").classList.add("hidden");
-    document.getElementById("question-section").style.display = "none";
-    document.getElementById("nav-buttons").classList.add("hidden");
+    document.getElementById("game-area").classList.add("hidden");
     document.getElementById("result-panel").style.display = "none";
-    document.getElementById("tx-status").style.display = "none";
-    const btn = document.getElementById("connect-btn");
-    btn.disabled = false;
-    btn.textContent = "Connect Wallet";
+    document.getElementById("nado-result-panel").style.display = "none";
+    document.getElementById("connect-btn").disabled = false;
+    document.getElementById("connect-btn").textContent = "Connect Wallet";
   }
 
+  // ── TRIVIA ──────────────────────────────────────────────────────────────────
   async function loadQuestion(id) {
     document.getElementById("loading").classList.remove("hidden");
     document.getElementById("question-content").classList.add("hidden");
@@ -742,14 +786,13 @@
     selectedOption = null;
 
     try {
-      totalQuestions = Number(await contract.questionCount());
+      totalQuestions = Number(await triviaContract.questionCount());
       currentQuestionId = ((id % totalQuestions) + totalQuestions) % totalQuestions;
 
-      const [text, optA, optB, optC, optD] = await contract.getQuestion(currentQuestionId);
-      const alreadyAnswered = await contract.playerHasAnswered(walletAddress, currentQuestionId);
+      const [text, optA, optB, optC, optD] = await triviaContract.getQuestion(currentQuestionId);
+      const alreadyAnswered = await triviaContract.playerHasAnswered(walletAddress, currentQuestionId);
 
-      document.getElementById("q-number").textContent =
-        "Question " + (currentQuestionId + 1) + " of " + totalQuestions;
+      document.getElementById("q-number").textContent = "Question " + (currentQuestionId + 1) + " of " + totalQuestions;
       document.getElementById("q-text").textContent = text;
 
       const opts = [optA, optB, optC, optD];
@@ -768,18 +811,18 @@
 
       if (alreadyAnswered) {
         document.getElementById("already-answered").classList.remove("hidden");
-        const result = await contract.getAnswer(currentQuestionId);
+        const result = await triviaContract.getAnswer(currentQuestionId);
         const correctIdx = Number(result[0]);
         const explanation = result[1];
-        const optBtns = list.querySelectorAll(".option");
-        optBtns[correctIdx].classList.add("correct");
-        showResult(null, true, explanation, null);
+        list.querySelectorAll(".option")[correctIdx].classList.add("correct");
+        showTriviaResult(null, true, explanation, null);
       } else {
         document.getElementById("already-answered").classList.add("hidden");
       }
 
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("question-content").classList.remove("hidden");
+      document.getElementById("nav-buttons").classList.remove("hidden");
 
     } catch (err) {
       console.error(err);
@@ -790,50 +833,41 @@
   async function selectOption(index, btn) {
     if (selectedOption !== null) return;
     selectedOption = index;
-    document.querySelectorAll(".option").forEach(function(b) {
-      b.classList.remove("selected");
-      b.disabled = true;
-    });
+    document.querySelectorAll(".option").forEach(function(b) { b.classList.remove("selected"); b.disabled = true; });
     btn.classList.add("selected");
     await submitAnswer(index);
   }
 
   async function submitAnswer(chosenIndex) {
     const txStatus = document.getElementById("tx-status");
-    const txMsg = document.getElementById("tx-msg");
     txStatus.style.display = "flex";
-    txMsg.textContent = "Submitting answer on-chain...";
+    document.getElementById("tx-msg").textContent = "Submitting answer on-chain...";
 
     try {
-      const tx = await contract.submitAnswer(currentQuestionId, chosenIndex);
-      txMsg.textContent = "Waiting for confirmation on Ink...";
+      const tx = await triviaContract.submitAnswer(currentQuestionId, chosenIndex);
+      document.getElementById("tx-msg").textContent = "Waiting for confirmation on Ink...";
       const receipt = await tx.wait();
 
       let correct = false;
-      const iface = new ethers.Interface(ABI);
+      const iface = new ethers.Interface(TRIVIA_ABI);
       for (const log of receipt.logs) {
         try {
           const parsed = iface.parseLog(log);
-          if (parsed && parsed.name === "AnswerSubmitted") {
-            correct = parsed.args[3];
-          }
+          if (parsed && parsed.name === "AnswerSubmitted") correct = parsed.args[3];
         } catch {}
       }
 
       txStatus.style.display = "none";
 
-      const result = await contract.getAnswer(currentQuestionId);
+      const result = await triviaContract.getAnswer(currentQuestionId);
       const correctIdx = Number(result[0]);
       const explanation = result[1];
 
       const optBtns = document.querySelectorAll(".option");
       optBtns[correctIdx].classList.add("correct");
-      if (!correct) {
-        optBtns[chosenIndex].classList.remove("selected");
-        optBtns[chosenIndex].classList.add("wrong");
-      }
+      if (!correct) { optBtns[chosenIndex].classList.remove("selected"); optBtns[chosenIndex].classList.add("wrong"); }
 
-      showResult(correct, false, explanation, receipt.hash);
+      showTriviaResult(correct, false, explanation, receipt.hash);
       await loadStats();
 
     } catch (err) {
@@ -845,10 +879,12 @@
     }
   }
 
-  function showResult(correct, alreadyAnswered, explanation, txHash) {
+  function showTriviaResult(correct, alreadyAnswered, explanation, txHash) {
     const panel = document.getElementById("result-panel");
     const txLink = document.getElementById("tx-link");
+    const ctaBox = document.getElementById("cta-box");
     panel.style.display = "block";
+    ctaBox.classList.remove("visible");
 
     if (alreadyAnswered) {
       panel.className = "already";
@@ -863,24 +899,285 @@
     document.getElementById("result-emoji").textContent = correct ? "🎉" : "❌";
     document.getElementById("result-title").textContent = correct ? "Correct!" : "Not quite";
     document.getElementById("result-explanation").textContent = explanation;
-    txLink.href = EXPLORER_BASE + "/tx/" + txHash;
+    txLink.href = MAINNET_EXPLORER + "/tx/" + txHash;
     txLink.classList.remove("hidden");
+
+    // Show CTA if this question has one
+    const cta = CTA_MAP[currentQuestionId];
+    if (cta) {
+      document.getElementById("cta-text").textContent = cta.text;
+      document.getElementById("cta-link").href = cta.url;
+      document.getElementById("cta-link").textContent = cta.label + " →";
+      ctaBox.classList.add("visible");
+    }
   }
 
   async function loadStats() {
     try {
-      const stats = await contract.getPlayerStats(walletAddress);
+      const stats = await triviaContract.getPlayerStats(walletAddress);
       const answered = Number(stats[0]);
       const correct = Number(stats[1]);
       document.getElementById("stat-answered").textContent = answered;
       document.getElementById("stat-correct").textContent = correct;
-      document.getElementById("stat-pct").textContent =
-        answered > 0 ? Math.round((correct / answered) * 100) + "%" : "-";
+      document.getElementById("stat-pct").textContent = answered > 0 ? Math.round((correct/answered)*100) + "%" : "-";
     } catch(e) { console.error(e); }
   }
 
   function nextQuestion() { loadQuestion(currentQuestionId + 1); }
   function prevQuestion() { loadQuestion(currentQuestionId - 1); }
+
+  // ── NADO SIMULATOR ──────────────────────────────────────────────────────────
+  async function loadScenarios() {
+    document.getElementById("nado-loading").classList.remove("hidden");
+    document.getElementById("nado-game").classList.add("hidden");
+
+    try {
+      // Scenarios hardcoded to match NadoSimulator.sol seeded data
+      scenarios = [
+        { id: 0, name: "ETH Bull Run",            asset: "ETH", entryPrice: 2000,  exitPrice: 2400,  fundingRateBps: 8,   maxLeverage: 10 },
+        { id: 1, name: "ETH Bear Trap",            asset: "ETH", entryPrice: 2000,  exitPrice: 1700,  fundingRateBps: 5,   maxLeverage: 10 },
+        { id: 2, name: "BTC Volatility Squeeze",   asset: "BTC", entryPrice: 60000, exitPrice: 54000, fundingRateBps: 10,  maxLeverage: 5  },
+        { id: 3, name: "SOL Supercycle",           asset: "SOL", entryPrice: 100,   exitPrice: 150,   fundingRateBps: 15,  maxLeverage: 20 },
+        { id: 4, name: "BTC Black Swan",           asset: "BTC", entryPrice: 65000, exitPrice: 45500, fundingRateBps: 3,   maxLeverage: 5  },
+      ];
+
+      renderScenarios();
+      document.getElementById("nado-loading").classList.add("hidden");
+      document.getElementById("nado-game").classList.remove("hidden");
+
+    } catch (err) {
+      console.error(err);
+      document.getElementById("nado-loading").textContent = "Error loading scenarios. Check console.";
+    }
+  }
+
+  function renderScenarios() {
+    const grid = document.getElementById("scenario-grid");
+    grid.innerHTML = "";
+    scenarios.forEach(function(s) {
+      const pct = ((s.exitPrice - s.entryPrice) / s.entryPrice * 100).toFixed(0);
+      const up = s.exitPrice > s.entryPrice;
+      const card = document.createElement("div");
+      card.className = "scenario-card";
+      card.dataset.id = s.id;
+      card.innerHTML =
+        '<div>' +
+          '<div class="scenario-name">' + s.name + '</div>' +
+          '<div class="scenario-meta">' + s.asset + ' · Entry $' + s.entryPrice.toLocaleString() + ' · Max ' + s.maxLeverage + 'x · Funding ' + (s.fundingRateBps/100).toFixed(2) + '%/hr</div>' +
+        '</div>' +
+        '<div class="scenario-move ' + (up ? 'move-up' : 'move-down') + '">' + (up ? '+' : '') + pct + '%</div>';
+      card.addEventListener("click", function() { selectScenario(s.id); });
+      grid.appendChild(card);
+    });
+  }
+
+  function selectScenario(id) {
+    selectedScenarioId = id;
+    const s = scenarios[id];
+    document.querySelectorAll(".scenario-card").forEach(function(c) { c.classList.remove("selected"); });
+    document.querySelector('[data-id="' + id + '"]').classList.add("selected");
+
+    document.getElementById("selected-scenario-name").textContent = s.name;
+    document.getElementById("selected-scenario-detail").textContent =
+      s.asset + " · Entry $" + s.entryPrice.toLocaleString() + " → Exit $" + s.exitPrice.toLocaleString() + " · Max leverage " + s.maxLeverage + "x";
+
+    document.getElementById("inp-leverage").max = s.maxLeverage;
+    document.getElementById("inp-leverage").value = Math.min(5, s.maxLeverage);
+
+    document.getElementById("nado-step1").style.display = "none";
+    document.getElementById("nado-step2").classList.add("visible");
+
+    updateLiqPreview();
+  }
+
+  function setDirection(long) {
+    isLong = long;
+    document.getElementById("btn-long").classList.toggle("active", long);
+    document.getElementById("btn-short").classList.toggle("active", !long);
+    updateLiqPreview();
+  }
+
+  function updateLiqPreview() {
+    if (selectedScenarioId === null) return;
+    const s = scenarios[selectedScenarioId];
+    const lev = parseInt(document.getElementById("inp-leverage").value) || 5;
+    let liqPrice;
+    if (isLong) {
+      liqPrice = Math.round(s.entryPrice * (lev - 1) / lev);
+    } else {
+      liqPrice = Math.round(s.entryPrice * (lev + 1) / lev);
+    }
+    document.getElementById("liq-calc").textContent = "$" + liqPrice.toLocaleString();
+  }
+
+  function backToScenarios() {
+    selectedScenarioId = null;
+    document.getElementById("nado-step2").classList.remove("visible");
+    document.getElementById("nado-step1").style.display = "block";
+    document.querySelectorAll(".scenario-card").forEach(function(c) { c.classList.remove("selected"); });
+  }
+
+  async function openPosition() {
+    if (selectedScenarioId === null) return;
+
+    const leverage = parseInt(document.getElementById("inp-leverage").value);
+    const size = parseInt(document.getElementById("inp-size").value);
+    const guess = parseInt(document.getElementById("inp-guess").value);
+    const s = scenarios[selectedScenarioId];
+
+    if (!leverage || leverage < 2 || leverage > s.maxLeverage) {
+      alert("Leverage must be between 2 and " + s.maxLeverage + " for this scenario."); return;
+    }
+    if (!size || size < 1 || size > 100000) {
+      alert("Size must be between 1 and 100,000."); return;
+    }
+    if (!guess || guess < 1) {
+      alert("Please enter your liquidation price guess."); return;
+    }
+
+    const wp = getWalletProvider();
+    if (!wp) { alert("Wallet not found."); return; }
+
+    const nadoTxStatus = document.getElementById("nado-tx-status");
+    const nadoTxMsg = document.getElementById("nado-tx-msg");
+    nadoTxStatus.style.display = "flex";
+    nadoTxMsg.textContent = "Opening position on Ink Sepolia...";
+
+    try {
+      // Use current wallet provider directly - user must be on Ink Sepolia
+      const mainnetProvider = new ethers.BrowserProvider(wp);
+      const mainnetNetwork = await mainnetProvider.getNetwork();
+      if (mainnetNetwork.chainId !== MAINNET_CHAIN_ID) {
+        nadoTxStatus.style.display = "none";
+        alert("Please switch to Ink Mainnet in Rabby first, then try again.");
+        return;
+      }
+      const mainnetSigner = await mainnetProvider.getSigner();
+      const nadoWrite = new ethers.Contract(NADO_ADDRESS, NADO_ABI, mainnetSigner);
+
+      nadoTxMsg.textContent = "Opening position on-chain...";
+
+      const tx = await nadoWrite.openPosition(selectedScenarioId, isLong, leverage, size, guess);
+      nadoTxMsg.textContent = "Waiting for confirmation on Ink Sepolia...";
+      await tx.wait();
+
+      nadoTxStatus.style.display = "none";
+
+      // Show step 3
+      openPositionScenarioId = selectedScenarioId;
+      document.getElementById("nado-step2").classList.remove("visible");
+      document.getElementById("open-pos-desc").textContent =
+        (isLong ? "Long" : "Short") + " · " + leverage + "x · " + size.toLocaleString() + " credits";
+      document.getElementById("open-pos-detail").textContent =
+        s.name + " · Entry $" + s.entryPrice.toLocaleString() + " · Guess $" + guess.toLocaleString();
+      document.getElementById("nado-step3").classList.add("visible");
+
+    } catch (err) {
+      console.error(err);
+      nadoTxStatus.style.display = "none";
+      alert("Transaction failed: " + (err.reason || err.message || "Unknown error"));
+    }
+  }
+
+  async function resolvePosition() {
+    if (openPositionScenarioId === null) return;
+
+    const wp = getWalletProvider();
+    const nadoTxStatus = document.getElementById("nado-tx-status");
+    const nadoTxMsg = document.getElementById("nado-tx-msg");
+    nadoTxStatus.style.display = "flex";
+    nadoTxMsg.textContent = "Resolving position on-chain...";
+
+    try {
+      const mainnetProvider = new ethers.BrowserProvider(wp);
+      const mainnetSigner = await mainnetProvider.getSigner();
+      const nadoWrite = new ethers.Contract(NADO_ADDRESS, NADO_ABI, mainnetSigner);
+
+      const tx = await nadoWrite.resolvePosition(openPositionScenarioId);
+      nadoTxMsg.textContent = "Waiting for confirmation...";
+      const receipt = await tx.wait();
+
+      nadoTxStatus.style.display = "none";
+
+      // Parse PositionResolved event
+      const iface = new ethers.Interface(NADO_ABI);
+      let resolved = null;
+      for (const log of receipt.logs) {
+        try {
+          const parsed = iface.parseLog(log);
+          if (parsed && parsed.name === "PositionResolved") {
+            resolved = parsed.args;
+          }
+        } catch {}
+      }
+
+      if (!resolved) { alert("Could not parse result. Check explorer."); return; }
+
+      const liquidated       = resolved[3];
+      const exitPrice        = Number(resolved[4]);
+      const pnl              = resolved[5]; // bigint, signed
+      const fundingCost      = Number(resolved[6]);
+      const guessedLiqPrice  = Number(resolved[7]);
+      const actualLiqPrice   = Number(resolved[8]);
+      const guessedCorrectly = resolved[9];
+      const deviationBps     = Number(resolved[10]);
+
+      showNadoResult(liquidated, exitPrice, pnl, fundingCost, guessedLiqPrice, actualLiqPrice, guessedCorrectly, deviationBps, receipt.hash);
+
+    } catch (err) {
+      console.error(err);
+      nadoTxStatus.style.display = "none";
+      alert("Transaction failed: " + (err.reason || err.message || "Unknown error"));
+    }
+  }
+
+  function showNadoResult(liquidated, exitPrice, pnl, fundingCost, guessedLiq, actualLiq, guessedCorrectly, deviationBps, txHash) {
+    document.getElementById("nado-step3").classList.remove("visible");
+
+    const panel = document.getElementById("nado-result-panel");
+    panel.style.display = "block";
+    panel.className = liquidated ? "wrong" : "correct";
+
+    document.getElementById("nado-result-emoji").textContent = liquidated ? "💥" : (pnl >= 0 ? "🎉" : "📉");
+    document.getElementById("nado-result-title").textContent = liquidated ? "Liquidated!" : (pnl >= 0 ? "Profitable position!" : "Loss — but not liquidated");
+
+    document.getElementById("nr-exit").textContent = "$" + exitPrice.toLocaleString();
+
+    const pnlNum = Number(pnl);
+    const pnlEl = document.getElementById("nr-pnl");
+    pnlEl.textContent = (pnlNum >= 0 ? "+" : "") + pnlNum.toLocaleString() + " credits";
+    pnlEl.className = "nado-stat-value " + (pnlNum >= 0 ? "green" : "red");
+
+    document.getElementById("nr-funding").textContent = fundingCost.toLocaleString() + " credits";
+    document.getElementById("nr-liq").textContent = "$" + actualLiq.toLocaleString();
+
+    // Guess result
+    const guessEl = document.getElementById("nr-guess-result");
+    guessEl.className = "guess-result " + (guessedCorrectly ? "good" : "bad");
+    document.getElementById("nr-guess-verdict").textContent = guessedCorrectly ? "Liquidation guess correct!" : "Liquidation guess off";
+    document.getElementById("nr-guess-val").textContent = "$" + guessedLiq.toLocaleString();
+    document.getElementById("nr-actual-liq").textContent = "$" + actualLiq.toLocaleString();
+    document.getElementById("nr-deviation").textContent = (deviationBps / 100).toFixed(2) + "%";
+
+    const nadoTxLink = document.getElementById("nado-tx-link");
+    nadoTxLink.href = MAINNET_EXPLORER + "/tx/" + txHash;
+    nadoTxLink.classList.remove("hidden");
+
+
+  }
+
+  function resetNado() {
+    selectedScenarioId = null;
+    openPositionScenarioId = null;
+    isLong = true;
+    document.getElementById("nado-result-panel").style.display = "none";
+    document.getElementById("nado-step3").classList.remove("visible");
+    document.getElementById("nado-step2").classList.remove("visible");
+    document.getElementById("nado-step1").style.display = "block";
+    document.querySelectorAll(".scenario-card").forEach(function(c) { c.classList.remove("selected"); });
+    document.getElementById("btn-long").classList.add("active");
+    document.getElementById("btn-short").classList.remove("active");
+  }
 </script>
 </body>
 </html>
