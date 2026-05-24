@@ -536,8 +536,8 @@
             <div class="liq-preview" id="liq-preview">
               <div class="liq-preview-label">Your calculated liquidation price</div>
               <div class="liq-preview-value" id="liq-calc">$—</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:4px;">
-                Long: entry × (lev-1)/lev &nbsp;|&nbsp; Short: entry × (lev+1)/lev
+              <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="liq-plain-english">
+                If price drops below this level, your long gets liquidated.
               </div>
             </div>
 
@@ -546,7 +546,7 @@
               <label class="form-label" for="inp-guess">Your liquidation price guess (USD)</label>
               <input class="form-input" id="inp-guess" type="number" min="1" placeholder="Enter your guess..." />
               <div style="font-size:11px;color:var(--muted);margin-top:6px;">
-                Within 5% = correct guess. Use the formula above to work it out.
+                The liquidation price is shown above. Enter it exactly or close to it — within 5% counts as correct.
               </div>
             </div>
 
