@@ -19,6 +19,8 @@
       --red: #ef4444;
       --gold: #f59e0b;
       --orange: #f97316;
+      --blue: #0ea5e9;
+      --blue-lt: #38bdf8;
       --text: #e2e8f0;
       --muted: #64748b;
       --white: #ffffff;
@@ -129,6 +131,24 @@
 
     .tab.nado-tab.active { background: var(--orange); box-shadow: 0 4px 12px rgba(249,115,22,0.4); }
     .tab.nado-tab:not(.active):hover { color: var(--orange); }
+    .tab.tydro-tab.active { background: var(--blue); box-shadow: 0 4px 12px rgba(14,165,233,0.4); }
+    .tab.tydro-tab:not(.active):hover { color: var(--blue-lt); }
+
+    /* ── TYDRO SIMULATOR ── */
+    .tydro-badge { background: rgba(14,165,233,0.15); border: 1px solid rgba(14,165,233,0.3); color: var(--blue-lt); font-size: 11px; padding: 4px 10px; border-radius: 100px; letter-spacing: 1px; }
+    .health-bar-wrap { background: var(--ink3); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 16px; }
+    .health-bar-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+    .health-bar-track { background: var(--border); border-radius: 100px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+    .health-bar-fill { height: 100%; border-radius: 100px; transition: width 0.5s ease, background 0.5s ease; }
+    .health-value { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; }
+    .tydro-scenario-card { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; background: var(--ink3); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; }
+    .tydro-scenario-card:hover { border-color: var(--blue); background: rgba(14,165,233,0.06); }
+    .tydro-scenario-card.selected { border-color: var(--blue); background: rgba(14,165,233,0.1); }
+    .tydro-apy { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; color: var(--green); }
+    .tydro-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+    .btn-blue { background: var(--blue); color: white; width: 100%; }
+    .btn-blue:hover { background: var(--blue-lt); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(14,165,233,0.4); }
+    .btn-blue:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
@@ -361,6 +381,9 @@
       <button class="tab nado-tab" id="tab-nado" onclick="switchTab('nado')">
         📊 Nado Simulator <span class="tab-badge">BETA</span>
       </button>
+      <button class="tab tydro-tab" id="tab-tydro" onclick="switchTab('tydro')">
+        🏦 Tydro Simulator <span class="tab-badge">NEW</span>
+      </button>
     </div>
 
     <!-- ══════════════════════════════════════════════════ -->
@@ -445,47 +468,6 @@
           <span class="nado-badge">PERP DEX</span>
         </div>
 
-        <!-- How to Play -->
-        <div style="margin-bottom:20px;">
-          <button onclick="toggleHowTo()" style="display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--ink3);border:1px solid var(--border);border-radius:10px;padding:14px 18px;cursor:pointer;font-family:'Space Mono',monospace;font-size:13px;color:var(--muted);transition:all 0.2s;" id="howto-btn">
-            <span>How to play</span>
-            <span id="howto-arrow">▼</span>
-          </button>
-          <div id="howto-panel" style="display:none;background:var(--ink3);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:20px 18px;">
-            <div style="display:grid;gap:16px;">
-              <div>
-                <div style="font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What is leverage?</div>
-                <div style="font-size:13px;color:var(--text);line-height:1.6;">Leverage multiplies your position size. With 5x leverage and 1,000 credits, you control a 5,000 credit position. Profits and losses are both amplified — a 10% price move means a 50% gain or loss on your collateral.</div>
-              </div>
-              <div>
-                <div style="font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What is a liquidation price?</div>
-                <div style="font-size:13px;color:var(--text);line-height:1.6;">If the price moves too far against you, the protocol closes your position automatically to prevent losses beyond your collateral. That price is called the liquidation price. For a long: entry × (leverage-1) / leverage. For a short: entry × (leverage+1) / leverage.</div>
-              </div>
-              <div>
-                <div style="font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What are game credits?</div>
-                <div style="font-size:13px;color:var(--text);line-height:1.6;">Game credits are not real money. They are a scoring system so you can see PnL in realistic numbers without any financial risk. The math is real — only the stakes are not.</div>
-              </div>
-              <div style="border-top:1px solid var(--border);padding-top:16px;">
-                <div style="font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">How to play</div>
-                <div style="display:grid;gap:8px;">
-                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
-                    <span style="background:var(--orange);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">1</span>
-                    <span>Pick a market scenario — each has a fixed entry price, exit price, and max leverage.</span>
-                  </div>
-                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
-                    <span style="background:var(--orange);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">2</span>
-                    <span>Choose Long or Short, set your leverage and size, then guess the liquidation price. Use the formula shown — or see if you can figure it out yourself.</span>
-                  </div>
-                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
-                    <span style="background:var(--orange);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">3</span>
-                    <span>Open your position on-chain, then resolve it. The contract calculates your PnL and whether you were liquidated — all verifiable on Ink Explorer.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div id="nado-loading">Loading scenarios from chain...</div>
 
         <div id="nado-game" class="hidden">
@@ -536,8 +518,8 @@
             <div class="liq-preview" id="liq-preview">
               <div class="liq-preview-label">Your calculated liquidation price</div>
               <div class="liq-preview-value" id="liq-calc">$—</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="liq-plain-english">
-                If price drops below this level, your long gets liquidated.
+              <div style="font-size:11px;color:var(--muted);margin-top:4px;">
+                Long: entry × (lev-1)/lev &nbsp;|&nbsp; Short: entry × (lev+1)/lev
               </div>
             </div>
 
@@ -546,7 +528,7 @@
               <label class="form-label" for="inp-guess">Your liquidation price guess (USD)</label>
               <input class="form-input" id="inp-guess" type="number" min="1" placeholder="Enter your guess..." />
               <div style="font-size:11px;color:var(--muted);margin-top:6px;">
-                The liquidation price is shown above. Enter it exactly or close to it — within 5% counts as correct.
+                Within 5% = correct guess. Use the formula above to work it out.
               </div>
             </div>
 
@@ -617,7 +599,7 @@
         <div class="cta-box visible" style="margin-top:16px;">
           <div class="cta-label">Ready for real perps?</div>
           <div class="cta-text">You just simulated a leveraged position on Ink. Try it for real on Nado — Ink's native perpetual DEX.</div>
-          <a class="cta-link" href="https://app.nado.xyz" target="_blank">Open Nado →</a>
+          <a class="cta-link" href="https://nado.finance" target="_blank">Open Nado →</a>
         </div>
 
         <button class="btn btn-orange" style="margin-top:16px;" onclick="resetNado()">Try Another Scenario</button>
@@ -625,6 +607,185 @@
 
     </div>
     <!-- end nado tab -->
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- TYDRO SIMULATOR TAB                                -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="tab-panel" id="panel-tydro">
+      <div class="card">
+        <div class="nado-header">
+          <div>
+            <div class="nado-title">Tydro Lending Simulator</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+              Supply collateral. Borrow against it. Survive a price drop — or get liquidated.
+            </div>
+          </div>
+          <span class="tydro-badge">LENDING</span>
+        </div>
+
+        <!-- How to Play -->
+        <div style="margin-bottom:20px;">
+          <button onclick="toggleTydroHowTo()" style="display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--ink3);border:1px solid var(--border);border-radius:10px;padding:14px 18px;cursor:pointer;font-family:'Space Mono',monospace;font-size:13px;color:var(--muted);transition:all 0.2s;">
+            <span>How to play</span><span id="tydro-howto-arrow">▼</span>
+          </button>
+          <div id="tydro-howto-panel" style="display:none;background:var(--ink3);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:20px 18px;">
+            <div style="display:grid;gap:16px;">
+              <div>
+                <div style="font-size:11px;color:var(--blue-lt);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What is collateral?</div>
+                <div style="font-size:13px;color:var(--text);line-height:1.6;">Collateral is the asset you deposit to back a loan. On Tydro, you supply ETH or BTC and borrow USDC against it. If your collateral value drops too much, your position gets liquidated.</div>
+              </div>
+              <div>
+                <div style="font-size:11px;color:var(--blue-lt);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What is a health factor?</div>
+                <div style="font-size:13px;color:var(--text);line-height:1.6;">Your health factor shows how safe your position is. Above 1.0 = safe. Below 1.0 = liquidated. The higher it is, the more price can drop before you get liquidated.</div>
+              </div>
+              <div>
+                <div style="font-size:11px;color:var(--blue-lt);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What is LTV?</div>
+                <div style="font-size:13px;color:var(--text);line-height:1.6;">LTV (Loan to Value) is how much you can borrow relative to your collateral. 75% LTV means you can borrow up to $750 for every $1,000 of collateral. Borrowing close to the max increases liquidation risk.</div>
+              </div>
+              <div style="border-top:1px solid var(--border);padding-top:16px;">
+                <div style="font-size:11px;color:var(--blue-lt);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">How to play</div>
+                <div style="display:grid;gap:8px;">
+                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
+                    <span style="background:var(--blue);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">1</span>
+                    <span>Pick a lending scenario — each has a different asset, LTV, and liquidation threshold.</span>
+                  </div>
+                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
+                    <span style="background:var(--blue);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">2</span>
+                    <span>Supply collateral and borrow against it. Your health factor shows how safe you are.</span>
+                  </div>
+                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
+                    <span style="background:var(--blue);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">3</span>
+                    <span>Simulate a price drop. The contract calculates whether you survive or get liquidated — all on-chain.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 1: Pick scenario -->
+        <div id="tydro-step1">
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">Step 1 — Pick a lending scenario</div>
+          <div id="tydro-scenario-grid"></div>
+        </div>
+
+        <!-- Step 2: Supply & Borrow -->
+        <div class="position-form" id="tydro-step2">
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Step 2 — Supply collateral and borrow</div>
+
+          <div class="liq-preview" style="margin-bottom:16px;" id="tydro-selected-summary">
+            <div class="liq-preview-label">Selected scenario</div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--white);" id="tydro-scenario-name"></div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="tydro-scenario-detail"></div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="tydro-collateral">Collateral amount (game credits)</label>
+              <input class="form-input" id="tydro-collateral" type="number" min="100" max="100000" value="10000" placeholder="e.g. 10000" oninput="updateTydroHealth()" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="tydro-borrow">Borrow amount (USDC credits)</label>
+              <input class="form-input" id="tydro-borrow" type="number" min="0" max="100000" value="5000" placeholder="e.g. 5000" oninput="updateTydroHealth()" />
+            </div>
+          </div>
+
+          <!-- Health factor preview -->
+          <div class="health-bar-wrap" id="tydro-health-preview">
+            <div class="health-bar-label">Health Factor Preview</div>
+            <div class="health-bar-track">
+              <div class="health-bar-fill" id="tydro-health-fill" style="width:100%;background:var(--green);"></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="health-value" id="tydro-health-val" style="color:var(--green);">—</span>
+              <span style="font-size:11px;color:var(--muted);">Below 1.0 = liquidated</span>
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-top:6px;" id="tydro-health-msg"></div>
+          </div>
+
+          <!-- Liq price preview -->
+          <div class="liq-preview" style="margin-bottom:20px;" id="tydro-liq-preview">
+            <div class="liq-preview-label">Liquidation price</div>
+            <div class="liq-preview-value" id="tydro-liq-val" style="color:var(--blue-lt);">$—</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="tydro-liq-msg">If price drops below this, your position gets liquidated.</div>
+          </div>
+
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-outline" style="flex:0 0 auto;padding:14px 20px;" onclick="backToTydroScenarios()">Back</button>
+            <button class="btn btn-blue" id="tydro-supply-btn" onclick="supplyAndBorrow()">Supply & Borrow On-Chain</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Simulate price drop -->
+        <div class="position-form" id="tydro-step3">
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Step 3 — Simulate a price drop</div>
+
+          <div class="liq-preview" style="margin-bottom:16px;">
+            <div class="liq-preview-label">Open position</div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--white);" id="tydro-open-desc"></div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="tydro-open-detail"></div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:20px;">
+            <label class="form-label" for="tydro-drop">Price drop to simulate (%)</label>
+            <input class="form-input" id="tydro-drop" type="number" min="1" max="90" value="20" placeholder="e.g. 20" />
+            <div style="font-size:11px;color:var(--muted);margin-top:6px;" id="tydro-drop-hint">A 20% drop on ETH at $3,000 = exit price of $2,400.</div>
+          </div>
+
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-outline" style="flex:0 0 auto;padding:14px 20px;" onclick="backToTydroStep2()">Back</button>
+            <button class="btn btn-blue" id="tydro-simulate-btn" onclick="simulatePriceDrop()">Simulate Price Drop On-Chain</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tydro tx status -->
+      <div class="tx-status-bar" id="tydro-tx-status">
+        <div class="spinner" style="border-top-color:var(--blue);"></div>
+        <span id="tydro-tx-msg">Submitting on-chain...</span>
+      </div>
+
+      <!-- Tydro result -->
+      <div id="tydro-result-panel" style="display:none;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid;animation:slideIn 0.3s ease;">
+        <div class="result-header">
+          <span class="result-emoji" id="tydro-result-emoji"></span>
+          <span class="result-title" id="tydro-result-title"></span>
+        </div>
+
+        <div class="tydro-result-grid">
+          <div class="nado-stat">
+            <div class="nado-stat-label">Health Factor</div>
+            <div class="nado-stat-value" id="tr-health"></div>
+          </div>
+          <div class="nado-stat">
+            <div class="nado-stat-label">Yield Earned</div>
+            <div class="nado-stat-value green" id="tr-yield"></div>
+          </div>
+          <div class="nado-stat">
+            <div class="nado-stat-label">Liq Price</div>
+            <div class="nado-stat-value gold" id="tr-liq"></div>
+          </div>
+          <div class="nado-stat">
+            <div class="nado-stat-label">Result</div>
+            <div class="nado-stat-value" id="tr-survived"></div>
+          </div>
+        </div>
+
+        <a class="tx-link hidden" id="tydro-tx-link" href="#" target="_blank" style="margin-bottom:16px;display:inline-flex;">View transaction on Ink Explorer</a>
+
+        <!-- CTA to real Tydro -->
+        <div class="cta-box visible" style="margin-top:16px;background:rgba(14,165,233,0.08);border-color:rgba(14,165,233,0.3);">
+          <div class="cta-label" style="color:var(--blue-lt);">Ready for real lending?</div>
+          <div class="cta-text">You just simulated a lending position on Ink. Try it for real on Tydro — Ink's native lending market powered by Aave v3.</div>
+          <a class="cta-link" href="https://tydro.com" target="_blank" style="background:var(--blue);">Open Tydro →</a>
+        </div>
+
+        <button class="btn btn-blue" style="margin-top:16px;" onclick="resetTydro()">Try Another Scenario</button>
+      </div>
+
+    </div>
+    <!-- end tydro tab -->
 
   </div>
   <!-- end game-area -->
@@ -634,7 +795,7 @@
     &middot;
     <a href="https://github.com/knisaci/ink-arcade" target="_blank">GitHub</a>
     &middot;
-    <a href="https://app.nado.xyz" target="_blank">Nado</a>
+    <a href="https://nado.finance" target="_blank">Nado</a>
     &middot;
     <a href="https://tydro.com" target="_blank">Tydro</a>
   </footer>
@@ -651,11 +812,33 @@
   const MAINNET_EXPLORER  = "https://explorer.inkonchain.com";
 
   // NADO SIMULATOR — Sepolia (testnet during beta)
-  const NADO_ADDRESS      = "0xDE98616Ce38620c475Dac49594571C118519E577";
+  const NADO_ADDRESS      = "0x0e9B673674Fd83e2217D323bD2825995423b165f";
   const SEPOLIA_CHAIN_ID  = 763373n;
-  const SEPOLIA_CHAIN_HEX = "0xBA5ED";
+  const SEPOLIA_CHAIN_HEX = "0xBA26D";
   const SEPOLIA_RPC       = "https://rpc-gel-sepolia.inkonchain.com";
   const SEPOLIA_EXPLORER  = "https://explorer-sepolia.inkonchain.com";
+
+  // TYDRO SIMULATOR — Mainnet
+  const TYDRO_ADDRESS = "0xcE69A31E5A2aEc27f860DbEA049666D6A9901880";
+
+  const TYDRO_ABI = [
+    "function supplyAndBorrow(uint8 scenarioId,uint256 collateralAmount,uint256 borrowAmount)",
+    "function simulatePriceDrop(uint8 scenarioId,uint256 dropPercent)",
+    "function calcHealthFactor(uint256 collateralValue,uint256 borrowValue,uint256 liquidationThresholdBps) pure returns (uint256)",
+    "function calcLiquidationPrice(uint256 collateralAmount,uint256 borrowAmount,uint256 liquidationThresholdBps) pure returns (uint256)",
+    "function calcYield(uint256 supplied,uint256 apyBps,uint256 daysHeld) pure returns (uint256)",
+    "function hasPlayed(address,uint8) view returns (bool)",
+    "event PositionResult(address indexed player,uint8 indexed scenarioId,bool liquidated,uint256 healthFactor,uint256 yieldEarned,uint256 liqPrice,bool survived)"
+  ];
+
+  // Tydro scenarios hardcoded to match TydroSimulator.sol
+  const TYDRO_SCENARIOS = [
+    { id:0, name:"ETH Safe",       asset:"ETH", price:3000,  ltvBps:7500, liqThreshBps:8250, supplyApyBps:300,  borrowApyBps:500,  note:"~9% drop triggers liquidation at max LTV" },
+    { id:1, name:"ETH Aggressive", asset:"ETH", price:3000,  ltvBps:7500, liqThreshBps:7800, supplyApyBps:350,  borrowApyBps:700,  note:"~4% drop triggers liquidation — high risk" },
+    { id:2, name:"BTC Borrow",     asset:"BTC", price:60000, ltvBps:7000, liqThreshBps:7500, supplyApyBps:200,  borrowApyBps:400,  note:"Liq price ~$56,000 at max LTV" },
+    { id:3, name:"USDC Yield",     asset:"USDC",price:1,     ltvBps:0,    liqThreshBps:0,    supplyApyBps:800,  borrowApyBps:0,    note:"Pure supply — no liquidation risk, 8% APY" },
+    { id:4, name:"LINK Volatile",  asset:"LINK",price:15,    ltvBps:5000, liqThreshBps:6500, supplyApyBps:500,  borrowApyBps:800,  note:"Only ~23% drop to liquidation at max LTV" },
+  ];
 
   const TRIVIA_ABI = [
     "function questionCount() view returns (uint256)",
@@ -668,8 +851,8 @@
   ];
 
   const NADO_ABI = [
-    "function getAllScenarios() view returns (string[],string[],uint256[],uint256[],uint256[],uint8[])",
-    "function getScenario(uint8) view returns (string,string,uint256,uint256,uint256,uint8)",
+    "function getAllScenarios() view returns (tuple(string name,string asset,uint256 entryPrice,uint256 exitPrice,uint256 fundingRateBps,uint8 maxLeverage)[])",
+    "function getScenario(uint8) view returns (tuple(string name,string asset,uint256 entryPrice,uint256 exitPrice,uint256 fundingRateBps,uint8 maxLeverage))",
     "function openPosition(uint8 scenarioId,bool isLong,uint8 leverage,uint256 size,uint256 guessedLiqPrice) returns (uint256)",
     "function resolvePosition(uint8 scenarioId)",
     "function calcLiquidationPrice(uint256 entryPrice,uint8 leverage,bool isLong) pure returns (uint256)",
@@ -684,7 +867,7 @@
     3:  { text: "You just learned about lending markets. Tydro is Ink's native lending protocol — supply assets and earn yield.", url: "https://tydro.com",        label: "Open Tydro" },
     20: { text: "Tydro hit $124M in deposits in 24 hours. See the live rates and try supplying assets.", url: "https://tydro.com",                                  label: "Open Tydro" },
     // Nado questions
-    14: { text: "You just learned about perpetual trading. Nado is Ink's native perp DEX — try the Nado Simulator tab, then try it for real.", url: "https://app.nado.xyz", label: "Open Nado" },
+    14: { text: "You just learned about perpetual trading. Nado is Ink's native perp DEX — try the Nado Simulator tab, then try it for real.", url: "https://nado.finance", label: "Open Nado" },
     // Velodrome questions
     5:  { text: "Velodrome is live on Ink — one of the deepest AMMs on the Superchain. Try swapping or providing liquidity.", url: "https://velodrome.finance",    label: "Open Velodrome" },
     17: { text: "Velodrome is live on Ink — try providing liquidity to an ETH/USDC pool and earn fees.", url: "https://velodrome.finance",                         label: "Open Velodrome" },
@@ -694,7 +877,7 @@
     4:  { text: "Ink is part of the Optimism Superchain. Explore all Ink ecosystem apps at the official portal.", url: "https://inkonchain.com",                  label: "Explore Ink" },
     6:  { text: "ETH is the gas token on Ink. Bridge ETH to start using Tydro, Nado, and Velodrome.", url: "https://inkonchain.com/bridge",                       label: "Bridge ETH to Ink" },
     21: { text: "Tydro is Ink's official lending market built on Aave v3. Supply ETH or USDC and earn yield.", url: "https://tydro.com",                          label: "Open Tydro" },
-    22: { text: "Nado is Ink's official perp DEX. Trade $ETH, $SOL, $SPY and more with up to 20x leverage.", url: "https://app.nado.xyz",                        label: "Open Nado" },
+    22: { text: "Nado is Ink's official perp DEX. Trade $ETH, $SOL, $SPY and more with up to 20x leverage.", url: "https://nado.finance",                        label: "Open Nado" },
   };
 
   // ── STATE ───────────────────────────────────────────────────────────────────
@@ -705,6 +888,12 @@
   let totalQuestions = 0;
   let selectedOption = null;
   let currentTab = 'trivia';
+
+  // Tydro state
+  let tydroContract = null;
+  let selectedTydroScenarioId = null;
+  let tydroCollateral = 10000;
+  let tydroOpenScenarioId = null;
 
   // Nado state
   let scenarios = [];
@@ -736,11 +925,16 @@
     currentTab = tab;
     document.getElementById('tab-trivia').classList.toggle('active', tab === 'trivia');
     document.getElementById('tab-nado').classList.toggle('active', tab === 'nado');
+    document.getElementById('tab-tydro').classList.toggle('active', tab === 'tydro');
     document.getElementById('panel-trivia').classList.toggle('active', tab === 'trivia');
     document.getElementById('panel-nado').classList.toggle('active', tab === 'nado');
+    document.getElementById('panel-tydro').classList.toggle('active', tab === 'tydro');
 
     if (tab === 'nado' && scenarios.length === 0 && nadoContract) {
       loadScenarios();
+    }
+    if (tab === 'tydro' && !tydroContract) {
+      initTydro();
     }
   }
 
@@ -795,6 +989,9 @@
 
       await loadStats();
       await loadQuestion(0);
+
+      // Tydro contract on mainnet
+      tydroContract = new ethers.Contract(TYDRO_ADDRESS, TYDRO_ABI, signer);
 
       wp.on("accountsChanged", () => location.reload());
       wp.on("chainChanged", () => location.reload());
@@ -973,14 +1170,18 @@
     document.getElementById("nado-game").classList.add("hidden");
 
     try {
-      // Scenarios hardcoded to match NadoSimulator.sol seeded data
-      scenarios = [
-        { id: 0, name: "ETH Bull Run",            asset: "ETH", entryPrice: 2000,  exitPrice: 2400,  fundingRateBps: 8,   maxLeverage: 10 },
-        { id: 1, name: "ETH Bear Trap",            asset: "ETH", entryPrice: 2000,  exitPrice: 1700,  fundingRateBps: 5,   maxLeverage: 10 },
-        { id: 2, name: "BTC Volatility Squeeze",   asset: "BTC", entryPrice: 60000, exitPrice: 54000, fundingRateBps: 10,  maxLeverage: 5  },
-        { id: 3, name: "SOL Supercycle",           asset: "SOL", entryPrice: 100,   exitPrice: 150,   fundingRateBps: 15,  maxLeverage: 20 },
-        { id: 4, name: "BTC Black Swan",           asset: "BTC", entryPrice: 65000, exitPrice: 45500, fundingRateBps: 3,   maxLeverage: 5  },
-      ];
+      const raw = await nadoContract.getAllScenarios();
+      scenarios = raw.map(function(s, i) {
+        return {
+          id: i,
+          name: s.name,
+          asset: s.asset,
+          entryPrice: Number(s.entryPrice),
+          exitPrice: Number(s.exitPrice),
+          fundingRateBps: Number(s.fundingRateBps),
+          maxLeverage: Number(s.maxLeverage)
+        };
+      });
 
       renderScenarios();
       document.getElementById("nado-loading").classList.add("hidden");
@@ -1076,25 +1277,28 @@
       alert("Please enter your liquidation price guess."); return;
     }
 
+    // Switch to Sepolia for Nado
     const wp = getWalletProvider();
     if (!wp) { alert("Wallet not found."); return; }
 
     const nadoTxStatus = document.getElementById("nado-tx-status");
     const nadoTxMsg = document.getElementById("nado-tx-msg");
     nadoTxStatus.style.display = "flex";
-    nadoTxMsg.textContent = "Opening position on Ink Sepolia...";
+    nadoTxMsg.textContent = "Switching to Ink Sepolia for Nado Simulator...";
 
     try {
-      // Use current wallet provider directly - user must be on Ink Sepolia
-      const mainnetProvider = new ethers.BrowserProvider(wp);
-      const mainnetNetwork = await mainnetProvider.getNetwork();
-      if (mainnetNetwork.chainId !== MAINNET_CHAIN_ID) {
-        nadoTxStatus.style.display = "none";
-        alert("Please switch to Ink Mainnet in Rabby first, then try again.");
-        return;
+      const currentNetwork = await provider.getNetwork();
+      if (currentNetwork.chainId !== SEPOLIA_CHAIN_ID) {
+        try {
+          await wp.request({ method: "wallet_switchEthereumChain", params: [{ chainId: SEPOLIA_CHAIN_HEX }] });
+        } catch {
+          await wp.request({ method: "wallet_addEthereumChain", params: [{ chainId: SEPOLIA_CHAIN_HEX, chainName: "Ink Sepolia", nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 }, rpcUrls: [SEPOLIA_RPC], blockExplorerUrls: [SEPOLIA_EXPLORER] }] });
+        }
       }
-      const mainnetSigner = await mainnetProvider.getSigner();
-      const nadoWrite = new ethers.Contract(NADO_ADDRESS, NADO_ABI, mainnetSigner);
+
+      const sepoliaProvider = new ethers.BrowserProvider(wp);
+      const sepoliaSigner = await sepoliaProvider.getSigner();
+      const nadoWrite = new ethers.Contract(NADO_ADDRESS, NADO_ABI, sepoliaSigner);
 
       nadoTxMsg.textContent = "Opening position on-chain...";
 
@@ -1130,9 +1334,9 @@
     nadoTxMsg.textContent = "Resolving position on-chain...";
 
     try {
-      const mainnetProvider = new ethers.BrowserProvider(wp);
-      const mainnetSigner = await mainnetProvider.getSigner();
-      const nadoWrite = new ethers.Contract(NADO_ADDRESS, NADO_ABI, mainnetSigner);
+      const sepoliaProvider = new ethers.BrowserProvider(wp);
+      const sepoliaSigner = await sepoliaProvider.getSigner();
+      const nadoWrite = new ethers.Contract(NADO_ADDRESS, NADO_ABI, sepoliaSigner);
 
       const tx = await nadoWrite.resolvePosition(openPositionScenarioId);
       nadoTxMsg.textContent = "Waiting for confirmation...";
@@ -1201,18 +1405,256 @@
     document.getElementById("nr-deviation").textContent = (deviationBps / 100).toFixed(2) + "%";
 
     const nadoTxLink = document.getElementById("nado-tx-link");
-    nadoTxLink.href = MAINNET_EXPLORER + "/tx/" + txHash;
+    nadoTxLink.href = SEPOLIA_EXPLORER + "/tx/" + txHash;
     nadoTxLink.classList.remove("hidden");
 
-
+    // Switch back to mainnet after nado session
+    const wp = getWalletProvider();
+    if (wp) {
+      wp.request({ method: "wallet_switchEthereumChain", params: [{ chainId: MAINNET_CHAIN_HEX }] }).catch(function(){});
+    }
   }
 
-  function toggleHowTo() {
-    const panel = document.getElementById("howto-panel");
-    const arrow = document.getElementById("howto-arrow");
+  // ── TYDRO SIMULATOR ────────────────────────────────────────────────────────
+  function initTydro() {
+    renderTydroScenarios();
+  }
+
+  function toggleTydroHowTo() {
+    const panel = document.getElementById("tydro-howto-panel");
+    const arrow = document.getElementById("tydro-howto-arrow");
     const visible = panel.style.display !== "none";
     panel.style.display = visible ? "none" : "block";
     arrow.textContent = visible ? "▼" : "▲";
+  }
+
+  function renderTydroScenarios() {
+    const grid = document.getElementById("tydro-scenario-grid");
+    grid.innerHTML = "";
+    TYDRO_SCENARIOS.forEach(function(s) {
+      const card = document.createElement("div");
+      card.className = "tydro-scenario-card";
+      card.innerHTML =
+        '<div>' +
+          '<div class="scenario-name">' + s.name + '</div>' +
+          '<div class="scenario-meta">' + s.asset + ' · Price $' + s.price.toLocaleString() + ' · LTV ' + (s.ltvBps/100) + '% · ' + s.note + '</div>' +
+        '</div>' +
+        '<div class="tydro-apy">+' + (s.supplyApyBps/100).toFixed(1) + '% APY</div>';
+      card.addEventListener("click", function() { selectTydroScenario(s.id); });
+      grid.appendChild(card);
+    });
+  }
+
+  function selectTydroScenario(id) {
+    selectedTydroScenarioId = id;
+    const s = TYDRO_SCENARIOS[id];
+    document.getElementById("tydro-scenario-name").textContent = s.name;
+    document.getElementById("tydro-scenario-detail").textContent =
+      s.asset + " · Price $" + s.price.toLocaleString() + " · Max LTV " + (s.ltvBps/100) + "% · Liq threshold " + (s.liqThreshBps/100) + "%";
+    document.getElementById("tydro-step1").style.display = "none";
+    document.getElementById("tydro-step2").classList.add("visible");
+    updateTydroHealth();
+  }
+
+  function updateTydroHealth() {
+    if (selectedTydroScenarioId === null) return;
+    const s = TYDRO_SCENARIOS[selectedTydroScenarioId];
+    const collateral = parseInt(document.getElementById("tydro-collateral").value) || 0;
+    const borrow = parseInt(document.getElementById("tydro-borrow").value) || 0;
+
+    // Health factor = (collateral * liqThresh) / borrow / 10000
+    let hf = 0;
+    let hfDisplay = "—";
+    let hfColor = "var(--muted)";
+    let hfWidth = 0;
+    let msg = "";
+
+    if (s.liqThreshBps === 0) {
+      // Pure supply scenario — no liquidation risk
+      hfDisplay = "Safe";
+      hfColor = "var(--green)";
+      hfWidth = 100;
+      msg = "This is a pure supply scenario — no borrowing, no liquidation risk.";
+    } else if (borrow === 0) {
+      hfDisplay = "Safe";
+      hfColor = "var(--green)";
+      hfWidth = 100;
+      msg = "No borrow — no liquidation risk. Add a borrow amount to see your health factor.";
+    } else {
+      // HF = (collateral * liqThreshBps) / (borrow * 10000)
+      hf = Math.round((collateral * s.liqThreshBps) / (borrow * 10000) * 100) / 100;
+      hfDisplay = hf.toFixed(2) + "x";
+      if (hf >= 2) { hfColor = "var(--green)"; hfWidth = 100; msg = "Very safe position."; }
+      else if (hf >= 1.5) { hfColor = "var(--green)"; hfWidth = 75; msg = "Safe position."; }
+      else if (hf >= 1.2) { hfColor = "var(--gold)"; hfWidth = 50; msg = "Moderate risk — price can drop some before liquidation."; }
+      else if (hf >= 1.0) { hfColor = "var(--orange)"; hfWidth = 25; msg = "High risk — a small price drop could liquidate you."; }
+      else { hfColor = "var(--red)"; hfWidth = 5; msg = "Already liquidated — reduce your borrow or increase collateral."; }
+    }
+
+    document.getElementById("tydro-health-val").textContent = hfDisplay;
+    document.getElementById("tydro-health-val").style.color = hfColor;
+    document.getElementById("tydro-health-fill").style.width = hfWidth + "%";
+    document.getElementById("tydro-health-fill").style.background = hfColor;
+    document.getElementById("tydro-health-msg").textContent = msg;
+
+    // Liq price
+    if (s.liqThreshBps > 0 && borrow > 0 && collateral > 0) {
+      // liqPrice = (borrow / collateral) * (price / liqThreshBps * 10000)
+      const liqPrice = Math.round((borrow * s.price * 10000) / (collateral * s.liqThreshBps));
+      document.getElementById("tydro-liq-val").textContent = "$" + liqPrice.toLocaleString();
+      document.getElementById("tydro-liq-msg").textContent =
+        "If " + s.asset + " drops below $" + liqPrice.toLocaleString() + ", your position gets liquidated.";
+    } else {
+      document.getElementById("tydro-liq-val").textContent = "N/A";
+      document.getElementById("tydro-liq-msg").textContent = "No liquidation risk for this scenario.";
+    }
+
+    // Drop hint
+    const dropInput = document.getElementById("tydro-drop");
+    if (dropInput && s.price > 1) {
+      const drop = parseInt(dropInput.value) || 20;
+      const exitPrice = Math.round(s.price * (100 - drop) / 100);
+      document.getElementById("tydro-drop-hint").textContent =
+        "A " + drop + "% drop on " + s.asset + " at $" + s.price.toLocaleString() + " = exit price $" + exitPrice.toLocaleString() + ".";
+    }
+  }
+
+  function backToTydroScenarios() {
+    selectedTydroScenarioId = null;
+    document.getElementById("tydro-step2").classList.remove("visible");
+    document.getElementById("tydro-step1").style.display = "block";
+  }
+
+  function backToTydroStep2() {
+    document.getElementById("tydro-step3").classList.remove("visible");
+    document.getElementById("tydro-step2").classList.add("visible");
+  }
+
+  async function supplyAndBorrow() {
+    if (selectedTydroScenarioId === null) return;
+    const collateral = parseInt(document.getElementById("tydro-collateral").value);
+    const borrow = parseInt(document.getElementById("tydro-borrow").value);
+    const s = TYDRO_SCENARIOS[selectedTydroScenarioId];
+
+    if (!collateral || collateral < 100) { alert("Collateral must be at least 100."); return; }
+    if (borrow < 0) { alert("Borrow amount cannot be negative."); return; }
+    if (s.ltvBps > 0 && borrow > 0) {
+      const maxBorrow = Math.floor(collateral * s.ltvBps / 10000);
+      if (borrow > maxBorrow) {
+        alert("Borrow amount exceeds max LTV. Maximum borrow: " + maxBorrow.toLocaleString() + " credits."); return;
+      }
+    }
+
+    const txStatus = document.getElementById("tydro-tx-status");
+    txStatus.style.display = "flex";
+    document.getElementById("tydro-tx-msg").textContent = "Opening lending position on-chain...";
+
+    try {
+      const tx = await tydroContract.supplyAndBorrow(selectedTydroScenarioId, collateral, borrow);
+      document.getElementById("tydro-tx-msg").textContent = "Waiting for confirmation on Ink...";
+      await tx.wait();
+      txStatus.style.display = "none";
+
+      tydroOpenScenarioId = selectedTydroScenarioId;
+      tydroCollateral = collateral;
+
+      document.getElementById("tydro-step2").classList.remove("visible");
+      document.getElementById("tydro-open-desc").textContent =
+        collateral.toLocaleString() + " " + s.asset + " supplied · " + borrow.toLocaleString() + " USDC borrowed";
+      document.getElementById("tydro-open-detail").textContent =
+        s.name + " · Supply APY " + (s.supplyApyBps/100).toFixed(1) + "% · Borrow APY " + (s.borrowApyBps/100).toFixed(1) + "%";
+
+      const drop = document.getElementById("tydro-drop");
+      if (s.price > 1) {
+        drop.min = 1; drop.max = 90; drop.value = 20;
+      } else {
+        drop.value = 0; drop.disabled = true;
+      }
+      updateTydroHealth();
+      document.getElementById("tydro-step3").classList.add("visible");
+
+    } catch (err) {
+      console.error(err);
+      txStatus.style.display = "none";
+      alert("Transaction failed: " + (err.reason || err.message || "Unknown error"));
+    }
+  }
+
+  async function simulatePriceDrop() {
+    if (tydroOpenScenarioId === null) return;
+    const drop = parseInt(document.getElementById("tydro-drop").value) || 0;
+    if (drop < 0 || drop > 90) { alert("Drop must be between 0 and 90%."); return; }
+
+    const txStatus = document.getElementById("tydro-tx-status");
+    txStatus.style.display = "flex";
+    document.getElementById("tydro-tx-msg").textContent = "Simulating price drop on-chain...";
+
+    try {
+      const tx = await tydroContract.simulatePriceDrop(tydroOpenScenarioId, drop);
+      document.getElementById("tydro-tx-msg").textContent = "Waiting for confirmation on Ink...";
+      const receipt = await tx.wait();
+      txStatus.style.display = "none";
+
+      // Parse PositionResult event
+      const iface = new ethers.Interface(TYDRO_ABI);
+      let result = null;
+      for (const log of receipt.logs) {
+        try {
+          const parsed = iface.parseLog(log);
+          if (parsed && parsed.name === "PositionResult") result = parsed.args;
+        } catch {}
+      }
+
+      if (!result) { alert("Could not parse result. Check explorer."); return; }
+
+      showTydroResult(result, receipt.hash);
+
+    } catch (err) {
+      console.error(err);
+      txStatus.style.display = "none";
+      alert("Transaction failed: " + (err.reason || err.message || "Unknown error"));
+    }
+  }
+
+  function showTydroResult(args, txHash) {
+    const liquidated = args[2];
+    const healthFactor = Number(args[3]);
+    const yieldEarned = Number(args[4]);
+    const liqPrice = Number(args[5]);
+    const survived = args[6];
+
+    document.getElementById("tydro-step3").classList.remove("visible");
+    const panel = document.getElementById("tydro-result-panel");
+    panel.style.display = "block";
+    panel.className = liquidated ? "wrong" : "correct";
+
+    document.getElementById("tydro-result-emoji").textContent = liquidated ? "💥" : "✅";
+    document.getElementById("tydro-result-title").textContent = liquidated ? "Liquidated!" : "Position survived!";
+
+    const hfDisplay = healthFactor === 999999 ? "Safe (no borrow)" : (healthFactor / 10000).toFixed(2) + "x";
+    const hfEl = document.getElementById("tr-health");
+    hfEl.textContent = hfDisplay;
+    hfEl.className = "nado-stat-value " + (liquidated ? "red" : "green");
+
+    document.getElementById("tr-yield").textContent = yieldEarned.toLocaleString() + " credits";
+    document.getElementById("tr-liq").textContent = liqPrice === 0 ? "N/A" : "$" + liqPrice.toLocaleString();
+
+    const survEl = document.getElementById("tr-survived");
+    survEl.textContent = survived ? "Survived" : "Liquidated";
+    survEl.className = "nado-stat-value " + (survived ? "green" : "red");
+
+    const tydroTxLink = document.getElementById("tydro-tx-link");
+    tydroTxLink.href = MAINNET_EXPLORER + "/tx/" + txHash;
+    tydroTxLink.classList.remove("hidden");
+  }
+
+  function resetTydro() {
+    selectedTydroScenarioId = null;
+    tydroOpenScenarioId = null;
+    document.getElementById("tydro-result-panel").style.display = "none";
+    document.getElementById("tydro-step3").classList.remove("visible");
+    document.getElementById("tydro-step2").classList.remove("visible");
+    document.getElementById("tydro-step1").style.display = "block";
   }
 
   function resetNado() {
