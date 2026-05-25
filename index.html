@@ -1622,6 +1622,7 @@
     const yieldEarned = Number(args[4]);
     const liqPrice = Number(args[5]);
     const survived = args[6];
+    const s = selectedTydroScenarioId !== null ? TYDRO_SCENARIOS[selectedTydroScenarioId] : TYDRO_SCENARIOS[tydroOpenScenarioId];
 
     document.getElementById("tydro-step3").classList.remove("visible");
     const panel = document.getElementById("tydro-result-panel");
@@ -1631,17 +1632,59 @@
     document.getElementById("tydro-result-emoji").textContent = liquidated ? "💥" : "✅";
     document.getElementById("tydro-result-title").textContent = liquidated ? "Liquidated!" : "Position survived!";
 
-    const hfDisplay = healthFactor === 999999 ? "Safe (no borrow)" : (healthFactor / 10000).toFixed(2) + "x";
+    // Health factor
     const hfEl = document.getElementById("tr-health");
-    hfEl.textContent = hfDisplay;
+    const isNoBorrow = healthFactor > 100000;
+    if (isNoBorrow) {
+      hfEl.textContent = "No risk";
+      hfEl.title = "No borrow — no liquidation risk";
+    } else {
+      const hfNum = (healthFactor / 10000).toFixed(2);
+      hfEl.textContent = hfNum + "x";
+      hfEl.title = hfNum + "x — above 1.0 means safe";
+    }
     hfEl.className = "nado-stat-value " + (liquidated ? "red" : "green");
 
+    // Yield
+    const collateral = tydroCollateral || 10000;
+    const days = 30;
+    const apyPct = (s.supplyApyBps / 100).toFixed(1);
     document.getElementById("tr-yield").textContent = yieldEarned.toLocaleString() + " credits";
-    document.getElementById("tr-liq").textContent = liqPrice === 0 ? "N/A" : "$" + liqPrice.toLocaleString();
+    document.getElementById("tr-yield").title = apyPct + "% APY on " + collateral.toLocaleString() + " credits over " + days + " simulated days";
 
+    // Liq price
+    const liqEl = document.getElementById("tr-liq");
+    if (liqPrice === 0) {
+      liqEl.textContent = "None";
+      liqEl.title = "No borrow — no liquidation price";
+    } else {
+      liqEl.textContent = "$" + liqPrice.toLocaleString();
+      liqEl.title = "If " + s.asset + " drops below $" + liqPrice.toLocaleString() + ", position gets liquidated";
+    }
+
+    // Result
     const survEl = document.getElementById("tr-survived");
     survEl.textContent = survived ? "Survived" : "Liquidated";
     survEl.className = "nado-stat-value " + (survived ? "green" : "red");
+
+    // Add explanation below the grid
+    let explanation = "";
+    if (isNoBorrow) {
+      explanation = "You supplied " + collateral.toLocaleString() + " credits at " + apyPct + "% APY for 30 simulated days and earned " + yieldEarned.toLocaleString() + " yield credits. No liquidation risk since you did not borrow.";
+    } else if (liquidated) {
+      explanation = "Your health factor dropped below 1.0x, meaning your borrow exceeded the safe threshold after the price drop. Your collateral was liquidated.";
+    } else {
+      explanation = "Your health factor stayed above 1.0x after the price drop — your position is safe. You also earned " + yieldEarned.toLocaleString() + " yield credits (" + apyPct + "% APY over 30 simulated days).";
+    }
+    // Insert or update explanation paragraph
+    let expEl = document.getElementById("tydro-result-explanation");
+    if (!expEl) {
+      expEl = document.createElement("p");
+      expEl.id = "tydro-result-explanation";
+      expEl.style.cssText = "font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px;";
+      document.getElementById("tydro-tx-link").parentNode.insertBefore(expEl, document.getElementById("tydro-tx-link"));
+    }
+    expEl.textContent = explanation;
 
     const tydroTxLink = document.getElementById("tydro-tx-link");
     tydroTxLink.href = MAINNET_EXPLORER + "/tx/" + txHash;
