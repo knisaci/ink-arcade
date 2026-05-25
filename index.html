@@ -1453,6 +1453,21 @@
       s.asset + " · Price $" + s.price.toLocaleString() + " · Max LTV " + (s.ltvBps/100) + "% · Liq threshold " + (s.liqThreshBps/100) + "%";
     document.getElementById("tydro-step1").style.display = "none";
     document.getElementById("tydro-step2").classList.add("visible");
+
+    // Disable borrow for pure supply scenarios
+    const borrowInput = document.getElementById("tydro-borrow");
+    if (s.ltvBps === 0) {
+      borrowInput.value = 0;
+      borrowInput.disabled = true;
+      borrowInput.style.opacity = "0.4";
+      borrowInput.title = "This is a pure supply scenario — no borrowing allowed";
+    } else {
+      borrowInput.disabled = false;
+      borrowInput.style.opacity = "1";
+      borrowInput.title = "";
+      borrowInput.value = Math.floor(10000 * s.ltvBps / 10000 / 2);
+    }
+
     updateTydroHealth();
   }
 
