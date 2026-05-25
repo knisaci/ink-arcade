@@ -3,823 +3,1250 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ink Arcade — DeFi Learning Platform</title>
+  <title>Ink Arcade — DeFi Learning Platform on Ink</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --ink: #0a0a0f;
-      --ink2: #12121a;
-      --ink3: #1c1c2a;
-      --border: #2a2a3d;
-      --purple: #7c3aed;
-      --purple-glow: #9f6ef5;
-      --cyan: #06b6d4;
-      --green: #10b981;
-      --red: #ef4444;
-      --gold: #f59e0b;
-      --orange: #f97316;
-      --blue: #0ea5e9;
-      --blue-lt: #38bdf8;
-      --text: #e2e8f0;
-      --muted: #64748b;
-      --white: #ffffff;
+      --bg:       #080810;
+      --surface:  #0e0e1a;
+      --surface2: #14142a;
+      --border:   #1e1e38;
+      --border2:  #2a2a50;
+      --ink:      #7c5cfc;
+      --ink-glow: rgba(124,92,252,0.25);
+      --ink-soft: rgba(124,92,252,0.08);
+      --nado:     #ff6b35;
+      --nado-glow:rgba(255,107,53,0.25);
+      --nado-soft:rgba(255,107,53,0.08);
+      --tydro:    #00d4ff;
+      --tydro-glow:rgba(0,212,255,0.2);
+      --tydro-soft:rgba(0,212,255,0.06);
+      --green:    #00e5a0;
+      --red:      #ff4d6a;
+      --gold:     #ffd166;
+      --text:     #c8c8e8;
+      --muted:    #5a5a80;
+      --white:    #f0f0ff;
+      --r:        12px;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      background: var(--ink);
+      background: var(--bg);
       color: var(--text);
-      font-family: 'Space Mono', monospace;
+      font-family: 'DM Mono', monospace;
       min-height: 100vh;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
+    /* Animated background */
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(124,92,252,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(0,212,255,0.08) 0%, transparent 60%),
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(124,92,252,0.03) 39px, rgba(124,92,252,0.03) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(124,92,252,0.03) 39px, rgba(124,92,252,0.03) 40px);
       pointer-events: none;
-      z-index: 0;
     }
 
-    body::after {
-      content: '';
-      position: fixed;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 720px;
+    .wrap {
+      position: relative; z-index: 1;
+      max-width: 760px;
       margin: 0 auto;
-      padding: 40px 20px 80px;
+      padding: 48px 20px 100px;
     }
 
-    header { text-align: center; margin-bottom: 32px; }
-
-    .logo-icon {
-      width: 36px; height: 36px;
-      background: var(--purple); border-radius: 8px;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 18px; margin-bottom: 8px;
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeUp 0.6s ease both;
     }
 
-    h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(28px, 5vw, 42px);
-      font-weight: 800; letter-spacing: -1px;
-      background: linear-gradient(135deg, var(--white) 0%, var(--purple-glow) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .subtitle { color: var(--muted); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; margin-top: 6px; }
-
-    .network-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--ink2); border: 1px solid var(--border);
-      border-radius: 100px; padding: 6px 14px; font-size: 12px; color: var(--muted); margin-top: 16px;
+    .logo-mark {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-bottom: 20px;
     }
 
-    .network-dot {
+    .logo-gem {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--ink) 0%, #a78bfa 100%);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 32px var(--ink-glow), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+
+    .logo-text {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 26px; font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--white);
+    }
+
+    .site-title {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: clamp(36px, 7vw, 60px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--white) 30%, #a78bfa 70%, var(--tydro) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .site-sub {
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .net-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      margin-top: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 12px; color: var(--muted);
+    }
+
+    .net-dot {
       width: 7px; height: 7px; border-radius: 50%;
-      background: var(--green); box-shadow: 0 0 8px var(--green);
-      animation: pulse 2s infinite;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      animation: blink 2s ease infinite;
     }
 
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    /* ── TABS ── */
-    .tabs {
-      display: flex; gap: 8px; margin-bottom: 20px;
-      background: var(--ink2); border: 1px solid var(--border);
-      border-radius: 12px; padding: 6px;
+    /* ── WARNINGS ── */
+    .warn-bar {
+      display: none;
+      background: rgba(255,209,102,0.08);
+      border: 1px solid rgba(255,209,102,0.25);
+      border-radius: var(--r);
+      padding: 12px 18px;
+      font-size: 13px; color: var(--gold);
+      margin-bottom: 16px; text-align: center;
     }
 
-    .tab {
-      flex: 1; padding: 10px 16px; border-radius: 8px; border: none;
-      background: transparent; color: var(--muted);
-      font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700;
-      cursor: pointer; transition: all 0.2s; display: flex; align-items: center;
-      justify-content: center; gap: 8px;
+    /* ── CONNECT CARD ── */
+    .connect-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 40px;
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative; overflow: hidden;
+      animation: fadeUp 0.6s 0.1s ease both;
     }
 
-    .tab.active {
-      background: var(--purple); color: white;
-      box-shadow: 0 4px 12px rgba(124,58,237,0.4);
+    .connect-card::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 60%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--ink), transparent);
     }
 
-    .tab:not(.active):hover { color: var(--text); background: var(--ink3); }
-
-    .tab-badge {
-      background: rgba(255,255,255,0.2); color: white;
-      font-size: 10px; padding: 2px 6px; border-radius: 100px;
+    .connect-icon {
+      font-size: 52px;
+      display: block; margin-bottom: 20px;
+      animation: float 4s ease-in-out infinite;
     }
 
-    .tab.nado-tab.active { background: var(--orange); box-shadow: 0 4px 12px rgba(249,115,22,0.4); }
-    .tab.nado-tab:not(.active):hover { color: var(--orange); }
-    .tab.tydro-tab.active { background: var(--blue); box-shadow: 0 4px 12px rgba(14,165,233,0.4); }
-    .tab.tydro-tab:not(.active):hover { color: var(--blue-lt); }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 
-    /* ── TYDRO SIMULATOR ── */
-    .tydro-badge { background: rgba(14,165,233,0.15); border: 1px solid rgba(14,165,233,0.3); color: var(--blue-lt); font-size: 11px; padding: 4px 10px; border-radius: 100px; letter-spacing: 1px; }
-    .health-bar-wrap { background: var(--ink3); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 16px; }
-    .health-bar-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
-    .health-bar-track { background: var(--border); border-radius: 100px; height: 8px; overflow: hidden; margin-bottom: 6px; }
-    .health-bar-fill { height: 100%; border-radius: 100px; transition: width 0.5s ease, background 0.5s ease; }
-    .health-value { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; }
-    .tydro-scenario-card { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; background: var(--ink3); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; }
-    .tydro-scenario-card:hover { border-color: var(--blue); background: rgba(14,165,233,0.06); }
-    .tydro-scenario-card.selected { border-color: var(--blue); background: rgba(14,165,233,0.1); }
-    .tydro-apy { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; color: var(--green); }
-    .tydro-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
-    .btn-blue { background: var(--blue); color: white; width: 100%; }
-    .btn-blue:hover { background: var(--blue-lt); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(14,165,233,0.4); }
-    .btn-blue:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    /* ── SHARED CARD / BTN ── */
-    .card {
-      background: var(--ink2); border: 1px solid var(--border);
-      border-radius: 16px; padding: 32px; margin-bottom: 20px; transition: border-color 0.3s;
+    .connect-card h2 {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 26px; font-weight: 700;
+      color: var(--white); margin-bottom: 10px;
     }
-    .card:hover { border-color: rgba(124,58,237,0.4); }
 
+    .connect-card p {
+      font-size: 13px; color: var(--muted);
+      line-height: 1.7; margin-bottom: 32px;
+    }
+
+    .game-chips {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .game-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px; font-weight: 500;
+      border: 1px solid;
+    }
+
+    .chip-trivia { background: var(--ink-soft); border-color: rgba(124,92,252,0.3); color: #a78bfa; }
+    .chip-nado   { background: var(--nado-soft); border-color: rgba(255,107,53,0.3); color: var(--nado); }
+    .chip-tydro  { background: var(--tydro-soft); border-color: rgba(0,212,255,0.3); color: var(--tydro); }
+
+    /* ── BUTTONS ── */
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       padding: 14px 28px; border-radius: 10px;
-      font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700;
-      cursor: pointer; border: none; transition: all 0.2s; text-decoration: none; letter-spacing: 0.5px;
+      font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500;
+      cursor: pointer; border: none; transition: all 0.18s;
+      text-decoration: none; letter-spacing: 0.3px; width: 100%;
     }
-    .btn-primary { background: var(--purple); color: white; width: 100%; }
-    .btn-primary:hover { background: var(--purple-glow); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,58,237,0.4); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-    .btn-orange { background: var(--orange); color: white; width: 100%; }
-    .btn-orange:hover { background: #fb923c; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(249,115,22,0.4); }
-    .btn-orange:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
-    .btn-outline:hover { border-color: var(--purple); color: var(--purple-glow); }
 
-    /* ── CONNECT ── */
-    #connect-section { text-align: center; }
-    .connect-icon { font-size: 48px; margin-bottom: 16px; display: block; }
-    #connect-section h2 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-    #connect-section p { color: var(--muted); font-size: 13px; line-height: 1.6; margin-bottom: 24px; }
+    .btn-ink {
+      background: var(--ink);
+      color: white;
+      box-shadow: 0 4px 20px var(--ink-glow), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .btn-ink:hover:not(:disabled) {
+      background: #9370ff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px var(--ink-glow);
+    }
+
+    .btn-nado {
+      background: var(--nado);
+      color: white;
+      box-shadow: 0 4px 20px var(--nado-glow), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .btn-nado:hover:not(:disabled) {
+      background: #ff8555;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px var(--nado-glow);
+    }
+
+    .btn-tydro {
+      background: var(--tydro);
+      color: #080810;
+      box-shadow: 0 4px 20px var(--tydro-glow), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+    .btn-tydro:hover:not(:disabled) {
+      background: #33ddff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px var(--tydro-glow);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border2);
+    }
+    .btn-ghost:hover { border-color: var(--ink); color: var(--white); }
+
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
     /* ── WALLET BAR ── */
-    #wallet-info { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    .wallet-address { display: flex; align-items: center; gap: 8px; background: var(--ink3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 13px; }
-    .wallet-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+    .wallet-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 14px 20px;
+      margin-bottom: 16px;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .wallet-addr {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text);
+    }
+
+    .wallet-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .btn-sm {
+      padding: 7px 16px; font-size: 12px; width: auto;
+    }
 
     /* ── SCORE BAR ── */
-    #score-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .stat { background: var(--ink3); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
-    .stat-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--white); display: block; }
-    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; display: block; }
-    .stat-value.green { color: var(--green); }
-    .stat-value.gold { color: var(--gold); }
+    .score-bar {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 12px;
+      margin-bottom: 16px;
+      animation: fadeUp 0.4s 0.05s ease both;
+    }
+
+    .score-cell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 18px 16px; text-align: center;
+      position: relative; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .score-cell::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--ink);
+      opacity: 0.5;
+    }
+
+    .score-cell:hover { border-color: var(--border2); }
+
+    .score-val {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 32px; font-weight: 800;
+      color: var(--white); display: block;
+      line-height: 1;
+    }
+
+    .score-val.g { color: var(--green); }
+    .score-val.gold { color: var(--gold); }
+
+    .score-label {
+      font-size: 10px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 2px;
+      margin-top: 6px; display: block;
+    }
+
+    /* ── TABS ── */
+    .tab-row {
+      display: flex; gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 5px;
+      margin-bottom: 20px;
+      animation: fadeUp 0.4s 0.1s ease both;
+    }
+
+    .tab-btn {
+      flex: 1; padding: 10px 12px;
+      border-radius: 10px; border: none;
+      background: transparent; color: var(--muted);
+      font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover:not(.active) { color: var(--text); background: var(--surface2); }
+
+    .tab-btn.active { color: white; }
+
+    .tab-btn.t-trivia.active { background: var(--ink); box-shadow: 0 2px 12px var(--ink-glow); }
+    .tab-btn.t-nado.active   { background: var(--nado); box-shadow: 0 2px 12px var(--nado-glow); }
+    .tab-btn.t-tydro.active  { background: var(--tydro); color: #080810; box-shadow: 0 2px 12px var(--tydro-glow); }
+
+    .tab-chip {
+      font-size: 9px; padding: 2px 6px; border-radius: 100px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeUp 0.3s ease both; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+      position: relative; overflow: hidden;
+    }
 
     /* ── TRIVIA ── */
-    .question-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .q-number { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
-    .q-tag { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); color: var(--purple-glow); font-size: 11px; padding: 4px 10px; border-radius: 100px; letter-spacing: 1px; }
-    .question-text { font-family: 'Syne', sans-serif; font-size: clamp(17px,3vw,21px); font-weight: 700; line-height: 1.4; margin-bottom: 28px; color: var(--white); }
+    .q-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
 
-    .options { display: grid; gap: 10px; margin-bottom: 24px; }
-    .option { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--ink3); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s; text-align: left; font-family: 'Space Mono', monospace; font-size: 13px; color: var(--text); }
-    .option:hover:not(:disabled) { border-color: var(--purple); background: rgba(124,58,237,0.08); color: var(--white); }
-    .option:disabled { cursor: not-allowed; }
-    .option.selected { border-color: var(--purple); background: rgba(124,58,237,0.12); }
-    .option.correct { border-color: var(--green) !important; background: rgba(16,185,129,0.12) !important; color: var(--green) !important; }
-    .option.wrong { border-color: var(--red) !important; background: rgba(239,68,68,0.08) !important; color: var(--red) !important; }
-    .option-label { width: 28px; height: 28px; border-radius: 6px; background: var(--ink2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; transition: all 0.2s; }
-    .option.selected .option-label { background: var(--purple); border-color: var(--purple); color: white; }
-    .option.correct .option-label { background: var(--green); border-color: var(--green); color: white; }
-    .option.wrong .option-label { background: var(--red); border-color: var(--red); color: white; }
+    .q-counter {
+      font-size: 11px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 2px;
+    }
+
+    .q-pill {
+      font-size: 10px; padding: 4px 12px; border-radius: 100px;
+      background: var(--ink-soft);
+      border: 1px solid rgba(124,92,252,0.25);
+      color: #a78bfa;
+      letter-spacing: 1px;
+    }
+
+    .q-text {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: clamp(17px,3vw,22px); font-weight: 700;
+      line-height: 1.4; margin-bottom: 24px;
+      color: var(--white);
+    }
+
+    .opts { display: grid; gap: 9px; margin-bottom: 20px; }
+
+    .opt {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 18px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer; transition: all 0.18s;
+      font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text);
+      text-align: left;
+    }
+
+    .opt:hover:not(:disabled) {
+      border-color: var(--ink);
+      background: var(--ink-soft);
+      color: var(--white);
+    }
+
+    .opt:disabled { cursor: not-allowed; }
+
+    .opt.selected { border-color: var(--ink); background: var(--ink-soft); }
+    .opt.correct  { border-color: var(--green) !important; background: rgba(0,229,160,0.08) !important; color: var(--green) !important; }
+    .opt.wrong    { border-color: var(--red) !important; background: rgba(255,77,106,0.08) !important; color: var(--red) !important; }
+
+    .opt-lbl {
+      width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+      background: var(--surface); border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; transition: all 0.18s;
+    }
+
+    .opt.selected .opt-lbl { background: var(--ink); border-color: var(--ink); color: white; }
+    .opt.correct  .opt-lbl { background: var(--green); border-color: var(--green); color: #080810; }
+    .opt.wrong    .opt-lbl { background: var(--red); border-color: var(--red); color: white; }
 
     /* ── RESULT ── */
-    #result-panel, #nado-result-panel {
-      display: none; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid;
-      animation: slideIn 0.3s ease;
+    .result-panel {
+      display: none;
+      border-radius: 14px; padding: 20px; margin-bottom: 16px;
+      border: 1px solid; animation: slideUp 0.3s ease both;
     }
-    @keyframes slideIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-    .correct { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3) !important; }
-    .wrong { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3) !important; }
-    .already { background: rgba(100,116,139,0.08); border-color: rgba(100,116,139,0.3) !important; }
 
-    .result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    @keyframes slideUp {
+      from { opacity:0; transform:translateY(10px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .result-panel.correct { background: rgba(0,229,160,0.06); border-color: rgba(0,229,160,0.25); }
+    .result-panel.wrong   { background: rgba(255,77,106,0.06); border-color: rgba(255,77,106,0.25); }
+    .result-panel.already { background: rgba(90,90,128,0.08); border-color: rgba(90,90,128,0.25); }
+
+    .result-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
     .result-emoji { font-size: 22px; }
-    .result-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; }
-    .result-explanation { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+    .result-ttl {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 18px; font-weight: 700; color: var(--white);
+    }
+
+    .result-expl { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+
+    .tx-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; color: var(--tydro); text-decoration: none;
+    }
+    .tx-link:hover { text-decoration: underline; }
 
     /* ── CTA BOX ── */
     .cta-box {
-      display: none; margin-top: 16px; padding: 16px 18px;
-      background: rgba(249,115,22,0.08); border: 1px solid rgba(249,115,22,0.3);
+      display: none; margin-top: 14px; padding: 16px 18px;
+      background: var(--nado-soft);
+      border: 1px solid rgba(255,107,53,0.25);
       border-radius: 10px;
     }
-    .cta-box.visible { display: block; }
-    .cta-label { font-size: 11px; color: var(--orange); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
-    .cta-text { font-size: 13px; color: var(--text); margin-bottom: 12px; line-height: 1.5; }
-    .cta-link { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--orange); color: white; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; transition: all 0.2s; }
-    .cta-link:hover { background: #fb923c; transform: translateY(-1px); }
-
-    .tx-link { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--cyan); text-decoration: none; letter-spacing: 0.5px; }
-    .tx-link:hover { text-decoration: underline; }
+    .cta-box.show { display: block; animation: slideUp 0.3s ease both; }
+    .cta-lbl { font-size: 10px; color: var(--nado); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+    .cta-txt { font-size: 13px; color: var(--text); line-height: 1.5; margin-bottom: 12px; }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 8px;
+      background: var(--nado); color: white;
+      font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500;
+      text-decoration: none; transition: all 0.18s;
+    }
+    .cta-btn:hover { background: #ff8555; transform: translateY(-1px); }
 
     /* ── TX STATUS ── */
-    .tx-status-bar {
-      display: none; align-items: center; gap: 10px; padding: 14px 18px;
-      background: var(--ink3); border: 1px solid var(--border); border-radius: 10px;
-      margin-bottom: 16px; font-size: 13px; color: var(--muted);
+    .tx-bar {
+      display: none; align-items: center; gap: 10px;
+      padding: 14px 18px;
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 10px; margin-bottom: 16px;
+      font-size: 13px; color: var(--muted);
     }
-    .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
-    .spinner.orange { border-top-color: var(--orange); }
+
+    .spin {
+      width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid var(--border2);
+      animation: spin 0.7s linear infinite;
+    }
+
+    .spin.ink   { border-top-color: var(--ink); }
+    .spin.nado  { border-top-color: var(--nado); }
+    .spin.tydro { border-top-color: var(--tydro); }
+
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .already-msg { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: 8px; }
-    .nav-buttons { display: flex; gap: 10px; }
-    .nav-buttons .btn { flex: 1; }
+    .already-note {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12px; color: var(--muted); margin-top: 8px;
+    }
 
-    /* ── WRONG NETWORK ── */
-    #wrong-network { display: none; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 10px; padding: 14px 18px; font-size: 13px; color: var(--gold); margin-bottom: 16px; text-align: center; }
+    .nav-row { display: flex; gap: 10px; }
+    .nav-row .btn { flex: 1; }
 
-    #loading, #nado-loading { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+    /* ── SECTION LABEL ── */
+    .sec-label {
+      font-size: 10px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 2.5px;
+      margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
+    }
 
-    /* ── NADO SIMULATOR ── */
-    .nado-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-    .nado-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--white); }
-    .nado-badge { background: rgba(249,115,22,0.15); border: 1px solid rgba(249,115,22,0.3); color: var(--orange); font-size: 11px; padding: 4px 10px; border-radius: 100px; letter-spacing: 1px; }
+    .sec-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
 
-    .scenario-grid { display: grid; gap: 10px; margin-bottom: 24px; }
-    .scenario-card {
+    /* ── GAME HEADER ── */
+    .game-hdr {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 20px; gap: 12px; flex-wrap: wrap;
+    }
+
+    .game-hdr-title {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 22px; font-weight: 700; color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .game-hdr-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    .proto-badge {
+      font-size: 10px; padding: 5px 12px; border-radius: 100px;
+      font-family: 'DM Mono', monospace; letter-spacing: 1px;
+      flex-shrink: 0;
+    }
+
+    .proto-badge.nado  { background: var(--nado-soft); border: 1px solid rgba(255,107,53,0.3); color: var(--nado); }
+    .proto-badge.tydro { background: var(--tydro-soft); border: 1px solid rgba(0,212,255,0.3); color: var(--tydro); }
+
+    /* ── HOWTO ── */
+    .howto-toggle {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 18px; background: var(--ink3); border: 1px solid var(--border);
-      border-radius: 10px; cursor: pointer; transition: all 0.2s;
+      width: 100%; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 18px; cursor: pointer;
+      font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted);
+      transition: all 0.2s; margin-bottom: 16px;
     }
-    .scenario-card:hover { border-color: var(--orange); background: rgba(249,115,22,0.06); }
-    .scenario-card.selected { border-color: var(--orange); background: rgba(249,115,22,0.1); }
-    .scenario-card:disabled, .scenario-card.disabled { cursor: not-allowed; opacity: 0.5; }
-    .scenario-name { font-weight: 700; font-size: 14px; color: var(--white); margin-bottom: 4px; }
-    .scenario-meta { font-size: 12px; color: var(--muted); }
-    .scenario-move { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; }
-    .move-up { color: var(--green); }
-    .move-down { color: var(--red); }
 
-    .position-form { display: none; }
-    .position-form.visible { display: block; }
+    .howto-toggle:hover { border-color: var(--border2); color: var(--text); }
 
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .howto-body {
+      display: none;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 0 0 10px 10px; border-top: none;
+      padding: 20px 18px; margin-top: -16px; margin-bottom: 16px;
+    }
+
+    .howto-section { margin-bottom: 16px; }
+    .howto-section:last-child { margin-bottom: 0; }
+
+    .howto-ttl {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .howto-ttl.nado  { color: var(--nado); }
+    .howto-ttl.tydro { color: var(--tydro); }
+
+    .howto-txt { font-size: 13px; color: var(--text); line-height: 1.6; }
+
+    .step-list { display: grid; gap: 10px; margin-top: 8px; }
+
+    .step-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 13px; color: var(--text); line-height: 1.5;
+    }
+
+    .step-num {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+    }
+
+    .step-num.nado  { background: var(--nado); color: white; }
+    .step-num.tydro { background: var(--tydro); color: #080810; }
+
+    /* ── SCENARIO CARDS ── */
+    .scenario-grid { display: grid; gap: 9px; margin-bottom: 0; }
+
+    .s-card {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; cursor: pointer; transition: all 0.18s;
+      gap: 12px;
+    }
+
+    .s-card:hover { border-color: var(--nado); background: var(--nado-soft); }
+    .s-card.selected { border-color: var(--nado); background: var(--nado-soft); }
+
+    .s-card.tydro-s:hover { border-color: var(--tydro); background: var(--tydro-soft); }
+    .s-card.tydro-s.selected { border-color: var(--tydro); background: var(--tydro-soft); }
+
+    .s-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+
+    .s-icon {
+      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; background: var(--surface);
+      border: 1px solid var(--border2);
+    }
+
+    .s-name { font-weight: 500; font-size: 14px; color: var(--white); margin-bottom: 3px; }
+    .s-meta { font-size: 11px; color: var(--muted); }
+
+    .s-move {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 18px; font-weight: 800; flex-shrink: 0;
+    }
+    .s-move.up   { color: var(--green); }
+    .s-move.down { color: var(--red); }
+    .s-move.apy  { color: var(--green); }
+
+    /* ── POSITION FORM ── */
+    .pos-form { display: none; }
+    .pos-form.show { display: block; }
+
+    .selected-summary {
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 12px; padding: 16px 18px; margin-bottom: 16px;
+    }
+
+    .ss-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+    .ss-name {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 4px;
+    }
+    .ss-detail { font-size: 12px; color: var(--muted); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+
     .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+
+    .form-lbl {
+      font-size: 10px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 2px;
+    }
+
     .form-input {
-      padding: 12px 14px; background: var(--ink3); border: 1px solid var(--border);
-      border-radius: 8px; color: var(--white); font-family: 'Space Mono', monospace;
-      font-size: 14px; transition: border-color 0.2s; width: 100%;
+      padding: 12px 14px;
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 8px; color: var(--white);
+      font-family: 'DM Mono', monospace; font-size: 14px;
+      transition: border-color 0.2s; width: 100%;
     }
-    .form-input:focus { outline: none; border-color: var(--orange); }
+
+    .form-input:focus { outline: none; border-color: var(--ink); }
     .form-input::placeholder { color: var(--muted); }
+    .form-input:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .direction-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .direction-btn {
-      padding: 12px; border-radius: 8px; border: 1px solid var(--border);
-      background: var(--ink3); color: var(--muted);
-      font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700;
-      cursor: pointer; transition: all 0.2s; text-align: center;
+    .direction-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .dir-btn {
+      padding: 12px; border-radius: 8px;
+      border: 1px solid var(--border2); background: var(--surface2);
+      color: var(--muted); font-family: 'DM Mono', monospace;
+      font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.18s;
     }
-    .direction-btn.long.active { background: rgba(16,185,129,0.15); border-color: var(--green); color: var(--green); }
-    .direction-btn.short.active { background: rgba(239,68,68,0.1); border-color: var(--red); color: var(--red); }
-    .direction-btn:not(.active):hover { border-color: var(--muted); color: var(--text); }
 
-    .liq-preview {
-      padding: 14px 18px; background: var(--ink3); border: 1px solid var(--border);
-      border-radius: 10px; margin-bottom: 16px; font-size: 13px;
+    .dir-btn.long.active  { background: rgba(0,229,160,0.1); border-color: var(--green); color: var(--green); }
+    .dir-btn.short.active { background: rgba(255,77,106,0.08); border-color: var(--red); color: var(--red); }
+    .dir-btn:not(.active):hover { border-color: var(--border2); color: var(--text); }
+
+    .liq-box {
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 10px; padding: 14px 18px; margin-bottom: 14px;
     }
-    .liq-preview-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
-    .liq-preview-value { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--gold); }
 
-    .nado-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
-    .nado-stat { background: var(--ink3); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
-    .nado-stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
-    .nado-stat-value { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--white); }
-    .nado-stat-value.green { color: var(--green); }
-    .nado-stat-value.red { color: var(--red); }
-    .nado-stat-value.gold { color: var(--gold); }
+    .liq-box-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
 
-    .guess-result { padding: 12px 16px; border-radius: 8px; margin-bottom: 12px; font-size: 13px; }
-    .guess-result.good { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--green); }
-    .guess-result.bad { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+    .liq-price {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 28px; font-weight: 800; color: var(--gold);
+    }
 
-    footer { text-align: center; margin-top: 48px; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
-    footer a { color: var(--purple-glow); text-decoration: none; }
+    .liq-hint { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+    .btn-row { display: flex; gap: 10px; }
+    .btn-row .btn { flex: 1; }
+    .btn-back { flex: 0 0 auto !important; padding: 14px 20px; }
+
+    /* ── HEALTH BAR ── */
+    .health-wrap {
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 10px; padding: 14px 18px; margin-bottom: 14px;
+    }
+
+    .health-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+
+    .health-track {
+      background: var(--border); border-radius: 100px; height: 6px;
+      overflow: hidden; margin-bottom: 8px;
+    }
+
+    .health-fill { height: 100%; border-radius: 100px; transition: width 0.5s ease, background 0.5s ease; }
+
+    .health-row { display: flex; align-items: center; justify-content: space-between; }
+
+    .health-val {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 24px; font-weight: 800;
+    }
+
+    .health-sub { font-size: 11px; color: var(--muted); }
+    .health-msg { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+
+    /* ── RESULT GRID ── */
+    .res-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      margin: 16px 0;
+    }
+
+    .res-cell {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px;
+    }
+
+    .res-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+
+    .res-val {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 22px; font-weight: 800; color: var(--white);
+      line-height: 1;
+    }
+
+    .res-val.g    { color: var(--green); }
+    .res-val.r    { color: var(--red); }
+    .res-val.gold { color: var(--gold); }
+    .res-val.tydro { color: var(--tydro); }
+
+    .guess-row {
+      padding: 12px 16px; border-radius: 8px; margin-bottom: 12px;
+      font-size: 13px; line-height: 1.5;
+    }
+    .guess-row.good { background: rgba(0,229,160,0.08); border: 1px solid rgba(0,229,160,0.25); color: var(--green); }
+    .guess-row.bad  { background: rgba(255,77,106,0.06); border: 1px solid rgba(255,77,106,0.2); color: var(--red); }
+
+    /* CTA Protocol boxes */
+    .proto-cta {
+      margin-top: 14px; padding: 16px 18px; border-radius: 10px; border: 1px solid;
+    }
+
+    .proto-cta.nado  { background: var(--nado-soft);  border-color: rgba(255,107,53,0.25); }
+    .proto-cta.tydro { background: var(--tydro-soft); border-color: rgba(0,212,255,0.2); }
+
+    .proto-cta-lbl {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px;
+    }
+    .proto-cta.nado  .proto-cta-lbl { color: var(--nado); }
+    .proto-cta.tydro .proto-cta-lbl { color: var(--tydro); }
+
+    .proto-cta-txt { font-size: 13px; color: var(--text); line-height: 1.5; margin-bottom: 12px; }
+
+    .proto-cta-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 8px; border: none;
+      font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500;
+      text-decoration: none; cursor: pointer; transition: all 0.18s;
+    }
+
+    .proto-cta.nado  .proto-cta-btn { background: var(--nado); color: white; }
+    .proto-cta.tydro .proto-cta-btn { background: var(--tydro); color: #080810; }
+    .proto-cta-btn:hover { transform: translateY(-1px); opacity: 0.9; }
+
+    /* ── LOADING ── */
+    .loading-txt { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; margin-top: 60px;
+      font-size: 11px; color: var(--muted); letter-spacing: 1px;
+    }
+
+    footer a { color: #a78bfa; text-decoration: none; }
     footer a:hover { text-decoration: underline; }
 
+    /* ── UTILS ── */
     .hidden { display: none !important; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 480px) {
+      .wrap { padding: 28px 14px 80px; }
+      .connect-card { padding: 32px 20px; }
+      .tab-btn { font-size: 11px; padding: 9px 8px; gap: 5px; }
+      .tab-chip { display: none; }
+      .form-grid { grid-template-columns: 1fr; }
+      .res-grid  { grid-template-columns: 1fr; }
+      .score-bar { grid-template-columns: repeat(3,1fr); gap: 8px; }
+      .score-val { font-size: 26px; }
+      .site-title { font-size: 36px; }
+    }
   </style>
 </head>
 <body>
-<div class="container">
+<div class="wrap">
 
   <!-- Header -->
   <header>
-    <div class="logo-icon">🎮</div>
-    <h1>Ink Arcade</h1>
-    <p class="subtitle">DeFi Learning Platform on Ink</p>
-    <div class="network-badge">
-      <span class="network-dot"></span>
-      <span id="network-label">Ink Mainnet</span>
+    <div class="logo-mark">
+      <div class="logo-gem">🎮</div>
+      <span class="logo-text">Ink Arcade</span>
+    </div>
+    <div class="site-title">Learn DeFi.<br>On Ink.</div>
+    <div class="site-sub">Every action is a real transaction</div>
+    <div class="net-pill">
+      <span class="net-dot"></span>
+      <span>Ink Mainnet</span>
     </div>
   </header>
 
   <!-- Wrong network -->
-  <div id="wrong-network">
+  <div class="warn-bar" id="wrong-network">
     Switch to <strong id="network-name-warn">Ink Mainnet</strong> in your wallet to continue
   </div>
 
   <!-- Connect -->
-  <div class="card" id="connect-section">
-    <span class="connect-icon">🔗</span>
+  <div class="connect-card" id="connect-section">
+    <span class="connect-icon">⛓️</span>
     <h2>Connect your wallet</h2>
-    <p>Learn DeFi by doing DeFi. Every action is a real on-chain transaction on Ink.<br/>Works with Rabby, MetaMask, or any EVM wallet.</p>
-    <button class="btn btn-primary" id="connect-btn" onclick="connectWallet()">Connect Wallet</button>
+    <p>Three games. Three protocols. All on Ink mainnet.<br/>Works with Rabby, MetaMask, or any EVM wallet.</p>
+    <div class="game-chips">
+      <span class="game-chip chip-trivia">🎮 DeFi Trivia</span>
+      <span class="game-chip chip-nado">📊 Nado Simulator</span>
+      <span class="game-chip chip-tydro">🏦 Tydro Simulator</span>
+    </div>
+    <button class="btn btn-ink" id="connect-btn" onclick="connectWallet()">Connect Wallet</button>
   </div>
 
-  <!-- Wallet bar -->
-  <div class="card hidden" id="wallet-section">
-    <div id="wallet-info">
-      <div class="wallet-address">
+  <!-- Post-connect UI -->
+  <div class="hidden" id="game-area">
+
+    <!-- Wallet bar -->
+    <div class="wallet-bar" id="wallet-section">
+      <div class="wallet-addr">
         <span class="wallet-dot"></span>
         <span id="wallet-addr">0x0000...0000</span>
       </div>
-      <button class="btn btn-outline" style="padding:8px 16px;font-size:12px" onclick="disconnectWallet()">Disconnect</button>
+      <button class="btn btn-ghost btn-sm" onclick="disconnectWallet()">Disconnect</button>
     </div>
-  </div>
 
-  <!-- Game tabs (shown after connect) -->
-  <div class="hidden" id="game-area">
-
-    <!-- Tabs -->
-    <div class="tabs">
-      <button class="tab active" id="tab-trivia" onclick="switchTab('trivia')">
-        🎮 DeFi Trivia <span class="tab-badge">25 Q</span>
+    <!-- Tab row -->
+    <div class="tab-row">
+      <button class="tab-btn t-trivia active" id="tab-trivia" onclick="switchTab('trivia')">
+        🎮 Trivia <span class="tab-chip">25 Q</span>
       </button>
-      <button class="tab nado-tab" id="tab-nado" onclick="switchTab('nado')">
-        📊 Nado Simulator <span class="tab-badge">BETA</span>
+      <button class="tab-btn t-nado" id="tab-nado" onclick="switchTab('nado')">
+        📊 Nado <span class="tab-chip">PERPS</span>
       </button>
-      <button class="tab tydro-tab" id="tab-tydro" onclick="switchTab('tydro')">
-        🏦 Tydro Simulator <span class="tab-badge">NEW</span>
+      <button class="tab-btn t-tydro" id="tab-tydro" onclick="switchTab('tydro')">
+        🏦 Tydro <span class="tab-chip">LENDING</span>
       </button>
     </div>
 
-    <!-- ══════════════════════════════════════════════════ -->
-    <!-- TRIVIA TAB                                         -->
-    <!-- ══════════════════════════════════════════════════ -->
+    <!-- ══ TRIVIA TAB ══ -->
     <div class="tab-panel active" id="panel-trivia">
 
-      <!-- Score bar -->
-      <div class="card" id="score-section">
-        <div id="score-bar">
-          <div class="stat">
-            <span class="stat-value green" id="stat-correct">0</span>
-            <span class="stat-label">Correct</span>
-          </div>
-          <div class="stat">
-            <span class="stat-value" id="stat-answered">0</span>
-            <span class="stat-label">Answered</span>
-          </div>
-          <div class="stat">
-            <span class="stat-value gold" id="stat-pct">-</span>
-            <span class="stat-label">Accuracy</span>
-          </div>
+      <!-- Score -->
+      <div class="score-bar">
+        <div class="score-cell">
+          <span class="score-val g" id="stat-correct">0</span>
+          <span class="score-label">Correct</span>
+        </div>
+        <div class="score-cell">
+          <span class="score-val" id="stat-answered">0</span>
+          <span class="score-label">Answered</span>
+        </div>
+        <div class="score-cell">
+          <span class="score-val gold" id="stat-pct">—</span>
+          <span class="score-label">Accuracy</span>
         </div>
       </div>
 
       <!-- Question card -->
-      <div class="card" id="question-section">
-        <div id="loading">Loading question from chain...</div>
+      <div class="card">
+        <div class="loading-txt" id="loading">Loading question from chain...</div>
         <div id="question-content" class="hidden">
-          <div class="question-meta">
-            <span class="q-number" id="q-number">Question 1 of 25</span>
-            <span class="q-tag">DEFI x INK</span>
+          <div class="q-meta">
+            <span class="q-counter" id="q-number">Question 1 of 25</span>
+            <span class="q-pill">DEFI × INK</span>
           </div>
-          <div class="question-text" id="q-text"></div>
-          <div class="options" id="options-list"></div>
-          <div id="already-answered" class="already-msg hidden">Already answered this question</div>
+          <div class="q-text" id="q-text"></div>
+          <div class="opts" id="options-list"></div>
+          <div class="already-note hidden" id="already-answered">✓ Already answered</div>
         </div>
       </div>
 
       <!-- Tx status -->
-      <div class="tx-status-bar" id="tx-status">
-        <div class="spinner"></div>
+      <div class="tx-bar" id="tx-status">
+        <div class="spin ink"></div>
         <span id="tx-msg">Submitting answer on-chain...</span>
       </div>
 
-      <!-- Result panel -->
-      <div id="result-panel">
-        <div class="result-header">
+      <!-- Result -->
+      <div class="result-panel" id="result-panel">
+        <div class="result-head">
           <span class="result-emoji" id="result-emoji"></span>
-          <span class="result-title" id="result-title"></span>
+          <span class="result-ttl" id="result-title"></span>
         </div>
-        <div class="result-explanation" id="result-explanation"></div>
-        <a class="tx-link hidden" id="tx-link" href="#" target="_blank">View transaction on Ink Explorer</a>
-
-        <!-- CTA box — shown after relevant questions -->
+        <div class="result-expl" id="result-explanation"></div>
+        <a class="tx-link hidden" id="tx-link" href="#" target="_blank">↗ View on Ink Explorer</a>
         <div class="cta-box" id="cta-box">
-          <div class="cta-label">Try it for real</div>
-          <div class="cta-text" id="cta-text"></div>
-          <a class="cta-link" id="cta-link" href="#" target="_blank">Open protocol →</a>
+          <div class="cta-lbl">Try it for real</div>
+          <div class="cta-txt" id="cta-text"></div>
+          <a class="cta-btn" id="cta-link" href="#" target="_blank">Open protocol →</a>
         </div>
       </div>
 
       <!-- Nav -->
-      <div class="nav-buttons hidden" id="nav-buttons">
-        <button class="btn btn-outline" onclick="prevQuestion()">Prev</button>
-        <button class="btn btn-primary" onclick="nextQuestion()">Next</button>
+      <div class="nav-row hidden" id="nav-buttons">
+        <button class="btn btn-ghost" onclick="prevQuestion()">← Prev</button>
+        <button class="btn btn-ink" onclick="nextQuestion()">Next →</button>
       </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════ -->
-    <!-- NADO SIMULATOR TAB                                 -->
-    <!-- ══════════════════════════════════════════════════ -->
+    <!-- ══ NADO TAB ══ -->
     <div class="tab-panel" id="panel-nado">
       <div class="card">
-        <div class="nado-header">
+        <div class="game-hdr">
           <div>
-            <div class="nado-title">Nado Perp Simulator</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:4px;">
-              Open a leveraged position. Guess your liquidation price. See the result on-chain.
-            </div>
+            <div class="game-hdr-title">Nado Perp Simulator</div>
+            <div class="game-hdr-sub">Open a leveraged position. Guess your liquidation price.<br/>See the result on-chain.</div>
           </div>
-          <span class="nado-badge">PERP DEX</span>
+          <span class="proto-badge nado">PERP DEX</span>
         </div>
 
-        <div id="nado-loading">Loading scenarios from chain...</div>
+        <!-- How to play -->
+        <button class="howto-toggle" onclick="toggleHowTo()">
+          <span>How to play</span><span id="howto-arrow">▾</span>
+        </button>
+        <div class="howto-body" id="howto-panel">
+          <div class="howto-section">
+            <div class="howto-ttl nado">What is leverage?</div>
+            <div class="howto-txt">Leverage multiplies your position. With 5x and 1,000 credits, you control 5,000 credits. Gains and losses are both amplified — a 10% move means 50% gain or loss on your collateral.</div>
+          </div>
+          <div class="howto-section">
+            <div class="howto-ttl nado">What is a liquidation price?</div>
+            <div class="howto-txt">If price moves too far against you, the protocol closes your position automatically. That price is your liquidation price — shown in gold on the next screen.</div>
+          </div>
+          <div class="howto-section">
+            <div class="howto-ttl nado">What are game credits?</div>
+            <div class="howto-txt">Not real money. A scoring system so you can see realistic PnL numbers without financial risk. The math is real — only the stakes are not.</div>
+          </div>
+          <div class="step-list" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
+            <div class="step-item"><span class="step-num nado">1</span><span>Pick a market scenario.</span></div>
+            <div class="step-item"><span class="step-num nado">2</span><span>Choose direction, leverage, size. Your liquidation price is shown — enter your guess within 5%.</span></div>
+            <div class="step-item"><span class="step-num nado">3</span><span>Open position on-chain, then resolve. Contract calculates PnL on Ink.</span></div>
+          </div>
+        </div>
 
-        <div id="nado-game" class="hidden">
+        <div id="nado-loading" class="loading-txt hidden">Loading...</div>
 
-          <!-- Step 1: Pick scenario -->
+        <div id="nado-game">
+          <!-- Step 1 -->
           <div id="nado-step1">
-            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">
-              Step 1 — Pick a market scenario
-            </div>
+            <div class="sec-label">Step 1 — Pick a market scenario</div>
             <div class="scenario-grid" id="scenario-grid"></div>
           </div>
 
-          <!-- Step 2: Configure position -->
-          <div class="position-form" id="nado-step2">
-            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">
-              Step 2 — Configure your position
+          <!-- Step 2 -->
+          <div class="pos-form" id="nado-step2">
+            <div class="sec-label">Step 2 — Configure your position</div>
+
+            <div class="selected-summary">
+              <div class="ss-label">Selected scenario</div>
+              <div class="ss-name" id="selected-scenario-name"></div>
+              <div class="ss-detail" id="selected-scenario-detail"></div>
             </div>
 
-            <!-- Selected scenario summary -->
-            <div class="liq-preview" style="margin-bottom:16px;" id="selected-scenario-summary">
-              <div class="liq-preview-label">Selected scenario</div>
-              <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--white);" id="selected-scenario-name"></div>
-              <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="selected-scenario-detail"></div>
-            </div>
-
-            <!-- Long / Short -->
-            <div class="form-group" style="margin-bottom:16px;">
-              <div class="form-label">Direction</div>
-              <div class="direction-toggle">
-                <button class="direction-btn long active" id="btn-long" onclick="setDirection(true)">Long (Buy)</button>
-                <button class="direction-btn short" id="btn-short" onclick="setDirection(false)">Short (Sell)</button>
+            <div class="form-group" style="margin-bottom:14px;">
+              <div class="form-lbl">Direction</div>
+              <div class="direction-row">
+                <button class="dir-btn long active" id="btn-long" onclick="setDirection(true)">Long (Buy)</button>
+                <button class="dir-btn short" id="btn-short" onclick="setDirection(false)">Short (Sell)</button>
               </div>
             </div>
 
-            <!-- Leverage + Size -->
-            <div class="form-row">
+            <div class="form-grid">
               <div class="form-group">
-                <label class="form-label" for="inp-leverage">Leverage (2x – max)</label>
-                <input class="form-input" id="inp-leverage" type="number" min="2" max="20" value="5" placeholder="e.g. 5" oninput="updateLiqPreview()" />
+                <label class="form-lbl" for="inp-leverage">Leverage (2x – max)</label>
+                <input class="form-input" id="inp-leverage" type="number" min="2" max="20" value="5" oninput="updateLiqPreview()" />
               </div>
               <div class="form-group">
-                <label class="form-label" for="inp-size">Size (collateral, 1–100000)</label>
-                <input class="form-input" id="inp-size" type="number" min="1" max="100000" value="1000" placeholder="e.g. 1000" />
+                <label class="form-lbl" for="inp-size">Size (collateral)</label>
+                <input class="form-input" id="inp-size" type="number" min="1" max="100000" value="1000" />
               </div>
             </div>
 
-            <!-- Liquidation price preview -->
-            <div class="liq-preview" id="liq-preview">
-              <div class="liq-preview-label">Your calculated liquidation price</div>
-              <div class="liq-preview-value" id="liq-calc">$—</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:4px;">
-                Long: entry × (lev-1)/lev &nbsp;|&nbsp; Short: entry × (lev+1)/lev
-              </div>
+            <div class="liq-box">
+              <div class="liq-box-lbl">Your liquidation price</div>
+              <div class="liq-price" id="liq-calc">$—</div>
+              <div class="liq-hint" id="liq-plain-english">If price drops below this, your long gets liquidated.</div>
             </div>
 
-            <!-- Player guess -->
             <div class="form-group" style="margin-bottom:20px;">
-              <label class="form-label" for="inp-guess">Your liquidation price guess (USD)</label>
+              <label class="form-lbl" for="inp-guess">Your liquidation price guess (USD)</label>
               <input class="form-input" id="inp-guess" type="number" min="1" placeholder="Enter your guess..." />
-              <div style="font-size:11px;color:var(--muted);margin-top:6px;">
-                Within 5% = correct guess. Use the formula above to work it out.
-              </div>
+              <div style="font-size:11px;color:var(--muted);margin-top:6px;">The liquidation price is shown above. Enter it exactly or close to it — within 5% counts as correct.</div>
             </div>
 
-            <div style="display:flex;gap:10px;">
-              <button class="btn btn-outline" style="flex:0 0 auto;padding:14px 20px;" onclick="backToScenarios()">Back</button>
-              <button class="btn btn-orange" id="open-pos-btn" onclick="openPosition()">Open Position On-Chain</button>
+            <div class="btn-row">
+              <button class="btn btn-ghost btn-back" onclick="backToScenarios()">Back</button>
+              <button class="btn btn-nado" id="open-pos-btn" onclick="openPosition()">Open Position On-Chain</button>
             </div>
           </div>
 
-          <!-- Step 3: Resolve -->
-          <div class="position-form" id="nado-step3">
-            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">
-              Step 3 — Resolve your position
+          <!-- Step 3 -->
+          <div class="pos-form" id="nado-step3">
+            <div class="sec-label">Step 3 — Resolve your position</div>
+            <div class="selected-summary" style="margin-bottom:16px;">
+              <div class="ss-label">Open position</div>
+              <div class="ss-name" id="open-pos-desc"></div>
+              <div class="ss-detail" id="open-pos-detail"></div>
             </div>
-            <div class="liq-preview" id="open-position-summary">
-              <div class="liq-preview-label">Open position</div>
-              <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--white);" id="open-pos-desc"></div>
-              <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="open-pos-detail"></div>
-            </div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;">
-              The market scenario will now play out. The contract calculates your PnL, funding cost, and whether you got liquidated — all on-chain.
-            </p>
-            <button class="btn btn-orange" id="resolve-btn" onclick="resolvePosition()">Resolve Position On-Chain</button>
+            <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;">The market scenario will now play out. The contract calculates your PnL, funding cost, and whether you got liquidated — all on-chain.</p>
+            <button class="btn btn-nado" id="resolve-btn" onclick="resolvePosition()">Resolve Position On-Chain</button>
           </div>
-
         </div>
       </div>
 
       <!-- Nado tx status -->
-      <div class="tx-status-bar" id="nado-tx-status">
-        <div class="spinner orange"></div>
-        <span id="nado-tx-msg">Submitting position on-chain...</span>
+      <div class="tx-bar" id="nado-tx-status">
+        <div class="spin nado"></div>
+        <span id="nado-tx-msg">Submitting on-chain...</span>
       </div>
 
       <!-- Nado result -->
-      <div id="nado-result-panel">
-        <div class="result-header">
+      <div class="result-panel" id="nado-result-panel">
+        <div class="result-head">
           <span class="result-emoji" id="nado-result-emoji"></span>
-          <span class="result-title" id="nado-result-title"></span>
+          <span class="result-ttl" id="nado-result-title"></span>
         </div>
-
-        <div class="nado-result-grid">
-          <div class="nado-stat">
-            <div class="nado-stat-label">Exit Price</div>
-            <div class="nado-stat-value gold" id="nr-exit"></div>
+        <div class="res-grid">
+          <div class="res-cell">
+            <div class="res-lbl">Exit Price</div>
+            <div class="res-val gold" id="nr-exit">—</div>
           </div>
-          <div class="nado-stat">
-            <div class="nado-stat-label">PnL</div>
-            <div class="nado-stat-value" id="nr-pnl"></div>
+          <div class="res-cell">
+            <div class="res-lbl">PnL</div>
+            <div class="res-val" id="nr-pnl">—</div>
           </div>
-          <div class="nado-stat">
-            <div class="nado-stat-label">Funding Cost</div>
-            <div class="nado-stat-value" id="nr-funding"></div>
+          <div class="res-cell">
+            <div class="res-lbl">Funding Cost</div>
+            <div class="res-val" id="nr-funding">—</div>
           </div>
-          <div class="nado-stat">
-            <div class="nado-stat-label">Liq Price</div>
-            <div class="nado-stat-value" id="nr-liq"></div>
+          <div class="res-cell">
+            <div class="res-lbl">Liq Price</div>
+            <div class="res-val tydro" id="nr-liq">—</div>
           </div>
         </div>
-
-        <div class="guess-result" id="nr-guess-result">
-          <strong id="nr-guess-verdict"></strong> — Your guess: <span id="nr-guess-val"></span> | Actual: <span id="nr-actual-liq"></span> | Deviation: <span id="nr-deviation"></span>
+        <div class="guess-row" id="nr-guess-result">
+          <strong id="nr-guess-verdict"></strong> — Guess: <span id="nr-guess-val"></span> | Actual: <span id="nr-actual-liq"></span> | Deviation: <span id="nr-deviation"></span>
         </div>
-
-        <a class="tx-link hidden" id="nado-tx-link" href="#" target="_blank" style="margin-bottom:16px;display:inline-flex;">View transaction on Ink Explorer</a>
-
-        <!-- CTA to real Nado -->
-        <div class="cta-box visible" style="margin-top:16px;">
-          <div class="cta-label">Ready for real perps?</div>
-          <div class="cta-text">You just simulated a leveraged position on Ink. Try it for real on Nado — Ink's native perpetual DEX.</div>
-          <a class="cta-link" href="https://nado.finance" target="_blank">Open Nado →</a>
+        <a class="tx-link hidden" id="nado-tx-link" href="#" target="_blank" style="display:inline-flex;margin-bottom:14px;">↗ View on Ink Explorer</a>
+        <div class="proto-cta nado">
+          <div class="proto-cta-lbl">Ready for real perps?</div>
+          <div class="proto-cta-txt">You just simulated a leveraged position on Ink. Try it for real on Nado — Ink's native perpetual DEX.</div>
+          <a class="proto-cta-btn" href="https://app.nado.xyz" target="_blank">Open Nado →</a>
         </div>
-
-        <button class="btn btn-orange" style="margin-top:16px;" onclick="resetNado()">Try Another Scenario</button>
+        <button class="btn btn-nado" style="margin-top:14px;" onclick="resetNado()">Try Another Scenario</button>
       </div>
-
     </div>
-    <!-- end nado tab -->
 
-    <!-- ══════════════════════════════════════════════════ -->
-    <!-- TYDRO SIMULATOR TAB                                -->
-    <!-- ══════════════════════════════════════════════════ -->
+    <!-- ══ TYDRO TAB ══ -->
     <div class="tab-panel" id="panel-tydro">
       <div class="card">
-        <div class="nado-header">
+        <div class="game-hdr">
           <div>
-            <div class="nado-title">Tydro Lending Simulator</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:4px;">
-              Supply collateral. Borrow against it. Survive a price drop — or get liquidated.
-            </div>
+            <div class="game-hdr-title">Tydro Lending Simulator</div>
+            <div class="game-hdr-sub">Supply collateral. Borrow against it.<br/>Survive a price drop — or get liquidated.</div>
           </div>
-          <span class="tydro-badge">LENDING</span>
+          <span class="proto-badge tydro">LENDING</span>
         </div>
 
-        <!-- How to Play -->
-        <div style="margin-bottom:20px;">
-          <button onclick="toggleTydroHowTo()" style="display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--ink3);border:1px solid var(--border);border-radius:10px;padding:14px 18px;cursor:pointer;font-family:'Space Mono',monospace;font-size:13px;color:var(--muted);transition:all 0.2s;">
-            <span>How to play</span><span id="tydro-howto-arrow">▼</span>
-          </button>
-          <div id="tydro-howto-panel" style="display:none;background:var(--ink3);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:20px 18px;">
-            <div style="display:grid;gap:16px;">
-              <div>
-                <div style="font-size:11px;color:var(--blue-lt);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What is collateral?</div>
-                <div style="font-size:13px;color:var(--text);line-height:1.6;">Collateral is the asset you deposit to back a loan. On Tydro, you supply ETH or BTC and borrow USDC against it. If your collateral value drops too much, your position gets liquidated.</div>
-              </div>
-              <div>
-                <div style="font-size:11px;color:var(--blue-lt);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What is a health factor?</div>
-                <div style="font-size:13px;color:var(--text);line-height:1.6;">Your health factor shows how safe your position is. Above 1.0 = safe. Below 1.0 = liquidated. The higher it is, the more price can drop before you get liquidated.</div>
-              </div>
-              <div>
-                <div style="font-size:11px;color:var(--blue-lt);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">What is LTV?</div>
-                <div style="font-size:13px;color:var(--text);line-height:1.6;">LTV (Loan to Value) is how much you can borrow relative to your collateral. 75% LTV means you can borrow up to $750 for every $1,000 of collateral. Borrowing close to the max increases liquidation risk.</div>
-              </div>
-              <div style="border-top:1px solid var(--border);padding-top:16px;">
-                <div style="font-size:11px;color:var(--blue-lt);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;">How to play</div>
-                <div style="display:grid;gap:8px;">
-                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
-                    <span style="background:var(--blue);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">1</span>
-                    <span>Pick a lending scenario — each has a different asset, LTV, and liquidation threshold.</span>
-                  </div>
-                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
-                    <span style="background:var(--blue);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">2</span>
-                    <span>Supply collateral and borrow against it. Your health factor shows how safe you are.</span>
-                  </div>
-                  <div style="display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);">
-                    <span style="background:var(--blue);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">3</span>
-                    <span>Simulate a price drop. The contract calculates whether you survive or get liquidated — all on-chain.</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <button class="howto-toggle" onclick="toggleTydroHowTo()">
+          <span>How to play</span><span id="tydro-howto-arrow">▾</span>
+        </button>
+        <div class="howto-body" id="tydro-howto-panel">
+          <div class="howto-section">
+            <div class="howto-ttl tydro">What is collateral?</div>
+            <div class="howto-txt">The asset you deposit to back a loan. You supply ETH or BTC and borrow USDC against it. If your collateral value drops too much, you get liquidated.</div>
+          </div>
+          <div class="howto-section">
+            <div class="howto-ttl tydro">What is a health factor?</div>
+            <div class="howto-txt">Shows how safe your position is. Above 1.0x = safe. Below 1.0x = liquidated. Higher is safer — more room for the price to drop before you get liquidated.</div>
+          </div>
+          <div class="howto-section">
+            <div class="howto-ttl tydro">What is LTV?</div>
+            <div class="howto-txt">Loan to Value — how much you can borrow vs your collateral. 75% LTV means you can borrow up to $750 for every $1,000 supplied. Borrowing near the max is risky.</div>
+          </div>
+          <div class="step-list" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
+            <div class="step-item"><span class="step-num tydro">1</span><span>Pick a lending scenario.</span></div>
+            <div class="step-item"><span class="step-num tydro">2</span><span>Supply collateral and borrow. Watch your health factor — keep it above 1.0x.</span></div>
+            <div class="step-item"><span class="step-num tydro">3</span><span>Simulate a price drop. Contract checks if you survive — all on-chain.</span></div>
           </div>
         </div>
 
-        <!-- Step 1: Pick scenario -->
+        <!-- Step 1 -->
         <div id="tydro-step1">
-          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">Step 1 — Pick a lending scenario</div>
+          <div class="sec-label">Step 1 — Pick a lending scenario</div>
           <div id="tydro-scenario-grid"></div>
         </div>
 
-        <!-- Step 2: Supply & Borrow -->
-        <div class="position-form" id="tydro-step2">
-          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Step 2 — Supply collateral and borrow</div>
-
-          <div class="liq-preview" style="margin-bottom:16px;" id="tydro-selected-summary">
-            <div class="liq-preview-label">Selected scenario</div>
-            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--white);" id="tydro-scenario-name"></div>
-            <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="tydro-scenario-detail"></div>
+        <!-- Step 2 -->
+        <div class="pos-form" id="tydro-step2">
+          <div class="sec-label">Step 2 — Supply collateral and borrow</div>
+          <div class="selected-summary" id="tydro-selected-summary">
+            <div class="ss-label">Selected scenario</div>
+            <div class="ss-name" id="tydro-scenario-name"></div>
+            <div class="ss-detail" id="tydro-scenario-detail"></div>
           </div>
 
-          <div class="form-row">
+          <div class="form-grid">
             <div class="form-group">
-              <label class="form-label" for="tydro-collateral">Collateral amount (game credits)</label>
-              <input class="form-input" id="tydro-collateral" type="number" min="100" max="100000" value="10000" placeholder="e.g. 10000" oninput="updateTydroHealth()" />
+              <label class="form-lbl" for="tydro-collateral">Collateral (game credits)</label>
+              <input class="form-input" id="tydro-collateral" type="number" min="100" max="100000" value="10000" oninput="updateTydroHealth()" />
             </div>
             <div class="form-group">
-              <label class="form-label" for="tydro-borrow">Borrow amount (USDC credits)</label>
-              <input class="form-input" id="tydro-borrow" type="number" min="0" max="100000" value="5000" placeholder="e.g. 5000" oninput="updateTydroHealth()" />
+              <label class="form-lbl" for="tydro-borrow">Borrow (USDC credits)</label>
+              <input class="form-input" id="tydro-borrow" type="number" min="0" max="100000" value="5000" oninput="updateTydroHealth()" />
             </div>
           </div>
 
-          <!-- Health factor preview -->
-          <div class="health-bar-wrap" id="tydro-health-preview">
-            <div class="health-bar-label">Health Factor Preview</div>
-            <div class="health-bar-track">
-              <div class="health-bar-fill" id="tydro-health-fill" style="width:100%;background:var(--green);"></div>
+          <div class="health-wrap">
+            <div class="health-lbl">Health Factor</div>
+            <div class="health-track">
+              <div class="health-fill" id="tydro-health-fill" style="width:100%;background:var(--green);"></div>
             </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;">
-              <span class="health-value" id="tydro-health-val" style="color:var(--green);">—</span>
-              <span style="font-size:11px;color:var(--muted);">Below 1.0 = liquidated</span>
+            <div class="health-row">
+              <span class="health-val" id="tydro-health-val" style="color:var(--green);">—</span>
+              <span class="health-sub">Below 1.0x = liquidated</span>
             </div>
-            <div style="font-size:12px;color:var(--muted);margin-top:6px;" id="tydro-health-msg"></div>
+            <div class="health-msg" id="tydro-health-msg"></div>
           </div>
 
-          <!-- Liq price preview -->
-          <div class="liq-preview" style="margin-bottom:20px;" id="tydro-liq-preview">
-            <div class="liq-preview-label">Liquidation price</div>
-            <div class="liq-preview-value" id="tydro-liq-val" style="color:var(--blue-lt);">$—</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="tydro-liq-msg">If price drops below this, your position gets liquidated.</div>
+          <div class="liq-box" style="margin-bottom:20px;">
+            <div class="liq-box-lbl">Liquidation price</div>
+            <div class="liq-price" id="tydro-liq-val" style="color:var(--tydro);">$—</div>
+            <div class="liq-hint" id="tydro-liq-msg">If price drops below this, your position gets liquidated.</div>
           </div>
 
-          <div style="display:flex;gap:10px;">
-            <button class="btn btn-outline" style="flex:0 0 auto;padding:14px 20px;" onclick="backToTydroScenarios()">Back</button>
-            <button class="btn btn-blue" id="tydro-supply-btn" onclick="supplyAndBorrow()">Supply & Borrow On-Chain</button>
+          <div class="btn-row">
+            <button class="btn btn-ghost btn-back" onclick="backToTydroScenarios()">Back</button>
+            <button class="btn btn-tydro" id="tydro-supply-btn" onclick="supplyAndBorrow()">Supply & Borrow On-Chain</button>
           </div>
         </div>
 
-        <!-- Step 3: Simulate price drop -->
-        <div class="position-form" id="tydro-step3">
-          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">Step 3 — Simulate a price drop</div>
-
-          <div class="liq-preview" style="margin-bottom:16px;">
-            <div class="liq-preview-label">Open position</div>
-            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--white);" id="tydro-open-desc"></div>
-            <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="tydro-open-detail"></div>
+        <!-- Step 3 -->
+        <div class="pos-form" id="tydro-step3">
+          <div class="sec-label">Step 3 — Simulate a price drop</div>
+          <div class="selected-summary" style="margin-bottom:16px;">
+            <div class="ss-label">Open position</div>
+            <div class="ss-name" id="tydro-open-desc"></div>
+            <div class="ss-detail" id="tydro-open-detail"></div>
           </div>
-
           <div class="form-group" style="margin-bottom:20px;">
-            <label class="form-label" for="tydro-drop">Price drop to simulate (%)</label>
-            <input class="form-input" id="tydro-drop" type="number" min="1" max="90" value="20" placeholder="e.g. 20" />
-            <div style="font-size:11px;color:var(--muted);margin-top:6px;" id="tydro-drop-hint">A 20% drop on ETH at $3,000 = exit price of $2,400.</div>
+            <label class="form-lbl" for="tydro-drop">Price drop to simulate (%)</label>
+            <input class="form-input" id="tydro-drop" type="number" min="1" max="90" value="20" oninput="updateTydroHealth()" />
+            <div style="font-size:11px;color:var(--muted);margin-top:6px;" id="tydro-drop-hint">A 20% drop = exit price calculation shown here.</div>
           </div>
-
-          <div style="display:flex;gap:10px;">
-            <button class="btn btn-outline" style="flex:0 0 auto;padding:14px 20px;" onclick="backToTydroStep2()">Back</button>
-            <button class="btn btn-blue" id="tydro-simulate-btn" onclick="simulatePriceDrop()">Simulate Price Drop On-Chain</button>
+          <div class="btn-row">
+            <button class="btn btn-ghost btn-back" onclick="backToTydroStep2()">Back</button>
+            <button class="btn btn-tydro" id="tydro-simulate-btn" onclick="simulatePriceDrop()">Simulate Price Drop On-Chain</button>
           </div>
         </div>
-
       </div>
 
       <!-- Tydro tx status -->
-      <div class="tx-status-bar" id="tydro-tx-status">
-        <div class="spinner" style="border-top-color:var(--blue);"></div>
+      <div class="tx-bar" id="tydro-tx-status">
+        <div class="spin tydro"></div>
         <span id="tydro-tx-msg">Submitting on-chain...</span>
       </div>
 
       <!-- Tydro result -->
-      <div id="tydro-result-panel" style="display:none;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid;animation:slideIn 0.3s ease;">
-        <div class="result-header">
+      <div class="result-panel" id="tydro-result-panel">
+        <div class="result-head">
           <span class="result-emoji" id="tydro-result-emoji"></span>
-          <span class="result-title" id="tydro-result-title"></span>
+          <span class="result-ttl" id="tydro-result-title"></span>
         </div>
-
-        <div class="tydro-result-grid">
-          <div class="nado-stat">
-            <div class="nado-stat-label">Health Factor</div>
-            <div class="nado-stat-value" id="tr-health"></div>
+        <div class="res-grid">
+          <div class="res-cell">
+            <div class="res-lbl">Health Factor</div>
+            <div class="res-val" id="tr-health">—</div>
           </div>
-          <div class="nado-stat">
-            <div class="nado-stat-label">Yield Earned</div>
-            <div class="nado-stat-value green" id="tr-yield"></div>
+          <div class="res-cell">
+            <div class="res-lbl">Yield Earned</div>
+            <div class="res-val g" id="tr-yield">—</div>
           </div>
-          <div class="nado-stat">
-            <div class="nado-stat-label">Liq Price</div>
-            <div class="nado-stat-value gold" id="tr-liq"></div>
+          <div class="res-cell">
+            <div class="res-lbl">Liq Price</div>
+            <div class="res-val gold" id="tr-liq">—</div>
           </div>
-          <div class="nado-stat">
-            <div class="nado-stat-label">Result</div>
-            <div class="nado-stat-value" id="tr-survived"></div>
+          <div class="res-cell">
+            <div class="res-lbl">Result</div>
+            <div class="res-val" id="tr-survived">—</div>
           </div>
         </div>
-
-        <a class="tx-link hidden" id="tydro-tx-link" href="#" target="_blank" style="margin-bottom:16px;display:inline-flex;">View transaction on Ink Explorer</a>
-
-        <!-- CTA to real Tydro -->
-        <div class="cta-box visible" style="margin-top:16px;background:rgba(14,165,233,0.08);border-color:rgba(14,165,233,0.3);">
-          <div class="cta-label" style="color:var(--blue-lt);">Ready for real lending?</div>
-          <div class="cta-text">You just simulated a lending position on Ink. Try it for real on Tydro — Ink's native lending market powered by Aave v3.</div>
-          <a class="cta-link" href="https://tydro.com" target="_blank" style="background:var(--blue);">Open Tydro →</a>
+        <a class="tx-link hidden" id="tydro-tx-link" href="#" target="_blank" style="display:inline-flex;margin-bottom:14px;">↗ View on Ink Explorer</a>
+        <div class="proto-cta tydro">
+          <div class="proto-cta-lbl">Ready for real lending?</div>
+          <div class="proto-cta-txt">You just simulated a lending position on Ink. Try it for real on Tydro — Ink's native lending market powered by Aave v3.</div>
+          <a class="proto-cta-btn" href="https://tydro.com" target="_blank">Open Tydro →</a>
         </div>
-
-        <button class="btn btn-blue" style="margin-top:16px;" onclick="resetTydro()">Try Another Scenario</button>
+        <button class="btn btn-tydro" style="margin-top:14px;" onclick="resetTydro()">Try Another Scenario</button>
       </div>
-
     </div>
-    <!-- end tydro tab -->
 
-  </div>
-  <!-- end game-area -->
+  </div><!-- end game-area -->
 
   <footer>
     Built on <a href="https://inkonchain.com" target="_blank">Ink</a>
-    &middot;
-    <a href="https://github.com/knisaci/ink-arcade" target="_blank">GitHub</a>
-    &middot;
-    <a href="https://nado.finance" target="_blank">Nado</a>
-    &middot;
-    <a href="https://tydro.com" target="_blank">Tydro</a>
+    &middot; <a href="https://github.com/knisaci/ink-arcade" target="_blank">GitHub</a>
+    &middot; <a href="https://app.nado.xyz" target="_blank">Nado</a>
+    &middot; <a href="https://tydro.com" target="_blank">Tydro</a>
+    &middot; <a href="https://velodrome.finance" target="_blank">Velodrome</a>
   </footer>
 
-</div>
+</div><!-- end wrap -->
 
 <script>
   // ── CONFIG ──────────────────────────────────────────────────────────────────
-  // TRIVIA — Mainnet
   const TRIVIA_ADDRESS    = "0xC996c0143c4C88F0B0bC32d328D14c071A603CcB";
   const MAINNET_CHAIN_ID  = 57073n;
   const MAINNET_CHAIN_HEX = "0xDEF1";
   const MAINNET_RPC       = "https://rpc-gel.inkonchain.com";
   const MAINNET_EXPLORER  = "https://explorer.inkonchain.com";
 
-  // NADO SIMULATOR — Sepolia (testnet during beta)
-  const NADO_ADDRESS      = "0x0e9B673674Fd83e2217D323bD2825995423b165f";
+  const NADO_ADDRESS      = "0xDE98616Ce38620c475Dac49594571C118519E577";
   const SEPOLIA_CHAIN_ID  = 763373n;
-  const SEPOLIA_CHAIN_HEX = "0xBA26D";
+  const SEPOLIA_CHAIN_HEX = "0xBA5ED";
   const SEPOLIA_RPC       = "https://rpc-gel-sepolia.inkonchain.com";
   const SEPOLIA_EXPLORER  = "https://explorer-sepolia.inkonchain.com";
 
-  // TYDRO SIMULATOR — Mainnet
-  const TYDRO_ADDRESS = "0xcE69A31E5A2aEc27f860DbEA049666D6A9901880";
+  const TYDRO_ADDRESS     = "0xcE69A31E5A2aEc27f860DbEA049666D6A9901880";
 
   const TYDRO_ABI = [
     "function supplyAndBorrow(uint8 scenarioId,uint256 collateralAmount,uint256 borrowAmount)",
@@ -831,13 +1258,12 @@
     "event PositionResult(address indexed player,uint8 indexed scenarioId,bool liquidated,uint256 healthFactor,uint256 yieldEarned,uint256 liqPrice,bool survived)"
   ];
 
-  // Tydro scenarios hardcoded to match TydroSimulator.sol
   const TYDRO_SCENARIOS = [
-    { id:0, name:"ETH Safe",       asset:"ETH", price:3000,  ltvBps:7500, liqThreshBps:8250, supplyApyBps:300,  borrowApyBps:500,  note:"~9% drop triggers liquidation at max LTV" },
-    { id:1, name:"ETH Aggressive", asset:"ETH", price:3000,  ltvBps:7500, liqThreshBps:7800, supplyApyBps:350,  borrowApyBps:700,  note:"~4% drop triggers liquidation — high risk" },
-    { id:2, name:"BTC Borrow",     asset:"BTC", price:60000, ltvBps:7000, liqThreshBps:7500, supplyApyBps:200,  borrowApyBps:400,  note:"Liq price ~$56,000 at max LTV" },
-    { id:3, name:"USDC Yield",     asset:"USDC",price:1,     ltvBps:0,    liqThreshBps:0,    supplyApyBps:800,  borrowApyBps:0,    note:"Pure supply — no liquidation risk, 8% APY" },
-    { id:4, name:"LINK Volatile",  asset:"LINK",price:15,    ltvBps:5000, liqThreshBps:6500, supplyApyBps:500,  borrowApyBps:800,  note:"Only ~23% drop to liquidation at max LTV" },
+    { id:0, name:"ETH Safe",       asset:"ETH",  icon:"⟠",  price:3000,  ltvBps:7500, liqThreshBps:8250, supplyApyBps:300,  borrowApyBps:500,  note:"~9% drop triggers liq at max LTV" },
+    { id:1, name:"ETH Aggressive", asset:"ETH",  icon:"⟠",  price:3000,  ltvBps:7500, liqThreshBps:7800, supplyApyBps:350,  borrowApyBps:700,  note:"~4% drop triggers liq — high risk" },
+    { id:2, name:"BTC Borrow",     asset:"BTC",  icon:"₿",  price:60000, ltvBps:7000, liqThreshBps:7500, supplyApyBps:200,  borrowApyBps:400,  note:"Liq price ~$56k at max LTV" },
+    { id:3, name:"USDC Yield",     asset:"USDC", icon:"$",  price:1,     ltvBps:0,    liqThreshBps:0,    supplyApyBps:800,  borrowApyBps:0,    note:"Pure supply — 8% APY, no liq risk" },
+    { id:4, name:"LINK Volatile",  asset:"LINK", icon:"🔗", price:15,    ltvBps:5000, liqThreshBps:6500, supplyApyBps:500,  borrowApyBps:800,  note:"~23% drop to liq at max LTV" },
   ];
 
   const TRIVIA_ABI = [
@@ -861,47 +1287,38 @@
     "event PositionResolved(address indexed,uint256 indexed,uint8,bool,uint256,int256,uint256,uint256,uint256,bool,uint256)"
   ];
 
-  // ── CTA MAP (questionId -> protocol info) ──────────────────────────────────
   const CTA_MAP = {
-    // Tydro questions
-    3:  { text: "You just learned about lending markets. Tydro is Ink's native lending protocol — supply assets and earn yield.", url: "https://tydro.com",        label: "Open Tydro" },
-    20: { text: "Tydro hit $124M in deposits in 24 hours. See the live rates and try supplying assets.", url: "https://tydro.com",                                  label: "Open Tydro" },
-    // Nado questions
-    14: { text: "You just learned about perpetual trading. Nado is Ink's native perp DEX — try the Nado Simulator tab, then try it for real.", url: "https://nado.finance", label: "Open Nado" },
-    // Velodrome questions
-    5:  { text: "Velodrome is live on Ink — one of the deepest AMMs on the Superchain. Try swapping or providing liquidity.", url: "https://velodrome.finance",    label: "Open Velodrome" },
-    17: { text: "Velodrome is live on Ink — try providing liquidity to an ETH/USDC pool and earn fees.", url: "https://velodrome.finance",                         label: "Open Velodrome" },
-    // Bridge questions
-    13: { text: "Ready to bridge to Ink? The official bridge takes under a minute from Ethereum mainnet.", url: "https://inkonchain.com/bridge",                   label: "Bridge to Ink" },
-    // Ink ecosystem
-    4:  { text: "Ink is part of the Optimism Superchain. Explore all Ink ecosystem apps at the official portal.", url: "https://inkonchain.com",                  label: "Explore Ink" },
-    6:  { text: "ETH is the gas token on Ink. Bridge ETH to start using Tydro, Nado, and Velodrome.", url: "https://inkonchain.com/bridge",                       label: "Bridge ETH to Ink" },
-    21: { text: "Tydro is Ink's official lending market built on Aave v3. Supply ETH or USDC and earn yield.", url: "https://tydro.com",                          label: "Open Tydro" },
-    22: { text: "Nado is Ink's official perp DEX. Trade $ETH, $SOL, $SPY and more with up to 20x leverage.", url: "https://nado.finance",                        label: "Open Nado" },
+    3:  { text: "Tydro is Ink's native lending protocol — supply assets and earn yield.", url: "https://tydro.com", label: "Open Tydro" },
+    20: { text: "Tydro hit $124M in deposits in 24 hours. See the live rates.", url: "https://tydro.com", label: "Open Tydro" },
+    14: { text: "Nado is Ink's native perp DEX — try the Nado Simulator tab, then try it for real.", url: "https://app.nado.xyz", label: "Open Nado" },
+    5:  { text: "Velodrome is live on Ink — one of the deepest AMMs on the Superchain.", url: "https://velodrome.finance", label: "Open Velodrome" },
+    17: { text: "Try providing liquidity on Velodrome and earn trading fees.", url: "https://velodrome.finance", label: "Open Velodrome" },
+    13: { text: "Bridge to Ink in under a minute from Ethereum mainnet.", url: "https://inkonchain.com/bridge", label: "Bridge to Ink" },
+    4:  { text: "Explore all Ink ecosystem apps at the official portal.", url: "https://inkonchain.com", label: "Explore Ink" },
+    6:  { text: "ETH is the gas token on Ink. Bridge ETH to start using Tydro, Nado, and Velodrome.", url: "https://inkonchain.com/bridge", label: "Bridge ETH to Ink" },
+    21: { text: "Tydro is built on Aave v3. Supply ETH or USDC and earn yield on Ink.", url: "https://tydro.com", label: "Open Tydro" },
+    22: { text: "Nado supports ETH, SOL, SPY perps with up to 20x leverage.", url: "https://app.nado.xyz", label: "Open Nado" },
   };
 
   // ── STATE ───────────────────────────────────────────────────────────────────
   let ethers, provider, signer;
-  let triviaContract, nadoContract;
+  let triviaContract, nadoContract, tydroContract;
   let walletAddress = null;
   let currentQuestionId = 0;
   let totalQuestions = 0;
   let selectedOption = null;
   let currentTab = 'trivia';
 
-  // Tydro state
-  let tydroContract = null;
-  let selectedTydroScenarioId = null;
-  let tydroCollateral = 10000;
   let tydroOpenScenarioId = null;
+  let tydroCollateral = 10000;
+  let selectedTydroScenarioId = null;
 
-  // Nado state
   let scenarios = [];
   let selectedScenarioId = null;
   let isLong = true;
   let openPositionScenarioId = null;
 
-  // ── ETHERS LOADER ───────────────────────────────────────────────────────────
+  // ── ETHERS ──────────────────────────────────────────────────────────────────
   async function loadEthers() {
     return new Promise((resolve, reject) => {
       if (window.ethers) { resolve(window.ethers); return; }
@@ -920,32 +1337,22 @@
     return null;
   }
 
-  // ── TAB SWITCHING ───────────────────────────────────────────────────────────
+  // ── TABS ────────────────────────────────────────────────────────────────────
   function switchTab(tab) {
     currentTab = tab;
-    document.getElementById('tab-trivia').classList.toggle('active', tab === 'trivia');
-    document.getElementById('tab-nado').classList.toggle('active', tab === 'nado');
-    document.getElementById('tab-tydro').classList.toggle('active', tab === 'tydro');
-    document.getElementById('panel-trivia').classList.toggle('active', tab === 'trivia');
-    document.getElementById('panel-nado').classList.toggle('active', tab === 'nado');
-    document.getElementById('panel-tydro').classList.toggle('active', tab === 'tydro');
-
-    if (tab === 'nado' && scenarios.length === 0 && nadoContract) {
-      loadScenarios();
-    }
-    if (tab === 'tydro') {
-      renderTydroScenarios();
-    }
+    ['trivia','nado','tydro'].forEach(function(t) {
+      document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+      document.getElementById('panel-' + t).classList.toggle('active', t === tab);
+    });
+    if (tab === 'nado' && scenarios.length === 0 && nadoContract) loadScenarios();
+    if (tab === 'tydro') renderTydroScenarios();
   }
 
   // ── CONNECT ─────────────────────────────────────────────────────────────────
   async function connectWallet() {
     await new Promise(r => setTimeout(r, 200));
     const wp = getWalletProvider();
-    if (!wp) {
-      alert("No EVM wallet detected. Please install Rabby (rabby.io) or MetaMask and refresh.");
-      return;
-    }
+    if (!wp) { alert("No EVM wallet detected. Please install Rabby or MetaMask and refresh."); return; }
 
     const btn = document.getElementById("connect-btn");
     btn.disabled = true;
@@ -954,44 +1361,32 @@
     try {
       if (!ethers) ethers = await loadEthers();
       await wp.request({ method: "eth_requestAccounts" });
-
       provider = new ethers.BrowserProvider(wp);
       signer = await provider.getSigner();
       walletAddress = await signer.getAddress();
 
-      // Switch to mainnet for trivia
       const network = await provider.getNetwork();
       if (network.chainId !== MAINNET_CHAIN_ID) {
         document.getElementById("wrong-network").style.display = "block";
-        document.getElementById("network-name-warn").textContent = "Ink Mainnet";
-        try {
-          await wp.request({ method: "wallet_switchEthereumChain", params: [{ chainId: MAINNET_CHAIN_HEX }] });
-        } catch {
-          await wp.request({ method: "wallet_addEthereumChain", params: [{ chainId: MAINNET_CHAIN_HEX, chainName: "Ink Mainnet", nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 }, rpcUrls: [MAINNET_RPC], blockExplorerUrls: [MAINNET_EXPLORER] }] });
-        }
+        try { await wp.request({ method: "wallet_switchEthereumChain", params: [{ chainId: MAINNET_CHAIN_HEX }] }); }
+        catch { await wp.request({ method: "wallet_addEthereumChain", params: [{ chainId: MAINNET_CHAIN_HEX, chainName: "Ink Mainnet", nativeCurrency: { name:"ETH",symbol:"ETH",decimals:18 }, rpcUrls:[MAINNET_RPC], blockExplorerUrls:[MAINNET_EXPLORER] }] }); }
         provider = new ethers.BrowserProvider(wp);
         signer = await provider.getSigner();
       }
 
       document.getElementById("wrong-network").style.display = "none";
-
-      // Trivia contract on mainnet
       triviaContract = new ethers.Contract(TRIVIA_ADDRESS, TRIVIA_ABI, signer);
+      tydroContract  = new ethers.Contract(TYDRO_ADDRESS, TYDRO_ABI, signer);
 
-      // Nado contract — read-only on sepolia for now; we'll switch chain when needed
       const sepoliaProvider = new ethers.JsonRpcProvider(SEPOLIA_RPC);
       nadoContract = new ethers.Contract(NADO_ADDRESS, NADO_ABI, sepoliaProvider);
 
       document.getElementById("connect-section").classList.add("hidden");
-      document.getElementById("wallet-section").classList.remove("hidden");
       document.getElementById("game-area").classList.remove("hidden");
       document.getElementById("wallet-addr").textContent = walletAddress.slice(0,6) + "..." + walletAddress.slice(-4);
 
       await loadStats();
       await loadQuestion(0);
-
-      // Tydro contract on mainnet
-      tydroContract = new ethers.Contract(TYDRO_ADDRESS, TYDRO_ABI, signer);
 
       wp.on("accountsChanged", () => location.reload());
       wp.on("chainChanged", () => location.reload());
@@ -1005,12 +1400,12 @@
 
   function disconnectWallet() {
     walletAddress = null; provider = null; signer = null;
-    triviaContract = null; nadoContract = null;
+    triviaContract = null; nadoContract = null; tydroContract = null;
     document.getElementById("connect-section").classList.remove("hidden");
-    document.getElementById("wallet-section").classList.add("hidden");
     document.getElementById("game-area").classList.add("hidden");
     document.getElementById("result-panel").style.display = "none";
     document.getElementById("nado-result-panel").style.display = "none";
+    document.getElementById("tydro-result-panel").style.display = "none";
     document.getElementById("connect-btn").disabled = false;
     document.getElementById("connect-btn").textContent = "Connect Wallet";
   }
@@ -1034,26 +1429,24 @@
       document.getElementById("q-text").textContent = text;
 
       const opts = [optA, optB, optC, optD];
-      const labels = ["A", "B", "C", "D"];
+      const labels = ["A","B","C","D"];
       const list = document.getElementById("options-list");
       list.innerHTML = "";
 
       opts.forEach(function(opt, i) {
-        const btn = document.createElement("button");
-        btn.className = "option";
-        btn.disabled = alreadyAnswered;
-        btn.innerHTML = '<span class="option-label">' + labels[i] + '</span>' + opt;
-        btn.addEventListener("click", function() { selectOption(i, btn); });
-        list.appendChild(btn);
+        const b = document.createElement("button");
+        b.className = "opt";
+        b.disabled = alreadyAnswered;
+        b.innerHTML = '<span class="opt-lbl">' + labels[i] + '</span>' + opt;
+        b.addEventListener("click", function() { selectOption(i, b); });
+        list.appendChild(b);
       });
 
       if (alreadyAnswered) {
         document.getElementById("already-answered").classList.remove("hidden");
         const result = await triviaContract.getAnswer(currentQuestionId);
-        const correctIdx = Number(result[0]);
-        const explanation = result[1];
-        list.querySelectorAll(".option")[correctIdx].classList.add("correct");
-        showTriviaResult(null, true, explanation, null);
+        list.querySelectorAll(".opt")[Number(result[0])].classList.add("correct");
+        showTriviaResult(null, true, result[1], null);
       } else {
         document.getElementById("already-answered").classList.add("hidden");
       }
@@ -1064,21 +1457,21 @@
 
     } catch (err) {
       console.error(err);
-      document.getElementById("loading").textContent = "Error loading question. Check console.";
+      document.getElementById("loading").textContent = "Error loading. Check console.";
     }
   }
 
   async function selectOption(index, btn) {
     if (selectedOption !== null) return;
     selectedOption = index;
-    document.querySelectorAll(".option").forEach(function(b) { b.classList.remove("selected"); b.disabled = true; });
+    document.querySelectorAll(".opt").forEach(function(b) { b.classList.remove("selected"); b.disabled = true; });
     btn.classList.add("selected");
     await submitAnswer(index);
   }
 
   async function submitAnswer(chosenIndex) {
-    const txStatus = document.getElementById("tx-status");
-    txStatus.style.display = "flex";
+    const txS = document.getElementById("tx-status");
+    txS.style.display = "flex";
     document.getElementById("tx-msg").textContent = "Submitting answer on-chain...";
 
     try {
@@ -1089,29 +1482,24 @@
       let correct = false;
       const iface = new ethers.Interface(TRIVIA_ABI);
       for (const log of receipt.logs) {
-        try {
-          const parsed = iface.parseLog(log);
-          if (parsed && parsed.name === "AnswerSubmitted") correct = parsed.args[3];
-        } catch {}
+        try { const p = iface.parseLog(log); if (p && p.name === "AnswerSubmitted") correct = p.args[3]; } catch {}
       }
 
-      txStatus.style.display = "none";
+      txS.style.display = "none";
 
       const result = await triviaContract.getAnswer(currentQuestionId);
       const correctIdx = Number(result[0]);
-      const explanation = result[1];
+      const opts = document.querySelectorAll(".opt");
+      opts[correctIdx].classList.add("correct");
+      if (!correct) { opts[chosenIndex].classList.remove("selected"); opts[chosenIndex].classList.add("wrong"); }
 
-      const optBtns = document.querySelectorAll(".option");
-      optBtns[correctIdx].classList.add("correct");
-      if (!correct) { optBtns[chosenIndex].classList.remove("selected"); optBtns[chosenIndex].classList.add("wrong"); }
-
-      showTriviaResult(correct, false, explanation, receipt.hash);
+      showTriviaResult(correct, false, result[1], receipt.hash);
       await loadStats();
 
     } catch (err) {
       console.error(err);
-      txStatus.style.display = "none";
-      document.querySelectorAll(".option").forEach(function(b) { b.disabled = false; });
+      txS.style.display = "none";
+      document.querySelectorAll(".opt").forEach(function(b) { b.disabled = false; });
       selectedOption = null;
       alert("Transaction failed: " + (err.reason || err.message || "Unknown error"));
     }
@@ -1122,10 +1510,10 @@
     const txLink = document.getElementById("tx-link");
     const ctaBox = document.getElementById("cta-box");
     panel.style.display = "block";
-    ctaBox.classList.remove("visible");
+    ctaBox.classList.remove("show");
 
     if (alreadyAnswered) {
-      panel.className = "already";
+      panel.className = "result-panel already";
       document.getElementById("result-emoji").textContent = "✓";
       document.getElementById("result-title").textContent = "Already answered";
       document.getElementById("result-explanation").textContent = explanation;
@@ -1133,20 +1521,19 @@
       return;
     }
 
-    panel.className = correct ? "correct" : "wrong";
+    panel.className = "result-panel " + (correct ? "correct" : "wrong");
     document.getElementById("result-emoji").textContent = correct ? "🎉" : "❌";
     document.getElementById("result-title").textContent = correct ? "Correct!" : "Not quite";
     document.getElementById("result-explanation").textContent = explanation;
     txLink.href = MAINNET_EXPLORER + "/tx/" + txHash;
     txLink.classList.remove("hidden");
 
-    // Show CTA if this question has one
     const cta = CTA_MAP[currentQuestionId];
     if (cta) {
       document.getElementById("cta-text").textContent = cta.text;
       document.getElementById("cta-link").href = cta.url;
       document.getElementById("cta-link").textContent = cta.label + " →";
-      ctaBox.classList.add("visible");
+      ctaBox.classList.add("show");
     }
   }
 
@@ -1154,43 +1541,30 @@
     try {
       const stats = await triviaContract.getPlayerStats(walletAddress);
       const answered = Number(stats[0]);
-      const correct = Number(stats[1]);
+      const correct  = Number(stats[1]);
       document.getElementById("stat-answered").textContent = answered;
-      document.getElementById("stat-correct").textContent = correct;
-      document.getElementById("stat-pct").textContent = answered > 0 ? Math.round((correct/answered)*100) + "%" : "-";
+      document.getElementById("stat-correct").textContent  = correct;
+      document.getElementById("stat-pct").textContent = answered > 0 ? Math.round((correct/answered)*100) + "%" : "—";
     } catch(e) { console.error(e); }
   }
 
   function nextQuestion() { loadQuestion(currentQuestionId + 1); }
   function prevQuestion() { loadQuestion(currentQuestionId - 1); }
 
-  // ── NADO SIMULATOR ──────────────────────────────────────────────────────────
+  // ── NADO ────────────────────────────────────────────────────────────────────
+  const NADO_ICONS = { ETH:"⟠", BTC:"₿", SOL:"◎" };
+
   async function loadScenarios() {
-    document.getElementById("nado-loading").classList.remove("hidden");
-    document.getElementById("nado-game").classList.add("hidden");
-
     try {
-      const raw = await nadoContract.getAllScenarios();
-      scenarios = raw.map(function(s, i) {
-        return {
-          id: i,
-          name: s.name,
-          asset: s.asset,
-          entryPrice: Number(s.entryPrice),
-          exitPrice: Number(s.exitPrice),
-          fundingRateBps: Number(s.fundingRateBps),
-          maxLeverage: Number(s.maxLeverage)
-        };
-      });
-
+      scenarios = [
+        { id:0, name:"ETH Bull Run",          asset:"ETH", entryPrice:2000,  exitPrice:2400,  fundingRateBps:8,   maxLeverage:10 },
+        { id:1, name:"ETH Bear Trap",          asset:"ETH", entryPrice:2000,  exitPrice:1700,  fundingRateBps:5,   maxLeverage:10 },
+        { id:2, name:"BTC Volatility Squeeze", asset:"BTC", entryPrice:60000, exitPrice:54000, fundingRateBps:10,  maxLeverage:5  },
+        { id:3, name:"SOL Supercycle",         asset:"SOL", entryPrice:100,   exitPrice:150,   fundingRateBps:15,  maxLeverage:20 },
+        { id:4, name:"BTC Black Swan",         asset:"BTC", entryPrice:65000, exitPrice:45500, fundingRateBps:3,   maxLeverage:5  },
+      ];
       renderScenarios();
-      document.getElementById("nado-loading").classList.add("hidden");
-      document.getElementById("nado-game").classList.remove("hidden");
-
-    } catch (err) {
-      console.error(err);
-      document.getElementById("nado-loading").textContent = "Error loading scenarios. Check console.";
-    }
+    } catch(err) { console.error(err); }
   }
 
   function renderScenarios() {
@@ -1199,15 +1573,19 @@
     scenarios.forEach(function(s) {
       const pct = ((s.exitPrice - s.entryPrice) / s.entryPrice * 100).toFixed(0);
       const up = s.exitPrice > s.entryPrice;
+      const icon = NADO_ICONS[s.asset] || "◈";
       const card = document.createElement("div");
-      card.className = "scenario-card";
+      card.className = "s-card";
       card.dataset.id = s.id;
       card.innerHTML =
-        '<div>' +
-          '<div class="scenario-name">' + s.name + '</div>' +
-          '<div class="scenario-meta">' + s.asset + ' · Entry $' + s.entryPrice.toLocaleString() + ' · Max ' + s.maxLeverage + 'x · Funding ' + (s.fundingRateBps/100).toFixed(2) + '%/hr</div>' +
+        '<div class="s-left">' +
+          '<div class="s-icon">' + icon + '</div>' +
+          '<div>' +
+            '<div class="s-name">' + s.name + '</div>' +
+            '<div class="s-meta">' + s.asset + ' · Entry $' + s.entryPrice.toLocaleString() + ' · Max ' + s.maxLeverage + 'x</div>' +
+          '</div>' +
         '</div>' +
-        '<div class="scenario-move ' + (up ? 'move-up' : 'move-down') + '">' + (up ? '+' : '') + pct + '%</div>';
+        '<div class="s-move ' + (up ? 'up' : 'down') + '">' + (up?'+':'') + pct + '%</div>';
       card.addEventListener("click", function() { selectScenario(s.id); });
       grid.appendChild(card);
     });
@@ -1216,19 +1594,15 @@
   function selectScenario(id) {
     selectedScenarioId = id;
     const s = scenarios[id];
-    document.querySelectorAll(".scenario-card").forEach(function(c) { c.classList.remove("selected"); });
-    document.querySelector('[data-id="' + id + '"]').classList.add("selected");
-
+    document.querySelectorAll(".s-card").forEach(function(c) { c.classList.remove("selected"); });
+    document.querySelector('.s-card[data-id="' + id + '"]').classList.add("selected");
     document.getElementById("selected-scenario-name").textContent = s.name;
     document.getElementById("selected-scenario-detail").textContent =
-      s.asset + " · Entry $" + s.entryPrice.toLocaleString() + " → Exit $" + s.exitPrice.toLocaleString() + " · Max leverage " + s.maxLeverage + "x";
-
+      s.asset + " · Entry $" + s.entryPrice.toLocaleString() + " → Exit $" + s.exitPrice.toLocaleString() + " · Max " + s.maxLeverage + "x leverage";
     document.getElementById("inp-leverage").max = s.maxLeverage;
     document.getElementById("inp-leverage").value = Math.min(5, s.maxLeverage);
-
     document.getElementById("nado-step1").style.display = "none";
-    document.getElementById("nado-step2").classList.add("visible");
-
+    document.getElementById("nado-step2").classList.add("show");
     updateLiqPreview();
   }
 
@@ -1243,203 +1617,162 @@
     if (selectedScenarioId === null) return;
     const s = scenarios[selectedScenarioId];
     const lev = parseInt(document.getElementById("inp-leverage").value) || 5;
-    let liqPrice;
-    if (isLong) {
-      liqPrice = Math.round(s.entryPrice * (lev - 1) / lev);
-    } else {
-      liqPrice = Math.round(s.entryPrice * (lev + 1) / lev);
-    }
+    const liqPrice = isLong
+      ? Math.round(s.entryPrice * (lev-1) / lev)
+      : Math.round(s.entryPrice * (lev+1) / lev);
     document.getElementById("liq-calc").textContent = "$" + liqPrice.toLocaleString();
+    document.getElementById("liq-plain-english").textContent =
+      "If " + s.asset + " " + (isLong ? "drops below" : "rises above") + " $" + liqPrice.toLocaleString() + ", your " + (isLong?"long":"short") + " gets liquidated.";
   }
 
   function backToScenarios() {
     selectedScenarioId = null;
-    document.getElementById("nado-step2").classList.remove("visible");
+    document.getElementById("nado-step2").classList.remove("show");
     document.getElementById("nado-step1").style.display = "block";
-    document.querySelectorAll(".scenario-card").forEach(function(c) { c.classList.remove("selected"); });
+    document.querySelectorAll(".s-card").forEach(function(c) { c.classList.remove("selected"); });
   }
 
   async function openPosition() {
     if (selectedScenarioId === null) return;
-
     const leverage = parseInt(document.getElementById("inp-leverage").value);
-    const size = parseInt(document.getElementById("inp-size").value);
-    const guess = parseInt(document.getElementById("inp-guess").value);
+    const size     = parseInt(document.getElementById("inp-size").value);
+    const guess    = parseInt(document.getElementById("inp-guess").value);
     const s = scenarios[selectedScenarioId];
 
-    if (!leverage || leverage < 2 || leverage > s.maxLeverage) {
-      alert("Leverage must be between 2 and " + s.maxLeverage + " for this scenario."); return;
-    }
-    if (!size || size < 1 || size > 100000) {
-      alert("Size must be between 1 and 100,000."); return;
-    }
-    if (!guess || guess < 1) {
-      alert("Please enter your liquidation price guess."); return;
-    }
+    if (!leverage || leverage < 2 || leverage > s.maxLeverage) { alert("Leverage must be 2–" + s.maxLeverage + "."); return; }
+    if (!size || size < 1 || size > 100000) { alert("Size must be 1–100,000."); return; }
+    if (!guess || guess < 1) { alert("Please enter your liquidation price guess."); return; }
 
-    // Switch to Sepolia for Nado
     const wp = getWalletProvider();
     if (!wp) { alert("Wallet not found."); return; }
 
-    const nadoTxStatus = document.getElementById("nado-tx-status");
-    const nadoTxMsg = document.getElementById("nado-tx-msg");
-    nadoTxStatus.style.display = "flex";
-    nadoTxMsg.textContent = "Switching to Ink Sepolia for Nado Simulator...";
+    const txS = document.getElementById("nado-tx-status");
+    txS.style.display = "flex";
+    document.getElementById("nado-tx-msg").textContent = "Opening position on-chain...";
 
     try {
       const currentNetwork = await provider.getNetwork();
-      if (currentNetwork.chainId !== SEPOLIA_CHAIN_ID) {
-        try {
-          await wp.request({ method: "wallet_switchEthereumChain", params: [{ chainId: SEPOLIA_CHAIN_HEX }] });
-        } catch {
-          await wp.request({ method: "wallet_addEthereumChain", params: [{ chainId: SEPOLIA_CHAIN_HEX, chainName: "Ink Sepolia", nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 }, rpcUrls: [SEPOLIA_RPC], blockExplorerUrls: [SEPOLIA_EXPLORER] }] });
-        }
+      if (currentNetwork.chainId !== MAINNET_CHAIN_ID) {
+        try { await wp.request({ method:"wallet_switchEthereumChain", params:[{chainId:MAINNET_CHAIN_HEX}] }); }
+        catch { await wp.request({ method:"wallet_addEthereumChain", params:[{chainId:MAINNET_CHAIN_HEX,chainName:"Ink Mainnet",nativeCurrency:{name:"ETH",symbol:"ETH",decimals:18},rpcUrls:[MAINNET_RPC],blockExplorerUrls:[MAINNET_EXPLORER]}] }); }
       }
 
-      const sepoliaProvider = new ethers.BrowserProvider(wp);
-      const sepoliaSigner = await sepoliaProvider.getSigner();
-      const nadoWrite = new ethers.Contract(NADO_ADDRESS, NADO_ABI, sepoliaSigner);
-
-      nadoTxMsg.textContent = "Opening position on-chain...";
+      const mainProvider = new ethers.BrowserProvider(wp);
+      const mainSigner   = await mainProvider.getSigner();
+      const nadoWrite    = new ethers.Contract(NADO_ADDRESS, NADO_ABI, mainSigner);
 
       const tx = await nadoWrite.openPosition(selectedScenarioId, isLong, leverage, size, guess);
-      nadoTxMsg.textContent = "Waiting for confirmation on Ink Sepolia...";
+      document.getElementById("nado-tx-msg").textContent = "Waiting for confirmation on Ink...";
       await tx.wait();
+      txS.style.display = "none";
 
-      nadoTxStatus.style.display = "none";
-
-      // Show step 3
       openPositionScenarioId = selectedScenarioId;
-      document.getElementById("nado-step2").classList.remove("visible");
+      document.getElementById("nado-step2").classList.remove("show");
       document.getElementById("open-pos-desc").textContent =
-        (isLong ? "Long" : "Short") + " · " + leverage + "x · " + size.toLocaleString() + " credits";
+        (isLong?"Long":"Short") + " · " + leverage + "x · " + size.toLocaleString() + " credits";
       document.getElementById("open-pos-detail").textContent =
         s.name + " · Entry $" + s.entryPrice.toLocaleString() + " · Guess $" + guess.toLocaleString();
-      document.getElementById("nado-step3").classList.add("visible");
+      document.getElementById("nado-step3").classList.add("show");
 
-    } catch (err) {
+    } catch(err) {
       console.error(err);
-      nadoTxStatus.style.display = "none";
+      txS.style.display = "none";
       alert("Transaction failed: " + (err.reason || err.message || "Unknown error"));
     }
   }
 
   async function resolvePosition() {
     if (openPositionScenarioId === null) return;
-
     const wp = getWalletProvider();
-    const nadoTxStatus = document.getElementById("nado-tx-status");
-    const nadoTxMsg = document.getElementById("nado-tx-msg");
-    nadoTxStatus.style.display = "flex";
-    nadoTxMsg.textContent = "Resolving position on-chain...";
+    const txS = document.getElementById("nado-tx-status");
+    txS.style.display = "flex";
+    document.getElementById("nado-tx-msg").textContent = "Resolving position on-chain...";
 
     try {
-      const sepoliaProvider = new ethers.BrowserProvider(wp);
-      const sepoliaSigner = await sepoliaProvider.getSigner();
-      const nadoWrite = new ethers.Contract(NADO_ADDRESS, NADO_ABI, sepoliaSigner);
+      const mainProvider = new ethers.BrowserProvider(wp);
+      const mainSigner   = await mainProvider.getSigner();
+      const nadoWrite    = new ethers.Contract(NADO_ADDRESS, NADO_ABI, mainSigner);
 
       const tx = await nadoWrite.resolvePosition(openPositionScenarioId);
-      nadoTxMsg.textContent = "Waiting for confirmation...";
+      document.getElementById("nado-tx-msg").textContent = "Waiting for confirmation...";
       const receipt = await tx.wait();
+      txS.style.display = "none";
 
-      nadoTxStatus.style.display = "none";
-
-      // Parse PositionResolved event
       const iface = new ethers.Interface(NADO_ABI);
       let resolved = null;
       for (const log of receipt.logs) {
-        try {
-          const parsed = iface.parseLog(log);
-          if (parsed && parsed.name === "PositionResolved") {
-            resolved = parsed.args;
-          }
-        } catch {}
+        try { const p = iface.parseLog(log); if (p && p.name==="PositionResolved") resolved = p.args; } catch {}
       }
+      if (!resolved) { alert("Could not parse result."); return; }
 
-      if (!resolved) { alert("Could not parse result. Check explorer."); return; }
+      showNadoResult(resolved[3], Number(resolved[4]), resolved[5], Number(resolved[6]),
+        Number(resolved[7]), Number(resolved[8]), resolved[9], Number(resolved[10]), receipt.hash);
 
-      const liquidated       = resolved[3];
-      const exitPrice        = Number(resolved[4]);
-      const pnl              = resolved[5]; // bigint, signed
-      const fundingCost      = Number(resolved[6]);
-      const guessedLiqPrice  = Number(resolved[7]);
-      const actualLiqPrice   = Number(resolved[8]);
-      const guessedCorrectly = resolved[9];
-      const deviationBps     = Number(resolved[10]);
-
-      showNadoResult(liquidated, exitPrice, pnl, fundingCost, guessedLiqPrice, actualLiqPrice, guessedCorrectly, deviationBps, receipt.hash);
-
-    } catch (err) {
+    } catch(err) {
       console.error(err);
-      nadoTxStatus.style.display = "none";
+      txS.style.display = "none";
       alert("Transaction failed: " + (err.reason || err.message || "Unknown error"));
     }
   }
 
   function showNadoResult(liquidated, exitPrice, pnl, fundingCost, guessedLiq, actualLiq, guessedCorrectly, deviationBps, txHash) {
-    document.getElementById("nado-step3").classList.remove("visible");
-
+    document.getElementById("nado-step3").classList.remove("show");
     const panel = document.getElementById("nado-result-panel");
     panel.style.display = "block";
-    panel.className = liquidated ? "wrong" : "correct";
+    panel.className = "result-panel " + (liquidated ? "wrong" : "correct");
 
-    document.getElementById("nado-result-emoji").textContent = liquidated ? "💥" : (pnl >= 0 ? "🎉" : "📉");
-    document.getElementById("nado-result-title").textContent = liquidated ? "Liquidated!" : (pnl >= 0 ? "Profitable position!" : "Loss — but not liquidated");
+    document.getElementById("nado-result-emoji").textContent = liquidated ? "💥" : (Number(pnl) >= 0 ? "🎉" : "📉");
+    document.getElementById("nado-result-title").textContent = liquidated ? "Liquidated!" : (Number(pnl) >= 0 ? "Profitable!" : "Loss — not liquidated");
 
     document.getElementById("nr-exit").textContent = "$" + exitPrice.toLocaleString();
 
     const pnlNum = Number(pnl);
     const pnlEl = document.getElementById("nr-pnl");
-    pnlEl.textContent = (pnlNum >= 0 ? "+" : "") + pnlNum.toLocaleString() + " credits";
-    pnlEl.className = "nado-stat-value " + (pnlNum >= 0 ? "green" : "red");
+    pnlEl.textContent = (pnlNum >= 0 ? "+" : "") + pnlNum.toLocaleString() + " cr";
+    pnlEl.className = "res-val " + (pnlNum >= 0 ? "g" : "r");
 
-    document.getElementById("nr-funding").textContent = fundingCost.toLocaleString() + " credits";
+    document.getElementById("nr-funding").textContent = fundingCost.toLocaleString() + " cr";
     document.getElementById("nr-liq").textContent = "$" + actualLiq.toLocaleString();
 
-    // Guess result
     const guessEl = document.getElementById("nr-guess-result");
-    guessEl.className = "guess-result " + (guessedCorrectly ? "good" : "bad");
-    document.getElementById("nr-guess-verdict").textContent = guessedCorrectly ? "Liquidation guess correct!" : "Liquidation guess off";
+    guessEl.className = "guess-row " + (guessedCorrectly ? "good" : "bad");
+    document.getElementById("nr-guess-verdict").textContent = guessedCorrectly ? "Liq guess correct!" : "Liq guess off";
     document.getElementById("nr-guess-val").textContent = "$" + guessedLiq.toLocaleString();
     document.getElementById("nr-actual-liq").textContent = "$" + actualLiq.toLocaleString();
-    document.getElementById("nr-deviation").textContent = (deviationBps / 100).toFixed(2) + "%";
+    document.getElementById("nr-deviation").textContent = (deviationBps/100).toFixed(2) + "%";
 
-    const nadoTxLink = document.getElementById("nado-tx-link");
-    nadoTxLink.href = SEPOLIA_EXPLORER + "/tx/" + txHash;
-    nadoTxLink.classList.remove("hidden");
-
-    // Switch back to mainnet after nado session
-    const wp = getWalletProvider();
-    if (wp) {
-      wp.request({ method: "wallet_switchEthereumChain", params: [{ chainId: MAINNET_CHAIN_HEX }] }).catch(function(){});
-    }
+    const lnk = document.getElementById("nado-tx-link");
+    lnk.href = MAINNET_EXPLORER + "/tx/" + txHash;
+    lnk.classList.remove("hidden");
   }
 
-  // ── TYDRO SIMULATOR ────────────────────────────────────────────────────────
-  function initTydro() {
-    renderTydroScenarios();
+  function resetNado() {
+    selectedScenarioId = null; openPositionScenarioId = null; isLong = true;
+    document.getElementById("nado-result-panel").style.display = "none";
+    document.getElementById("nado-step3").classList.remove("show");
+    document.getElementById("nado-step2").classList.remove("show");
+    document.getElementById("nado-step1").style.display = "block";
+    document.querySelectorAll(".s-card").forEach(function(c) { c.classList.remove("selected"); });
+    document.getElementById("btn-long").classList.add("active");
+    document.getElementById("btn-short").classList.remove("active");
   }
 
-  function toggleTydroHowTo() {
-    const panel = document.getElementById("tydro-howto-panel");
-    const arrow = document.getElementById("tydro-howto-arrow");
-    const visible = panel.style.display !== "none";
-    panel.style.display = visible ? "none" : "block";
-    arrow.textContent = visible ? "▼" : "▲";
-  }
-
+  // ── TYDRO ───────────────────────────────────────────────────────────────────
   function renderTydroScenarios() {
     const grid = document.getElementById("tydro-scenario-grid");
-    grid.innerHTML = "";
+    if (grid.children.length > 0) return;
     TYDRO_SCENARIOS.forEach(function(s) {
       const card = document.createElement("div");
-      card.className = "tydro-scenario-card";
+      card.className = "s-card tydro-s";
       card.innerHTML =
-        '<div>' +
-          '<div class="scenario-name">' + s.name + '</div>' +
-          '<div class="scenario-meta">' + s.asset + ' · Price $' + s.price.toLocaleString() + ' · LTV ' + (s.ltvBps/100) + '% · ' + s.note + '</div>' +
+        '<div class="s-left">' +
+          '<div class="s-icon">' + s.icon + '</div>' +
+          '<div>' +
+            '<div class="s-name">' + s.name + '</div>' +
+            '<div class="s-meta">' + s.asset + ' · $' + s.price.toLocaleString() + ' · LTV ' + (s.ltvBps/100) + '% · ' + s.note + '</div>' +
+          '</div>' +
         '</div>' +
-        '<div class="tydro-apy">+' + (s.supplyApyBps/100).toFixed(1) + '% APY</div>';
+        '<div class="s-move apy">+' + (s.supplyApyBps/100).toFixed(1) + '%</div>';
       card.addEventListener("click", function() { selectTydroScenario(s.id); });
       grid.appendChild(card);
     });
@@ -1452,22 +1785,15 @@
     document.getElementById("tydro-scenario-detail").textContent =
       s.asset + " · Price $" + s.price.toLocaleString() + " · Max LTV " + (s.ltvBps/100) + "% · Liq threshold " + (s.liqThreshBps/100) + "%";
     document.getElementById("tydro-step1").style.display = "none";
-    document.getElementById("tydro-step2").classList.add("visible");
+    document.getElementById("tydro-step2").classList.add("show");
 
-    // Disable borrow for pure supply scenarios
     const borrowInput = document.getElementById("tydro-borrow");
     if (s.ltvBps === 0) {
-      borrowInput.value = 0;
-      borrowInput.disabled = true;
-      borrowInput.style.opacity = "0.4";
-      borrowInput.title = "This is a pure supply scenario — no borrowing allowed";
+      borrowInput.value = 0; borrowInput.disabled = true; borrowInput.style.opacity = "0.4";
     } else {
-      borrowInput.disabled = false;
-      borrowInput.style.opacity = "1";
-      borrowInput.title = "";
+      borrowInput.disabled = false; borrowInput.style.opacity = "1";
       borrowInput.value = Math.floor(10000 * s.ltvBps / 10000 / 2);
     }
-
     updateTydroHealth();
   }
 
@@ -1475,46 +1801,33 @@
     if (selectedTydroScenarioId === null) return;
     const s = TYDRO_SCENARIOS[selectedTydroScenarioId];
     const collateral = parseInt(document.getElementById("tydro-collateral").value) || 0;
-    const borrow = parseInt(document.getElementById("tydro-borrow").value) || 0;
+    const borrow     = parseInt(document.getElementById("tydro-borrow").value) || 0;
 
-    // Health factor = (collateral * liqThresh) / borrow / 10000
-    let hf = 0;
-    let hfDisplay = "—";
-    let hfColor = "var(--muted)";
-    let hfWidth = 0;
-    let msg = "";
+    let hfDisplay = "—", hfColor = "var(--muted)", hfWidth = 0, msg = "";
 
     if (s.liqThreshBps === 0) {
-      // Pure supply scenario — no liquidation risk
-      hfDisplay = "Safe";
-      hfColor = "var(--green)";
-      hfWidth = 100;
-      msg = "This is a pure supply scenario — no borrowing, no liquidation risk.";
+      hfDisplay = "Safe"; hfColor = "var(--green)"; hfWidth = 100;
+      msg = "Pure supply scenario — no borrowing, no liquidation risk.";
     } else if (borrow === 0) {
-      hfDisplay = "Safe";
-      hfColor = "var(--green)";
-      hfWidth = 100;
+      hfDisplay = "Safe"; hfColor = "var(--green)"; hfWidth = 100;
       msg = "No borrow — no liquidation risk. Add a borrow amount to see your health factor.";
     } else {
-      // HF = (collateral * liqThreshBps) / (borrow * 10000)
-      hf = Math.round((collateral * s.liqThreshBps) / (borrow * 10000) * 100) / 100;
+      const hf = (collateral * s.liqThreshBps) / (borrow * 10000);
       hfDisplay = hf.toFixed(2) + "x";
-      if (hf >= 2) { hfColor = "var(--green)"; hfWidth = 100; msg = "Very safe position."; }
-      else if (hf >= 1.5) { hfColor = "var(--green)"; hfWidth = 75; msg = "Safe position."; }
-      else if (hf >= 1.2) { hfColor = "var(--gold)"; hfWidth = 50; msg = "Moderate risk — price can drop some before liquidation."; }
-      else if (hf >= 1.0) { hfColor = "var(--orange)"; hfWidth = 25; msg = "High risk — a small price drop could liquidate you."; }
-      else { hfColor = "var(--red)"; hfWidth = 5; msg = "Already liquidated — reduce your borrow or increase collateral."; }
+      if (hf >= 2)   { hfColor = "var(--green)"; hfWidth = 100; msg = "Very safe position."; }
+      else if (hf >= 1.5) { hfColor = "var(--green)"; hfWidth = 75;  msg = "Safe position."; }
+      else if (hf >= 1.2) { hfColor = "var(--gold)";  hfWidth = 50;  msg = "Moderate risk — some room before liquidation."; }
+      else if (hf >= 1.0) { hfColor = "var(--nado)";  hfWidth = 25;  msg = "High risk — a small drop could liquidate you."; }
+      else                { hfColor = "var(--red)";   hfWidth = 5;   msg = "Already underwater — reduce borrow or add collateral."; }
     }
 
     document.getElementById("tydro-health-val").textContent = hfDisplay;
     document.getElementById("tydro-health-val").style.color = hfColor;
-    document.getElementById("tydro-health-fill").style.width = hfWidth + "%";
+    document.getElementById("tydro-health-fill").style.width  = hfWidth + "%";
     document.getElementById("tydro-health-fill").style.background = hfColor;
-    document.getElementById("tydro-health-msg").textContent = msg;
+    document.getElementById("tydro-health-msg").textContent  = msg;
 
-    // Liq price
     if (s.liqThreshBps > 0 && borrow > 0 && collateral > 0) {
-      // liqPrice = (borrow / collateral) * (price / liqThreshBps * 10000)
       const liqPrice = Math.round((borrow * s.price * 10000) / (collateral * s.liqThreshBps));
       document.getElementById("tydro-liq-val").textContent = "$" + liqPrice.toLocaleString();
       document.getElementById("tydro-liq-msg").textContent =
@@ -1524,11 +1837,10 @@
       document.getElementById("tydro-liq-msg").textContent = "No liquidation risk for this scenario.";
     }
 
-    // Drop hint
     const dropInput = document.getElementById("tydro-drop");
     if (dropInput && s.price > 1) {
       const drop = parseInt(dropInput.value) || 20;
-      const exitPrice = Math.round(s.price * (100 - drop) / 100);
+      const exitPrice = Math.round(s.price * (100-drop) / 100);
       document.getElementById("tydro-drop-hint").textContent =
         "A " + drop + "% drop on " + s.asset + " at $" + s.price.toLocaleString() + " = exit price $" + exitPrice.toLocaleString() + ".";
     }
@@ -1536,61 +1848,56 @@
 
   function backToTydroScenarios() {
     selectedTydroScenarioId = null;
-    document.getElementById("tydro-step2").classList.remove("visible");
+    document.getElementById("tydro-step2").classList.remove("show");
     document.getElementById("tydro-step1").style.display = "block";
   }
 
   function backToTydroStep2() {
-    document.getElementById("tydro-step3").classList.remove("visible");
-    document.getElementById("tydro-step2").classList.add("visible");
+    document.getElementById("tydro-step3").classList.remove("show");
+    document.getElementById("tydro-step2").classList.add("show");
   }
 
   async function supplyAndBorrow() {
     if (selectedTydroScenarioId === null) return;
     const collateral = parseInt(document.getElementById("tydro-collateral").value);
-    const borrow = parseInt(document.getElementById("tydro-borrow").value);
+    const borrow     = parseInt(document.getElementById("tydro-borrow").value);
     const s = TYDRO_SCENARIOS[selectedTydroScenarioId];
 
     if (!collateral || collateral < 100) { alert("Collateral must be at least 100."); return; }
-    if (borrow < 0) { alert("Borrow amount cannot be negative."); return; }
+    if (borrow < 0) { alert("Borrow cannot be negative."); return; }
     if (s.ltvBps > 0 && borrow > 0) {
       const maxBorrow = Math.floor(collateral * s.ltvBps / 10000);
-      if (borrow > maxBorrow) {
-        alert("Borrow amount exceeds max LTV. Maximum borrow: " + maxBorrow.toLocaleString() + " credits."); return;
-      }
+      if (borrow > maxBorrow) { alert("Exceeds max LTV. Max borrow: " + maxBorrow.toLocaleString() + " credits."); return; }
     }
 
-    const txStatus = document.getElementById("tydro-tx-status");
-    txStatus.style.display = "flex";
+    const txS = document.getElementById("tydro-tx-status");
+    txS.style.display = "flex";
     document.getElementById("tydro-tx-msg").textContent = "Opening lending position on-chain...";
 
     try {
       const tx = await tydroContract.supplyAndBorrow(selectedTydroScenarioId, collateral, borrow);
       document.getElementById("tydro-tx-msg").textContent = "Waiting for confirmation on Ink...";
       await tx.wait();
-      txStatus.style.display = "none";
+      txS.style.display = "none";
 
       tydroOpenScenarioId = selectedTydroScenarioId;
       tydroCollateral = collateral;
 
-      document.getElementById("tydro-step2").classList.remove("visible");
+      document.getElementById("tydro-step2").classList.remove("show");
       document.getElementById("tydro-open-desc").textContent =
         collateral.toLocaleString() + " " + s.asset + " supplied · " + borrow.toLocaleString() + " USDC borrowed";
       document.getElementById("tydro-open-detail").textContent =
-        s.name + " · Supply APY " + (s.supplyApyBps/100).toFixed(1) + "% · Borrow APY " + (s.borrowApyBps/100).toFixed(1) + "%";
+        s.name + " · Supply " + (s.supplyApyBps/100).toFixed(1) + "% APY · Borrow " + (s.borrowApyBps/100).toFixed(1) + "% APY";
 
       const drop = document.getElementById("tydro-drop");
-      if (s.price > 1) {
-        drop.min = 1; drop.max = 90; drop.value = 20;
-      } else {
-        drop.value = 0; drop.disabled = true;
-      }
+      if (s.price > 1) { drop.min=1; drop.max=90; drop.value=20; drop.disabled=false; }
+      else { drop.value=0; drop.disabled=true; }
       updateTydroHealth();
-      document.getElementById("tydro-step3").classList.add("visible");
+      document.getElementById("tydro-step3").classList.add("show");
 
-    } catch (err) {
+    } catch(err) {
       console.error(err);
-      txStatus.style.display = "none";
+      txS.style.display = "none";
       alert("Transaction failed: " + (err.reason || err.message || "Unknown error"));
     }
   }
@@ -1598,100 +1905,65 @@
   async function simulatePriceDrop() {
     if (tydroOpenScenarioId === null) return;
     const drop = parseInt(document.getElementById("tydro-drop").value) || 0;
-    if (drop < 0 || drop > 90) { alert("Drop must be between 0 and 90%."); return; }
+    if (drop < 0 || drop > 90) { alert("Drop must be 0–90%."); return; }
 
-    const txStatus = document.getElementById("tydro-tx-status");
-    txStatus.style.display = "flex";
+    const txS = document.getElementById("tydro-tx-status");
+    txS.style.display = "flex";
     document.getElementById("tydro-tx-msg").textContent = "Simulating price drop on-chain...";
 
     try {
       const tx = await tydroContract.simulatePriceDrop(tydroOpenScenarioId, drop);
       document.getElementById("tydro-tx-msg").textContent = "Waiting for confirmation on Ink...";
       const receipt = await tx.wait();
-      txStatus.style.display = "none";
+      txS.style.display = "none";
 
-      // Parse PositionResult event
       const iface = new ethers.Interface(TYDRO_ABI);
       let result = null;
       for (const log of receipt.logs) {
-        try {
-          const parsed = iface.parseLog(log);
-          if (parsed && parsed.name === "PositionResult") result = parsed.args;
-        } catch {}
+        try { const p = iface.parseLog(log); if (p && p.name==="PositionResult") result = p.args; } catch {}
       }
-
-      if (!result) { alert("Could not parse result. Check explorer."); return; }
+      if (!result) { alert("Could not parse result."); return; }
 
       showTydroResult(result, receipt.hash);
 
-    } catch (err) {
+    } catch(err) {
       console.error(err);
-      txStatus.style.display = "none";
+      txS.style.display = "none";
       alert("Transaction failed: " + (err.reason || err.message || "Unknown error"));
     }
   }
 
   function showTydroResult(args, txHash) {
-    const liquidated = args[2];
+    const liquidated   = args[2];
     const healthFactor = Number(args[3]);
-    const yieldEarned = Number(args[4]);
-    const liqPrice = Number(args[5]);
-    const survived = args[6];
-    const s = selectedTydroScenarioId !== null ? TYDRO_SCENARIOS[selectedTydroScenarioId] : TYDRO_SCENARIOS[tydroOpenScenarioId];
+    const yieldEarned  = Number(args[4]);
+    const liqPrice     = Number(args[5]);
+    const survived     = args[6];
+    const s = TYDRO_SCENARIOS[tydroOpenScenarioId];
 
-    document.getElementById("tydro-step3").classList.remove("visible");
+    document.getElementById("tydro-step3").classList.remove("show");
     const panel = document.getElementById("tydro-result-panel");
     panel.style.display = "block";
-    panel.className = liquidated ? "wrong" : "correct";
+    panel.className = "result-panel " + (liquidated ? "wrong" : "correct");
 
     document.getElementById("tydro-result-emoji").textContent = liquidated ? "💥" : "✅";
     document.getElementById("tydro-result-title").textContent = liquidated ? "Liquidated!" : "Position survived!";
 
-    // Health factor
     const hfEl = document.getElementById("tr-health");
     const isNoBorrow = healthFactor > 100000;
-    if (isNoBorrow) {
-      hfEl.textContent = "No risk";
-      hfEl.title = "No borrow — no liquidation risk";
-    } else {
-      const hfNum = (healthFactor / 10000).toFixed(2);
-      hfEl.textContent = hfNum + "x";
-      hfEl.title = hfNum + "x — above 1.0 means safe";
-    }
-    hfEl.className = "nado-stat-value " + (liquidated ? "red" : "green");
+    hfEl.textContent = isNoBorrow ? "No risk" : (healthFactor/10000).toFixed(2) + "x";
+    hfEl.className = "res-val " + (liquidated ? "r" : "g");
 
-    // Yield
-    const collateral = tydroCollateral || 10000;
-    const days = 30;
-    const apyPct = (s.supplyApyBps / 100).toFixed(1);
-    document.getElementById("tr-yield").textContent = yieldEarned.toLocaleString() + " credits";
-    document.getElementById("tr-yield").title = apyPct + "% APY on " + collateral.toLocaleString() + " credits over " + days + " simulated days";
+    document.getElementById("tr-yield").textContent = yieldEarned.toLocaleString() + " cr";
 
-    // Liq price
     const liqEl = document.getElementById("tr-liq");
-    if (liqPrice === 0) {
-      liqEl.textContent = "None";
-      liqEl.title = "No borrow — no liquidation price";
-    } else {
-      liqEl.textContent = "$" + liqPrice.toLocaleString();
-      liqEl.title = "If " + s.asset + " drops below $" + liqPrice.toLocaleString() + ", position gets liquidated";
-    }
+    liqEl.textContent = liqPrice === 0 ? "None" : "$" + liqPrice.toLocaleString();
 
-    // Result
     const survEl = document.getElementById("tr-survived");
     survEl.textContent = survived ? "Survived" : "Liquidated";
-    survEl.className = "nado-stat-value " + (survived ? "green" : "red");
+    survEl.className = "res-val " + (survived ? "g" : "r");
 
-    // Add explanation below the grid
-    let explanation = "";
-    if (isNoBorrow) {
-      explanation = "You supplied " + collateral.toLocaleString() + " credits at " + apyPct + "% APY for 30 simulated days and earned " + yieldEarned.toLocaleString() + " yield credits. No liquidation risk since you did not borrow.";
-    } else if (liquidated) {
-      explanation = "Your health factor dropped below 1.0x, meaning your borrow exceeded the safe threshold after the price drop. Your collateral was liquidated.";
-    } else {
-      explanation = "Your health factor stayed above 1.0x after the price drop — your position is safe. You also earned " + yieldEarned.toLocaleString() + " yield credits (" + apyPct + "% APY over 30 simulated days).";
-    }
-    // Insert or update explanation paragraph
+    const apyPct = (s.supplyApyBps/100).toFixed(1);
     let expEl = document.getElementById("tydro-result-explanation");
     if (!expEl) {
       expEl = document.createElement("p");
@@ -1699,33 +1971,42 @@
       expEl.style.cssText = "font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px;";
       document.getElementById("tydro-tx-link").parentNode.insertBefore(expEl, document.getElementById("tydro-tx-link"));
     }
-    expEl.textContent = explanation;
+    if (isNoBorrow) {
+      expEl.textContent = "You supplied " + tydroCollateral.toLocaleString() + " credits at " + apyPct + "% APY for 30 simulated days and earned " + yieldEarned.toLocaleString() + " yield credits. No liquidation risk.";
+    } else if (liquidated) {
+      expEl.textContent = "Your health factor dropped below 1.0x after the price drop. Position liquidated.";
+    } else {
+      expEl.textContent = "Health factor stayed above 1.0x — position safe. You also earned " + yieldEarned.toLocaleString() + " yield credits (" + apyPct + "% APY, 30 simulated days).";
+    }
 
-    const tydroTxLink = document.getElementById("tydro-tx-link");
-    tydroTxLink.href = MAINNET_EXPLORER + "/tx/" + txHash;
-    tydroTxLink.classList.remove("hidden");
+    const lnk = document.getElementById("tydro-tx-link");
+    lnk.href = MAINNET_EXPLORER + "/tx/" + txHash;
+    lnk.classList.remove("hidden");
   }
 
   function resetTydro() {
-    selectedTydroScenarioId = null;
-    tydroOpenScenarioId = null;
+    selectedTydroScenarioId = null; tydroOpenScenarioId = null;
     document.getElementById("tydro-result-panel").style.display = "none";
-    document.getElementById("tydro-step3").classList.remove("visible");
-    document.getElementById("tydro-step2").classList.remove("visible");
+    document.getElementById("tydro-step3").classList.remove("show");
+    document.getElementById("tydro-step2").classList.remove("show");
     document.getElementById("tydro-step1").style.display = "block";
   }
 
-  function resetNado() {
-    selectedScenarioId = null;
-    openPositionScenarioId = null;
-    isLong = true;
-    document.getElementById("nado-result-panel").style.display = "none";
-    document.getElementById("nado-step3").classList.remove("visible");
-    document.getElementById("nado-step2").classList.remove("visible");
-    document.getElementById("nado-step1").style.display = "block";
-    document.querySelectorAll(".scenario-card").forEach(function(c) { c.classList.remove("selected"); });
-    document.getElementById("btn-long").classList.add("active");
-    document.getElementById("btn-short").classList.remove("active");
+  // ── HOWTO TOGGLES ───────────────────────────────────────────────────────────
+  function toggleHowTo() {
+    const p = document.getElementById("howto-panel");
+    const a = document.getElementById("howto-arrow");
+    const v = p.style.display !== "none";
+    p.style.display = v ? "none" : "block";
+    a.textContent = v ? "▾" : "▴";
+  }
+
+  function toggleTydroHowTo() {
+    const p = document.getElementById("tydro-howto-panel");
+    const a = document.getElementById("tydro-howto-arrow");
+    const v = p.style.display !== "none";
+    p.style.display = v ? "none" : "block";
+    a.textContent = v ? "▾" : "▴";
   }
 </script>
 </body>
