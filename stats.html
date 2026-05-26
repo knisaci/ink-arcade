@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ink Arcade — Stats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #7c5cfc;
+    --ink-dim: rgba(124,92,252,0.15);
+    --ink-glow: rgba(124,92,252,0.35);
+    --nado: #ff6b35;
+    --nado-dim: rgba(255,107,53,0.15);
+    --nado-glow: rgba(255,107,53,0.35);
+    --tydro: #00d4ff;
+    --tydro-dim: rgba(0,212,255,0.15);
+    --tydro-glow: rgba(0,212,255,0.35);
+    --bg: #0a0a0f;
+    --surface: rgba(255,255,255,0.04);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.08);
+    --text: #f0f0f8;
+    --text-dim: rgba(240,240,248,0.5);
+    --text-faint: rgba(240,240,248,0.25);
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Outfit', sans-serif;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background mesh */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 10% 0%, rgba(124,92,252,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 20%, rgba(0,212,255,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 60% at 50% 100%, rgba(255,107,53,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* Header */
+  header {
+    padding: 36px 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .logo-group { display: flex; align-items: center; gap: 16px; }
+
+  .logo-text {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .logo-text span {
+    background: linear-gradient(90deg, var(--ink), var(--nado), var(--tydro));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .back-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    border: 1px solid var(--border);
+    padding: 7px 14px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .back-link:hover { color: var(--text); border-color: var(--ink); background: var(--ink-dim); }
+
+  .page-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  /* Last updated */
+  .last-updated {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 40px;
+    margin-bottom: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  /* Stat cards */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card.ink  { border-top: 2px solid var(--ink); }
+  .stat-card.nado { border-top: 2px solid var(--nado); }
+  .stat-card.tydro{ border-top: 2px solid var(--tydro); }
+  .stat-card.white{ border-top: 2px solid rgba(255,255,255,0.3); }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .stat-card.ink   .stat-value { color: var(--ink); }
+  .stat-card.nado  .stat-value { color: var(--nado); }
+  .stat-card.tydro .stat-value { color: var(--tydro); }
+  .stat-card.white .stat-value { color: var(--text); }
+
+  .stat-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    margin-top: 6px;
+  }
+
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    margin-top: 40px;
+  }
+
+  .section-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* Activity chart */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 8px;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 160px;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    margin-top: 16px;
+  }
+
+  .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .bar {
+    width: 100%;
+    border-radius: 3px 3px 0 0;
+    min-height: 2px;
+    transition: opacity 0.2s;
+    position: relative;
+    cursor: default;
+  }
+
+  .bar:hover { opacity: 0.75; }
+
+  .bar-tooltip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(20,20,30,0.95);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 10;
+  }
+
+  .bar:hover .bar-tooltip { opacity: 1; }
+
+  .bar-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-faint);
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+  }
+
+  /* Leaderboard */
+  .leaderboard-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .lb-header {
+    display: grid;
+    grid-template-columns: 40px 1fr 80px 80px 80px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .lb-col-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .lb-col-label.right { text-align: right; }
+
+  .lb-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 80px 80px 80px;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    align-items: center;
+    transition: background 0.15s;
+  }
+
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row:hover { background: var(--surface-hover); }
+
+  .lb-rank {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-faint);
+  }
+
+  .lb-rank.gold   { color: #f5c542; }
+  .lb-rank.silver { color: #b0b8c8; }
+  .lb-rank.bronze { color: #c87c4a; }
+
+  .lb-addr {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  .lb-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: right;
+  }
+
+  .lb-accuracy {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .acc-bar-wrap {
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .acc-bar-bg {
+    width: 48px;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .acc-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--ink);
+  }
+
+  /* Protocol breakdown */
+  .breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .breakdown-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+
+  .breakdown-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .breakdown-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .breakdown-row:last-child { border-bottom: none; }
+  .breakdown-key { color: var(--text-dim); }
+  .breakdown-val { color: var(--text); font-weight: 600; }
+
+  /* Loading skeleton */
+  @keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg,
+      rgba(255,255,255,0.04) 25%,
+      rgba(255,255,255,0.09) 50%,
+      rgba(255,255,255,0.04) 75%);
+    background-size: 800px 100%;
+    animation: shimmer 1.6s infinite linear;
+    border-radius: 4px;
+  }
+
+  .sk-val   { height: 32px; width: 80px; }
+  .sk-bar   { height: 100%; width: 100%; border-radius: 3px 3px 0 0; }
+  .sk-row-short { height: 14px; width: 60%; }
+  .sk-row-long  { height: 14px; width: 90%; }
+
+  /* Error state */
+  .error-msg {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--nado);
+    padding: 10px 0;
+    letter-spacing: 0.04em;
+  }
+
+  /* Empty state */
+  .empty-state {
+    padding: 40px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-faint);
+    letter-spacing: 0.06em;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .lb-header,
+    .lb-row {
+      grid-template-columns: 32px 1fr 60px 70px;
+    }
+    .lb-col-label:nth-child(3),
+    .lb-row > .lb-num:nth-child(3) { display: none; }
+
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 400px) {
+    .stat-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo-group">
+      <div>
+        <div class="logo-text"><span>Ink Arcade</span></div>
+      </div>
+    </div>
+    <a class="back-link" href="index.html">← Back to arcade</a>
+  </header>
+
+  <div class="page-title">Live on-chain data — Ink Mainnet</div>
+  <h1>Platform Stats</h1>
+
+  <div class="last-updated" id="lastUpdated">Fetching data…</div>
+
+  <!-- Top stat cards -->
+  <div class="stat-grid">
+    <div class="stat-card white">
+      <div class="stat-label">Unique Wallets</div>
+      <div class="stat-value" id="statWallets"><span class="skeleton sk-val"></span></div>
+      <div class="stat-sub">ever played</div>
+    </div>
+    <div class="stat-card ink">
+      <div class="stat-label">Total Answers</div>
+      <div class="stat-value" id="statAnswers"><span class="skeleton sk-val"></span></div>
+      <div class="stat-sub">trivia on-chain txs</div>
+    </div>
+    <div class="stat-card nado">
+      <div class="stat-label">Perp Sims</div>
+      <div class="stat-value" id="statNado"><span class="skeleton sk-val"></span></div>
+      <div class="stat-sub">positions resolved</div>
+    </div>
+    <div class="stat-card tydro">
+      <div class="stat-label">Lending Sims</div>
+      <div class="stat-value" id="statTydro"><span class="skeleton sk-val"></span></div>
+      <div class="stat-sub">positions simulated</div>
+    </div>
+  </div>
+
+  <!-- Daily activity chart -->
+  <div class="section-header">
+    <div class="section-dot" style="background:var(--ink)"></div>
+    <div class="section-title">Daily Activity — Last 14 Days</div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-container" id="activityChart">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="section-header" style="margin-top:40px">
+    <div class="section-dot" style="background:var(--ink)"></div>
+    <div class="section-title">Trivia Leaderboard — Top 10 by Accuracy</div>
+  </div>
+  <div class="leaderboard-card">
+    <div class="lb-header">
+      <div class="lb-col-label">#</div>
+      <div class="lb-col-label">Wallet</div>
+      <div class="lb-col-label right">Answered</div>
+      <div class="lb-col-label right">Correct</div>
+      <div class="lb-col-label right">Accuracy</div>
+    </div>
+    <div id="leaderboardBody">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Protocol breakdown -->
+  <div class="section-header">
+    <div class="section-dot" style="background:var(--tydro)"></div>
+    <div class="section-title">Protocol Breakdown</div>
+  </div>
+  <div class="breakdown-grid">
+    <div class="breakdown-card">
+      <div class="breakdown-title">
+        <div class="breakdown-dot" style="background:var(--ink)"></div>
+        <span style="color:var(--ink)">DeFi Trivia</span>
+      </div>
+      <div id="triviaBreakdown">
+        <div class="breakdown-row"><span class="breakdown-key">Questions on-chain</span><span class="breakdown-val skeleton sk-row-short">&nbsp;</span></div>
+      </div>
+    </div>
+    <div class="breakdown-card">
+      <div class="breakdown-title">
+        <div class="breakdown-dot" style="background:var(--nado)"></div>
+        <span style="color:var(--nado)">Nado Perp Sim</span>
+      </div>
+      <div id="nadoBreakdown">
+        <div class="breakdown-row"><span class="breakdown-key">Loading…</span><span class="breakdown-val skeleton sk-row-short">&nbsp;</span></div>
+      </div>
+    </div>
+    <div class="breakdown-card">
+      <div class="breakdown-title">
+        <div class="breakdown-dot" style="background:var(--tydro)"></div>
+        <span style="color:var(--tydro)">Tydro Lending Sim</span>
+      </div>
+      <div id="tydroBreakdown">
+        <div class="breakdown-row"><span class="breakdown-key">Loading…</span><span class="breakdown-val skeleton sk-row-short">&nbsp;</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── Config ────────────────────────────────────────────────────────────────
+const RPC      = 'https://rpc-gel.inkonchain.com';
+const EXPLORER = 'https://explorer.inkonchain.com/api/v2';
+
+const CONTRACTS = {
+  trivia: '0xC996c0143c4C88F0B0bC32d328D14c071A603CcB',
+  nado:   '0xDE98616Ce38620c475Dac49594571C118519E577',
+  tydro:  '0xcE69A31E5A2aEc27f860DbEA049666D6A9901880',
+};
+
+// Event topic hashes (keccak256)
+// AnswerSubmitted(address indexed player, uint256 indexed questionId, bool correct)
+const TOPIC_ANSWER = '0x' + keccak256str('AnswerSubmitted(address,uint256,bool)');
+// PositionResolved(address indexed player, uint256 scenarioId, bool liquidated, int256 pnl, uint256 fundingCost, uint256 guessedLiqPrice, uint256 actualLiqPrice, uint256 deviationPct)
+const TOPIC_NADO   = '0x' + keccak256str('PositionResolved(address,uint256,bool,int256,uint256,uint256,uint256,uint256)');
+// PositionResult(address indexed player, uint256 scenarioId, bool liquidated, uint256 healthFactor, uint256 yieldEarned, uint256 liquidationPrice, bool survived)
+const TOPIC_TYDRO  = '0x' + keccak256str('PositionResult(address,uint256,bool,uint256,uint256,uint256,bool)');
+
+// Inline keccak256 for event signatures — using a tiny pure-JS implementation
+function keccak256str(str) {
+  // We'll compute this via the RPC eth_getLogs approach instead and use
+  // Blockscout's known-event filter by contract + address
+  return null;
+}
+
+// ─── Blockscout API helpers ─────────────────────────────────────────────────
+// Blockscout v2 API: get all transactions/events for a contract
+async function fetchLogs(contract, topic) {
+  // Blockscout v2 internal txs / logs endpoint
+  const url = `${EXPLORER}/addresses/${contract}/logs?limit=10000`;
+  try {
+    const r = await fetch(url);
+    const d = await r.json();
+    return d.items || [];
+  } catch(e) {
+    console.warn('fetchLogs failed', contract, e);
+    return [];
+  }
+}
+
+async function fetchAllLogs(contract) {
+  let items = [];
+  let nextPageParams = null;
+  let pages = 0;
+  const maxPages = 20; // cap at 20 pages (200k events max)
+
+  do {
+    let url = `${EXPLORER}/addresses/${contract}/logs?limit=50`;
+    if (nextPageParams) {
+      const params = new URLSearchParams(nextPageParams);
+      url += '&' + params.toString();
+    }
+    try {
+      const r = await fetch(url);
+      const d = await r.json();
+      items = items.concat(d.items || []);
+      nextPageParams = d.next_page_params || null;
+      pages++;
+    } catch(e) {
+      console.warn('fetchAllLogs page error', e);
+      break;
+    }
+  } while (nextPageParams && pages < maxPages);
+
+  return items;
+}
+
+// RPC call helper
+async function rpcCall(method, params) {
+  const r = await fetch(RPC, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+  });
+  const d = await r.json();
+  return d.result;
+}
+
+// ─── Main data fetch ────────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const [triviaLogs, nadoLogs, tydroLogs] = await Promise.all([
+      fetchAllLogs(CONTRACTS.trivia),
+      fetchAllLogs(CONTRACTS.nado),
+      fetchAllLogs(CONTRACTS.tydro),
+    ]);
+
+    // Filter to relevant events by checking topics[0] (event signature)
+    // Blockscout log items have: topics[], data, block_number, tx_hash, index, block_timestamp
+
+    // AnswerSubmitted — 4 topics: sig, player (indexed), questionId (indexed), + data for bool
+    // We identify these as logs with 3+ topics from the trivia contract
+    const answerLogs = triviaLogs.filter(l =>
+      l.topics && l.topics.length >= 3 &&
+      l.topics[0] && l.topics[0].toLowerCase().includes('') // all logs from trivia = answers
+    );
+
+    // For Nado and Tydro, all logs from those contracts are the relevant events
+    const nadoEvents  = nadoLogs.filter(l => l.topics && l.topics.length >= 2);
+    const tydroEvents = tydroLogs.filter(l => l.topics && l.topics.length >= 2);
+
+    // Use ALL trivia logs (each = one answer submitted)
+    const allAnswerLogs = triviaLogs;
+
+    // ── Unique wallets across all 3 contracts ──────────────────────────────
+    const walletSet = new Set();
+    // trivia: topics[1] is indexed player = address (32 bytes, last 20)
+    allAnswerLogs.forEach(l => {
+      if (l.topics && l.topics[1]) {
+        const addr = '0x' + l.topics[1].slice(-40);
+        walletSet.add(addr.toLowerCase());
+      }
+    });
+    nadoLogs.forEach(l => {
+      if (l.topics && l.topics[1]) {
+        const addr = '0x' + l.topics[1].slice(-40);
+        walletSet.add(addr.toLowerCase());
+      }
+    });
+    tydroLogs.forEach(l => {
+      if (l.topics && l.topics[1]) {
+        const addr = '0x' + l.topics[1].slice(-40);
+        walletSet.add(addr.toLowerCase());
+      }
+    });
+
+    // ── Per-wallet trivia stats for leaderboard ────────────────────────────
+    // topics[2] = questionId (indexed uint256)
+    // data = bool correct (32 bytes, last byte)
+    const walletStats = {}; // addr -> { answered, correct }
+    allAnswerLogs.forEach(l => {
+      if (!l.topics || !l.topics[1]) return;
+      const addr = ('0x' + l.topics[1].slice(-40)).toLowerCase();
+      if (!walletStats[addr]) walletStats[addr] = { answered: 0, correct: 0 };
+      walletStats[addr].answered++;
+      // correct is in data — last byte of 32-byte word
+      if (l.data && l.data.length >= 2) {
+        const lastByte = parseInt(l.data.slice(-2), 16);
+        if (lastByte === 1) walletStats[addr].correct++;
+      }
+    });
+
+    // ── Daily activity (last 14 days) ──────────────────────────────────────
+    const allLogs = [...allAnswerLogs, ...nadoLogs, ...tydroLogs];
+    const now = Date.now();
+    const dayMs = 86400000;
+    const days = 14;
+    const dayCounts = new Array(days).fill(0);
+    const dayLabels = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date(now - i * dayMs);
+      dayLabels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    }
+    allLogs.forEach(l => {
+      if (!l.block_timestamp) return;
+      const ts = new Date(l.block_timestamp).getTime();
+      const daysAgo = Math.floor((now - ts) / dayMs);
+      if (daysAgo >= 0 && daysAgo < days) {
+        dayCounts[days - 1 - daysAgo]++;
+      }
+    });
+
+    // ── Correct answer rate for trivia ────────────────────────────────────
+    let totalCorrect = 0;
+    allAnswerLogs.forEach(l => {
+      if (l.data && l.data.length >= 2) {
+        const lastByte = parseInt(l.data.slice(-2), 16);
+        if (lastByte === 1) totalCorrect++;
+      }
+    });
+    const correctRate = allAnswerLogs.length > 0
+      ? Math.round((totalCorrect / allAnswerLogs.length) * 100)
+      : 0;
+
+    // ── Nado: liquidation rate ─────────────────────────────────────────────
+    let nadoLiqCount = 0;
+    nadoLogs.forEach(l => {
+      if (l.topics && l.topics.length >= 3) {
+        // topics[2] = liquidated bool (indexed) or check data
+        // For NadoSimulator: PositionResolved(address indexed player, uint256 scenarioId, bool liquidated, ...)
+        // scenarioId is NOT indexed (no topic for it), liquidated is in data
+        const data = l.data || '';
+        if (data.length >= 64) {
+          // first 32 bytes = scenarioId, next check liquidated
+          // Actually with: player indexed, rest in data
+          // data = abi.encode(scenarioId, liquidated, pnl, fundingCost, guessedLiqPrice, actualLiqPrice, deviationPct)
+          const liquidatedWord = data.slice(64 + 2, 64 + 64 + 2); // second 32-byte word
+          if (liquidatedWord && parseInt(liquidatedWord.slice(-2), 16) === 1) nadoLiqCount++;
+        }
+      }
+    });
+
+    // ── Tydro: survival rate ──────────────────────────────────────────────
+    let tydroLiqCount = 0;
+    tydroLogs.forEach(l => {
+      const data = l.data || '';
+      if (data.length >= 130) {
+        // PositionResult(address indexed player, scenarioId, liquidated, healthFactor, yieldEarned, liquidationPrice, survived)
+        // data = abi.encode(scenarioId, liquidated, healthFactor, yieldEarned, liquidationPrice, survived)
+        const liquidatedWord = data.slice(64 + 2, 64 + 64 + 2);
+        if (liquidatedWord && parseInt(liquidatedWord.slice(-2), 16) === 1) tydroLiqCount++;
+      }
+    });
+
+    // ─── Render ──────────────────────────────────────────────────────────
+    // Top stats
+    document.getElementById('statWallets').textContent = walletSet.size;
+    document.getElementById('statAnswers').textContent = allAnswerLogs.length;
+    document.getElementById('statNado').textContent    = nadoLogs.length;
+    document.getElementById('statTydro').textContent   = tydroLogs.length;
+
+    // Last updated
+    document.getElementById('lastUpdated').textContent =
+      'Last updated: ' + new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney', hour12: true });
+
+    // Activity chart
+    renderChart(dayCounts, dayLabels);
+
+    // Leaderboard
+    renderLeaderboard(walletStats);
+
+    // Protocol breakdowns
+    renderTriviaBreakdown(allAnswerLogs.length, totalCorrect, correctRate);
+    renderNadoBreakdown(nadoLogs.length, nadoLiqCount);
+    renderTydroBreakdown(tydroLogs.length, tydroLiqCount);
+
+  } catch(err) {
+    console.error('Stats load error:', err);
+    document.getElementById('lastUpdated').innerHTML =
+      '<span class="error-msg">⚠ Could not load on-chain data. Check RPC or Blockscout status.</span>';
+    // Show empty states
+    ['statWallets','statAnswers','statNado','statTydro'].forEach(id => {
+      document.getElementById(id).textContent = '—';
+    });
+    document.getElementById('activityChart').innerHTML = '<div class="empty-state">No data</div>';
+    document.getElementById('leaderboardBody').innerHTML = '<div class="empty-state">Could not load leaderboard</div>';
+  }
+}
+
+function renderChart(counts, labels) {
+  const chart = document.getElementById('activityChart');
+  const maxVal = Math.max(...counts, 1);
+
+  chart.innerHTML = counts.map((count, i) => {
+    const pct = Math.round((count / maxVal) * 100);
+    const height = Math.max(pct, 2);
+    const isRecent = i >= counts.length - 3;
+    const color = isRecent
+      ? 'linear-gradient(to top, var(--ink), rgba(124,92,252,0.6))'
+      : 'rgba(124,92,252,0.3)';
+
+    // Shorten label for small screens
+    const shortLabel = labels[i].replace(/\s/g, '\xa0');
+
+    return `
+      <div class="bar-col">
+        <div class="bar" style="height:${height}%;background:${color}">
+          <div class="bar-tooltip">${labels[i]}: ${count} event${count !== 1 ? 's' : ''}</div>
+        </div>
+        <div class="bar-label">${i % 2 === 0 ? shortLabel : ''}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderLeaderboard(walletStats) {
+  const tbody = document.getElementById('leaderboardBody');
+
+  // Sort by accuracy (min 3 answers to qualify), then by correct count
+  const entries = Object.entries(walletStats)
+    .filter(([, s]) => s.answered >= 1)
+    .map(([addr, s]) => ({
+      addr,
+      answered: s.answered,
+      correct:  s.correct,
+      accuracy: s.answered > 0 ? Math.round((s.correct / s.answered) * 100) : 0,
+    }))
+    .sort((a, b) => b.accuracy - a.accuracy || b.correct - a.correct || b.answered - a.answered)
+    .slice(0, 10);
+
+  if (!entries.length) {
+    tbody.innerHTML = '<div class="empty-state">No answers on-chain yet — be first! 🏆</div>';
+    return;
+  }
+
+  const rankClass = ['gold','silver','bronze'];
+  const rankIcon  = ['🥇','🥈','🥉'];
+
+  tbody.innerHTML = entries.map((e, i) => {
+    const rank = i < 3 ? rankClass[i] : '';
+    const icon = i < 3 ? rankIcon[i] : '';
+    const shortAddr = e.addr.slice(0,6) + '…' + e.addr.slice(-4);
+    const accColor  = e.accuracy >= 80 ? 'var(--tydro)' : e.accuracy >= 60 ? 'var(--ink)' : 'var(--text-dim)';
+    const fillPct   = e.accuracy;
+
+    return `
+    <div class="lb-row">
+      <div class="lb-rank ${rank}">${icon || (i + 1)}</div>
+      <div class="lb-addr">${shortAddr}</div>
+      <div class="lb-num">${e.answered}</div>
+      <div class="lb-num">${e.correct}</div>
+      <div class="acc-bar-wrap">
+        <div class="acc-bar-bg"><div class="acc-bar-fill" style="width:${fillPct}%;background:${accColor}"></div></div>
+        <span class="lb-accuracy" style="color:${accColor};min-width:36px">${e.accuracy}%</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTriviaBreakdown(total, correct, rate) {
+  document.getElementById('triviaBreakdown').innerHTML = `
+    <div class="breakdown-row"><span class="breakdown-key">Questions on-chain</span><span class="breakdown-val" style="color:var(--ink)">25</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Total answers</span><span class="breakdown-val">${total}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Correct answers</span><span class="breakdown-val">${correct}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Correct rate</span><span class="breakdown-val" style="color:var(--ink)">${rate}%</span></div>
+  `;
+}
+
+function renderNadoBreakdown(total, liqCount) {
+  const surviveCount = total - liqCount;
+  const liqRate = total > 0 ? Math.round((liqCount / total) * 100) : 0;
+  document.getElementById('nadoBreakdown').innerHTML = `
+    <div class="breakdown-row"><span class="breakdown-key">Positions played</span><span class="breakdown-val">${total}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Liquidated</span><span class="breakdown-val" style="color:var(--nado)">${liqCount}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Survived</span><span class="breakdown-val">${surviveCount}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Liquidation rate</span><span class="breakdown-val" style="color:var(--nado)">${liqRate}%</span></div>
+  `;
+}
+
+function renderTydroBreakdown(total, liqCount) {
+  const surviveCount = total - liqCount;
+  const liqRate = total > 0 ? Math.round((liqCount / total) * 100) : 0;
+  document.getElementById('tydroBreakdown').innerHTML = `
+    <div class="breakdown-row"><span class="breakdown-key">Positions simulated</span><span class="breakdown-val">${total}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Got liquidated</span><span class="breakdown-val" style="color:var(--nado)">${liqCount}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Survived</span><span class="breakdown-val" style="color:var(--tydro)">${surviveCount}</span></div>
+    <div class="breakdown-row"><span class="breakdown-key">Liquidation rate</span><span class="breakdown-val" style="color:var(--nado)">${liqRate}%</span></div>
+  `;
+}
+
+// Kick off
+loadStats();
+</script>
+</body>
+</html>

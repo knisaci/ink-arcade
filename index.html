@@ -44,7 +44,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Animated background */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: 0;
@@ -63,7 +62,6 @@
       padding: 48px 20px 100px;
     }
 
-    /* ── HEADER ── */
     header {
       text-align: center;
       margin-bottom: 40px;
@@ -135,7 +133,6 @@
 
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    /* ── WARNINGS ── */
     .warn-bar {
       display: none;
       background: rgba(255,209,102,0.08);
@@ -146,7 +143,6 @@
       margin-bottom: 16px; text-align: center;
     }
 
-    /* ── CONNECT CARD ── */
     .connect-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -201,7 +197,6 @@
     .chip-nado   { background: var(--nado-soft); border-color: rgba(255,107,53,0.3); color: var(--nado); }
     .chip-tydro  { background: var(--tydro-soft); border-color: rgba(0,212,255,0.3); color: var(--tydro); }
 
-    /* ── BUTTONS ── */
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       padding: 14px 28px; border-radius: 10px;
@@ -252,7 +247,6 @@
 
     .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
-    /* ── WALLET BAR ── */
     .wallet-bar {
       display: flex; align-items: center; justify-content: space-between;
       gap: 12px; flex-wrap: wrap;
@@ -279,7 +273,6 @@
       padding: 7px 16px; font-size: 12px; width: auto;
     }
 
-    /* ── SCORE BAR ── */
     .score-bar {
       display: grid; grid-template-columns: repeat(3,1fr); gap: 12px;
       margin-bottom: 16px;
@@ -338,6 +331,7 @@
       cursor: pointer; transition: all 0.2s;
       display: flex; align-items: center; justify-content: center; gap: 7px;
       white-space: nowrap;
+      text-decoration: none;
     }
 
     .tab-btn:hover:not(.active) { color: var(--text); background: var(--surface2); }
@@ -348,6 +342,19 @@
     .tab-btn.t-nado.active   { background: var(--nado); box-shadow: 0 2px 12px var(--nado-glow); }
     .tab-btn.t-tydro.active  { background: var(--tydro); color: #0a0a20; font-weight: 700; box-shadow: 0 2px 12px var(--tydro-glow); }
 
+    /* Stats tab — link style, no active state needed */
+    .tab-btn.t-stats {
+      flex: 0 0 auto;
+      padding: 10px 14px;
+      border: 1px solid var(--border2);
+      color: var(--muted);
+    }
+    .tab-btn.t-stats:hover {
+      color: var(--white);
+      border-color: rgba(124,92,252,0.4);
+      background: var(--ink-soft);
+    }
+
     .tab-chip {
       font-size: 9px; padding: 2px 6px; border-radius: 100px;
       background: rgba(255,255,255,0.15);
@@ -356,7 +363,6 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; animation: fadeUp 0.3s ease both; }
 
-    /* ── CARD ── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -367,7 +373,6 @@
       position: relative; overflow: hidden;
     }
 
-    /* ── TRIVIA ── */
     .q-meta {
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 20px;
@@ -429,7 +434,6 @@
     .opt.correct  .opt-lbl { background: var(--green); border-color: var(--green); color: #080810; }
     .opt.wrong    .opt-lbl { background: var(--red); border-color: var(--red); color: white; }
 
-    /* ── RESULT ── */
     .result-panel {
       display: none;
       border-radius: 14px; padding: 20px; margin-bottom: 16px;
@@ -460,7 +464,6 @@
     }
     .tx-link:hover { text-decoration: underline; }
 
-    /* ── CTA BOX ── */
     .cta-box {
       display: none; margin-top: 14px; padding: 16px 18px;
       background: var(--nado-soft);
@@ -479,7 +482,6 @@
     }
     .cta-btn:hover { background: #ff8555; transform: translateY(-1px); }
 
-    /* ── TX STATUS ── */
     .tx-bar {
       display: none; align-items: center; gap: 10px;
       padding: 14px 18px;
@@ -508,7 +510,6 @@
     .nav-row { display: flex; gap: 10px; }
     .nav-row .btn { flex: 1; }
 
-    /* ── SECTION LABEL ── */
     .sec-label {
       font-size: 10px; color: var(--muted);
       text-transform: uppercase; letter-spacing: 2.5px;
@@ -519,7 +520,6 @@
       content: ''; flex: 1; height: 1px; background: var(--border);
     }
 
-    /* ── GAME HEADER ── */
     .game-hdr {
       display: flex; align-items: flex-start; justify-content: space-between;
       margin-bottom: 20px; gap: 12px; flex-wrap: wrap;
@@ -542,7 +542,6 @@
     .proto-badge.nado  { background: var(--nado-soft); border: 1px solid rgba(255,107,53,0.3); color: var(--nado); }
     .proto-badge.tydro { background: var(--tydro-soft); border: 1px solid rgba(0,212,255,0.3); color: var(--tydro); }
 
-    /* ── HOWTO ── */
     .howto-toggle {
       display: flex; align-items: center; justify-content: space-between;
       width: 100%; background: var(--surface2);
@@ -590,7 +589,6 @@
     .step-num.nado  { background: var(--nado); color: white; }
     .step-num.tydro { background: var(--tydro); color: #080810; }
 
-    /* ── SCENARIO CARDS ── */
     .scenario-grid { display: grid; gap: 9px; margin-bottom: 0; }
 
     .s-card {
@@ -627,7 +625,6 @@
     .s-move.down { color: var(--red); }
     .s-move.apy  { color: var(--green); }
 
-    /* ── POSITION FORM ── */
     .pos-form { display: none; }
     .pos-form.show { display: block; }
 
@@ -695,7 +692,6 @@
     .btn-row .btn { flex: 1; }
     .btn-back { flex: 0 0 auto !important; padding: 14px 20px; }
 
-    /* ── HEALTH BAR ── */
     .health-wrap {
       background: var(--surface2); border: 1px solid var(--border2);
       border-radius: 10px; padding: 14px 18px; margin-bottom: 14px;
@@ -720,7 +716,6 @@
     .health-sub { font-size: 11px; color: var(--muted); }
     .health-msg { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
 
-    /* ── RESULT GRID ── */
     .res-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
       margin: 16px 0;
@@ -751,7 +746,6 @@
     .guess-row.good { background: rgba(0,229,160,0.08); border: 1px solid rgba(0,229,160,0.25); color: var(--green); }
     .guess-row.bad  { background: rgba(255,77,106,0.06); border: 1px solid rgba(255,77,106,0.2); color: var(--red); }
 
-    /* CTA Protocol boxes */
     .proto-cta {
       margin-top: 14px; padding: 16px 18px; border-radius: 10px; border: 1px solid;
     }
@@ -778,10 +772,8 @@
     .proto-cta.tydro .proto-cta-btn { background: var(--tydro); color: #080810; }
     .proto-cta-btn:hover { transform: translateY(-1px); opacity: 0.9; }
 
-    /* ── LOADING ── */
     .loading-txt { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
 
-    /* ── FOOTER ── */
     footer {
       text-align: center; margin-top: 60px;
       font-size: 11px; color: var(--muted); letter-spacing: 1px;
@@ -790,10 +782,8 @@
     footer a { color: #a78bfa; text-decoration: none; }
     footer a:hover { text-decoration: underline; }
 
-    /* ── UTILS ── */
     .hidden { display: none !important; }
 
-    /* ── MOBILE ── */
     @media (max-width: 480px) {
       .wrap { padding: 28px 14px 80px; }
       .connect-card { padding: 32px 20px; }
@@ -804,13 +794,13 @@
       .score-bar { grid-template-columns: repeat(3,1fr); gap: 8px; }
       .score-val { font-size: 26px; }
       .site-title { font-size: 36px; }
+      .tab-btn.t-stats span:last-child { display: none; }
     }
   </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- Header -->
   <header>
     <div class="logo-mark">
       <div class="logo-gem">🎮</div>
@@ -824,12 +814,10 @@
     </div>
   </header>
 
-  <!-- Wrong network -->
   <div class="warn-bar" id="wrong-network">
     Switch to <strong id="network-name-warn">Ink Mainnet</strong> in your wallet to continue
   </div>
 
-  <!-- Connect -->
   <div class="connect-card" id="connect-section">
     <span class="connect-icon">⛓️</span>
     <h2>Connect your wallet</h2>
@@ -842,10 +830,8 @@
     <button class="btn btn-ink" id="connect-btn" onclick="connectWallet()">Connect Wallet</button>
   </div>
 
-  <!-- Post-connect UI -->
   <div class="hidden" id="game-area">
 
-    <!-- Wallet bar -->
     <div class="wallet-bar" id="wallet-section">
       <div class="wallet-addr">
         <span class="wallet-dot"></span>
@@ -854,7 +840,7 @@
       <button class="btn btn-ghost btn-sm" onclick="disconnectWallet()">Disconnect</button>
     </div>
 
-    <!-- Tab row -->
+    <!-- Tab row — now includes Stats link -->
     <div class="tab-row">
       <button class="tab-btn t-trivia active" id="tab-trivia" onclick="switchTab('trivia')">
         🎮 Trivia <span class="tab-chip">25 Q</span>
@@ -865,12 +851,14 @@
       <button class="tab-btn t-tydro" id="tab-tydro" onclick="switchTab('tydro')">
         🏦 Tydro <span class="tab-chip">LENDING</span>
       </button>
+      <a class="tab-btn t-stats" href="stats.html">
+        📈 <span>Stats</span>
+      </a>
     </div>
 
     <!-- ══ TRIVIA TAB ══ -->
     <div class="tab-panel active" id="panel-trivia">
 
-      <!-- Score -->
       <div class="score-bar">
         <div class="score-cell">
           <span class="score-val g" id="stat-correct">0</span>
@@ -886,7 +874,6 @@
         </div>
       </div>
 
-      <!-- Question card -->
       <div class="card">
         <div class="loading-txt" id="loading">Loading question from chain...</div>
         <div id="question-content" class="hidden">
@@ -900,13 +887,11 @@
         </div>
       </div>
 
-      <!-- Tx status -->
       <div class="tx-bar" id="tx-status">
         <div class="spin ink"></div>
         <span id="tx-msg">Submitting answer on-chain...</span>
       </div>
 
-      <!-- Result -->
       <div class="result-panel" id="result-panel">
         <div class="result-head">
           <span class="result-emoji" id="result-emoji"></span>
@@ -921,7 +906,6 @@
         </div>
       </div>
 
-      <!-- Nav -->
       <div class="nav-row hidden" id="nav-buttons">
         <button class="btn btn-ghost" onclick="prevQuestion()">← Prev</button>
         <button class="btn btn-ink" onclick="nextQuestion()">Next →</button>
@@ -939,7 +923,6 @@
           <span class="proto-badge nado">PERP DEX</span>
         </div>
 
-        <!-- How to play -->
         <button class="howto-toggle" onclick="toggleHowTo()">
           <span>How to play</span><span id="howto-arrow">▾</span>
         </button>
@@ -966,13 +949,11 @@
         <div id="nado-loading" class="loading-txt hidden">Loading...</div>
 
         <div id="nado-game">
-          <!-- Step 1 -->
           <div id="nado-step1">
             <div class="sec-label">Step 1 — Pick a market scenario</div>
             <div class="scenario-grid" id="scenario-grid"></div>
           </div>
 
-          <!-- Step 2 -->
           <div class="pos-form" id="nado-step2">
             <div class="sec-label">Step 2 — Configure your position</div>
 
@@ -1019,7 +1000,6 @@
             </div>
           </div>
 
-          <!-- Step 3 -->
           <div class="pos-form" id="nado-step3">
             <div class="sec-label">Step 3 — Resolve your position</div>
             <div class="selected-summary" style="margin-bottom:16px;">
@@ -1033,13 +1013,11 @@
         </div>
       </div>
 
-      <!-- Nado tx status -->
       <div class="tx-bar" id="nado-tx-status">
         <div class="spin nado"></div>
         <span id="nado-tx-msg">Submitting on-chain...</span>
       </div>
 
-      <!-- Nado result -->
       <div class="result-panel" id="nado-result-panel">
         <div class="result-head">
           <span class="result-emoji" id="nado-result-emoji"></span>
@@ -1110,13 +1088,11 @@
           </div>
         </div>
 
-        <!-- Step 1 -->
         <div id="tydro-step1">
           <div class="sec-label">Step 1 — Pick a lending scenario</div>
           <div id="tydro-scenario-grid"></div>
         </div>
 
-        <!-- Step 2 -->
         <div class="pos-form" id="tydro-step2">
           <div class="sec-label">Step 2 — Supply collateral and borrow</div>
           <div class="selected-summary" id="tydro-selected-summary">
@@ -1160,7 +1136,6 @@
           </div>
         </div>
 
-        <!-- Step 3 -->
         <div class="pos-form" id="tydro-step3">
           <div class="sec-label">Step 3 — Simulate a price drop</div>
           <div class="selected-summary" style="margin-bottom:16px;">
@@ -1180,13 +1155,11 @@
         </div>
       </div>
 
-      <!-- Tydro tx status -->
       <div class="tx-bar" id="tydro-tx-status">
         <div class="spin tydro"></div>
         <span id="tydro-tx-msg">Submitting on-chain...</span>
       </div>
 
-      <!-- Tydro result -->
       <div class="result-panel" id="tydro-result-panel">
         <div class="result-head">
           <span class="result-emoji" id="tydro-result-emoji"></span>
@@ -1228,12 +1201,12 @@
     &middot; <a href="https://app.nado.xyz" target="_blank">Nado</a>
     &middot; <a href="https://tydro.com" target="_blank">Tydro</a>
     &middot; <a href="https://velodrome.finance" target="_blank">Velodrome</a>
+    &middot; <a href="stats.html">Stats</a>
   </footer>
 
-</div><!-- end wrap -->
+</div>
 
 <script>
-  // ── CONFIG ──────────────────────────────────────────────────────────────────
   const TRIVIA_ADDRESS    = "0xC996c0143c4C88F0B0bC32d328D14c071A603CcB";
   const MAINNET_CHAIN_ID  = 57073n;
   const MAINNET_CHAIN_HEX = "0xDEF1";
@@ -1300,7 +1273,6 @@
     22: { text: "Nado supports ETH, SOL, SPY perps with up to 20x leverage.", url: "https://app.nado.xyz", label: "Open Nado" },
   };
 
-  // ── STATE ───────────────────────────────────────────────────────────────────
   let ethers, provider, signer;
   let triviaContract, nadoContract, tydroContract;
   let walletAddress = null;
@@ -1318,7 +1290,6 @@
   let isLong = true;
   let openPositionScenarioId = null;
 
-  // ── ETHERS ──────────────────────────────────────────────────────────────────
   async function loadEthers() {
     return new Promise((resolve, reject) => {
       if (window.ethers) { resolve(window.ethers); return; }
@@ -1337,7 +1308,6 @@
     return null;
   }
 
-  // ── TABS ────────────────────────────────────────────────────────────────────
   function switchTab(tab) {
     currentTab = tab;
     ['trivia','nado','tydro'].forEach(function(t) {
@@ -1348,7 +1318,6 @@
     if (tab === 'tydro') { renderTydroScenarios(); }
   }
 
-  // ── CONNECT ─────────────────────────────────────────────────────────────────
   async function connectWallet() {
     await new Promise(r => setTimeout(r, 200));
     const wp = getWalletProvider();
@@ -1410,7 +1379,6 @@
     document.getElementById("connect-btn").textContent = "Connect Wallet";
   }
 
-  // ── TRIVIA ──────────────────────────────────────────────────────────────────
   async function loadQuestion(id) {
     document.getElementById("loading").classList.remove("hidden");
     document.getElementById("question-content").classList.add("hidden");
@@ -1551,7 +1519,6 @@
   function nextQuestion() { loadQuestion(currentQuestionId + 1); }
   function prevQuestion() { loadQuestion(currentQuestionId - 1); }
 
-  // ── NADO ────────────────────────────────────────────────────────────────────
   const NADO_ICONS = { ETH:"⟠", BTC:"₿", SOL:"◎" };
 
   async function loadScenarios() {
@@ -1757,7 +1724,6 @@
     document.getElementById("btn-short").classList.remove("active");
   }
 
-  // ── TYDRO ───────────────────────────────────────────────────────────────────
   function renderTydroScenarios() {
     const grid = document.getElementById("tydro-scenario-grid");
     if (grid.children.length > 0) return;
@@ -1992,7 +1958,6 @@
     document.getElementById("tydro-step1").style.display = "block";
   }
 
-  // ── HOWTO TOGGLES ───────────────────────────────────────────────────────────
   function toggleHowTo() {
     const p = document.getElementById("howto-panel");
     const a = document.getElementById("howto-arrow");
